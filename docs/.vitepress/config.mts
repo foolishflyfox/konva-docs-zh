@@ -4,6 +4,10 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   title: "Konva Chinese docs",
   description: "关于 Konva 的文档(中文版)",
+  head: [
+    // 设置 favicon
+    ["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+  ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
