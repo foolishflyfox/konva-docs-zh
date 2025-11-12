@@ -16,5 +16,8 @@
   "devDependencies": {
     "@types/node": "^20.19.25",
     "vitepress": "2.0.0-alpha.12"
+  },
+  "dependencies": {
+    "vue": "^3.5.24"
   }
 }
