@@ -20,12 +20,18 @@ hero:
     # 按钮样式，官方提供两种：brand 表示主色调按钮，alt 表示次要按钮
     - theme: brand
       # 按钮文字
-      text: Markdown Examples
+      text: 开始学习
       # 按钮点击后的跳转路径
-      link: /markdown-examples
+      link: /tutorial
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: API 文档
+      link: /api
+    - theme: alt
+      text: 查看演示
+      link: /demo
+    - theme: alt
+      text: 源码分析
+      link: /analysis
 
 # 特性介绍区块，展示项目的几个主要功能点
 features:

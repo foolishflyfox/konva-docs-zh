@@ -13,19 +13,35 @@ export default defineConfig({
     // 设置左上角 title 旁边的图标
     logo: "/favicon.svg",
     nav: [
-      { text: "Home", link: "/" },
-      { text: "Examples", link: "/markdown-examples" },
+      { text: "首页", link: "/" },
+      { text: "教程", link: "/tutorial" },
+      { text: "API", link: "/api" },
+      { text: "演示", link: "/demo" },
+      { text: "源码分析", link: "/analysis" },
     ],
-    sidebar: [
-      {
-        text: "Examples",
-        items: [
-          { text: "Markdown Examples", link: "/markdown-examples" },
-          { text: "Runtime API Examples", link: "/api-examples" },
-        ],
-      },
-    ],
-
+    sidebar: {
+      "/tutorial/": [
+        {
+          text: "教程",
+          items: [
+            { text: "介绍", link: "/tutorial/" },
+            { text: "概览", link: "/tutorial/overview" },
+          ],
+        },
+      ],
+      "/api/": [
+        { text: "Konva", link: "/api/" },
+        { text: "动画", link: "/api/animation" },
+      ],
+      "/demo": [
+        { text: "总览", link: "/demo/" },
+        { text: "画布编辑器", link: "/demo/canvas-editor" },
+      ],
+      "/analysis/": [
+        { text: "概览", link: "/analysis/" },
+        { text: "示例", link: "/analysis/demo" },
+      ],
+    },
     socialLinks: [
       {
         icon: "github",
