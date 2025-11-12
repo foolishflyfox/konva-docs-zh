@@ -30,11 +30,14 @@ hero:
 # 特性介绍区块，展示项目的几个主要功能点
 features:
   # 每个特性的标题
-  - title: Feature A
+  - title: 通俗易懂
+    icon: 🔰
     # 特性的简要说明文字
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: 争取让每个小白都能读懂，如果有所收获，请记得 Star 哦 ❤️❤️❤️
+  - title: 深入浅出
+    icon: 💡
+    details: 从功能到源码层层递进，深度剖析，图文并茂讲解，在学会了API的使用后，也能提升编程内功 💪💪💪
+  - title: 注重实战
+    icon: 🛠️
+    details: 每个功能都以实际的例子进行演示，拒绝纸上谈兵，实现是检验真理的唯一标准 🔥🔥🔥
 ---
