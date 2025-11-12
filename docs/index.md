@@ -22,16 +22,16 @@ hero:
       # 按钮文字
       text: 开始学习
       # 按钮点击后的跳转路径
-      link: /tutorial
+      link: /tutorial/intro
     - theme: alt
       text: API 文档
-      link: /api
+      link: /api/konva
     - theme: alt
       text: 查看演示
-      link: /demo
+      link: /demo/overview
     - theme: alt
       text: 源码分析
-      link: /analysis
+      link: /analysis/overview
 
 # 特性介绍区块，展示项目的几个主要功能点
 features:

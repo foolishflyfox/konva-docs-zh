@@ -1,4 +1,31 @@
-import { defineConfig } from "vitepress";
+import { defineConfig, DefaultTheme } from "vitepress";
+import { posix } from "path";
+
+type SidebarItemX = DefaultTheme.SidebarItem & {
+  prefix?: string;
+};
+
+/**
+ * 添加路径前缀
+ */
+function addLinkPrefix(
+  item: SidebarItemX,
+  prefix = ""
+): DefaultTheme.SidebarItem {
+  if (item.link !== undefined) {
+    item.link = posix.join(prefix, item.link);
+  } else {
+    let newPrefix = prefix;
+    if (item.prefix) {
+      newPrefix = posix.join(newPrefix, item.prefix);
+      delete item.prefix;
+    }
+    if (item.items?.length) {
+      item.items.forEach((e) => addLinkPrefix(e, newPrefix));
+    }
+  }
+  return item;
+}
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -14,41 +41,42 @@ export default defineConfig({
     logo: "/favicon.svg",
     nav: [
       { text: "首页", link: "/" },
-      { text: "教程", link: "/tutorial" },
-      { text: "API", link: "/api" },
-      { text: "演示", link: "/demo" },
-      { text: "源码分析", link: "/analysis" },
+      { text: "教程", link: "/tutorial/intro" },
+      { text: "API", link: "/api/konva" },
+      { text: "演示", link: "/demo/overview" },
+      { text: "源码分析", link: "/analysis/overview" },
     ],
     sidebar: {
       "/tutorial/": [
         {
-          text: "基础",
+          text: "教程",
           items: [
-            { text: "介绍", link: "/tutorial/" },
-            { text: "概览", link: "/tutorial/overview" },
+            { text: "介绍", link: "intro" },
+            { text: "概览", link: "overview" },
+            {
+              text: "形状",
+              collapsed: true,
+              prefix: "shapes",
+              items: [
+                { text: "弧形", link: "arc" },
+                { text: "箭头", link: "arrow" },
+              ],
+            },
           ],
         },
-        {
-          text: "形状",
-          collapsed: true,
-          items: [
-            { text: "弧形", link: "/tutorial/shape/arc" },
-            { text: "箭头", link: "/tutorial/shape/arrow" },
-          ],
-        },
-      ],
+      ].map((e) => addLinkPrefix(e, "/tutorial")),
       "/api/": [
-        { text: "Konva", link: "/api/" },
-        { text: "动画", link: "/api/animation" },
-      ],
+        { text: "Konva", link: "konva" },
+        { text: "动画", link: "animation" },
+      ].map((e) => addLinkPrefix(e, "/api")),
       "/demo/": [
-        { text: "总览", link: "/demo/" },
-        { text: "画布编辑器", link: "/demo/canvas-editor" },
-      ],
+        { text: "总览", link: "overview" },
+        { text: "画布编辑器", link: "canvas-editor" },
+      ].map((e) => addLinkPrefix(e, "/demo")),
       "/analysis/": [
-        { text: "概览", link: "/analysis/" },
-        { text: "示例", link: "/analysis/demo" },
-      ],
+        { text: "概览", link: "overview" },
+        { text: "示例", link: "demo" },
+      ].map((e) => addLinkPrefix(e, "/analysis")),
     },
     socialLinks: [
       {
