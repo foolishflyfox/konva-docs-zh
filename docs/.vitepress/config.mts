@@ -2,7 +2,7 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Konva Chinese docs",
+  title: "Konva",
   description: "关于 Konva 的文档(中文版)",
   head: [
     // 设置 favicon
@@ -10,11 +10,12 @@ export default defineConfig({
   ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
+    // 设置左上角 title 旁边的图标
+    logo: "/favicon.svg",
     nav: [
       { text: "Home", link: "/" },
       { text: "Examples", link: "/markdown-examples" },
     ],
-
     sidebar: [
       {
         text: "Examples",
@@ -26,7 +27,10 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/vuejs/vitepress" },
+      {
+        icon: "github",
+        link: "https://github.com/foolishflyfox/konva-docs-zh",
+      },
     ],
   },
   vite: {

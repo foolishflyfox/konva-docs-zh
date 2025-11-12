@@ -11,7 +11,7 @@ hero:
   # 简短的说明文字或副标题，通常在标题下方
   text: "关于 Konva 的使用手册与源码分析"
   # 标语或简短的说明，显示在更小字号的位置
-  tagline: 包括对 Konva 官网手册的翻译，自我总结的博客以及源码分析
+  tagline: 包括对 Konva 官网手册的翻译、自我总结的博客以及源码分析
   image:
     src: /images/konva.svg
     alt: Konva Logo
