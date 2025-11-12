@@ -13,7 +13,7 @@ hero:
   # 标语或简短的说明，显示在更小字号的位置
   tagline: 包括对 Konva 官网手册的翻译、自我总结的博客以及源码分析
   image:
-    src: /images/konva.svg
+    src: /konva.svg
     alt: Konva Logo
   # 一组操作按钮，可以引导访问其他页面
   actions:
