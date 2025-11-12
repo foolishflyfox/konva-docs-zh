@@ -22,10 +22,18 @@ export default defineConfig({
     sidebar: {
       "/tutorial/": [
         {
-          text: "教程",
+          text: "基础",
           items: [
             { text: "介绍", link: "/tutorial/" },
             { text: "概览", link: "/tutorial/overview" },
+          ],
+        },
+        {
+          text: "形状",
+          collapsed: true,
+          items: [
+            { text: "弧形", link: "/tutorial/shape/arc" },
+            { text: "箭头", link: "/tutorial/shape/arrow" },
           ],
         },
       ],
@@ -33,7 +41,7 @@ export default defineConfig({
         { text: "Konva", link: "/api/" },
         { text: "动画", link: "/api/animation" },
       ],
-      "/demo": [
+      "/demo/": [
         { text: "总览", link: "/demo/" },
         { text: "画布编辑器", link: "/demo/canvas-editor" },
       ],
