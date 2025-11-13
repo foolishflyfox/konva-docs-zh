@@ -9,6 +9,7 @@
 import { ref, onMounted, inject, watch, computed } from "vue";
 import type { Highlighter } from "shiki";
 import { useData } from "vitepress";
+import { useBorderColor } from "../../utils";
 
 const props = withDefaults(
   defineProps<{
@@ -25,9 +26,7 @@ const highlighter = inject<Highlighter>("highlighter");
 
 const codeHtml = ref("");
 const { isDark } = useData();
-const lineNumberBorderColor = computed(() =>
-  isDark.value ? "#555" : "#d8d8d8"
-);
+const lineNumberBorderColor = useBorderColor();
 
 function updateCodeHtml(isDarkTheme: boolean) {
   if (highlighter) {
