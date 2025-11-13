@@ -1,5 +1,9 @@
 # Konva 框架概览
 
+<script setup>
+import { KCircle } from "@/components/kshapes"
+</script>
+
 原文地址: https://konvajs.org/docs/overview.html
 
 ## 什么是 Konva？
@@ -73,10 +77,6 @@ stage.add(layer);
 ```
 
 结果为：
-
-<script setup>
-import { KCircle } from "@/components/kshapes"
-</script>
 
 <KCircle :radius="70" fill="red" stroke="black" :strokeWidth="4" :width="160" :height="160" />
 

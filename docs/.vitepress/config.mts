@@ -61,6 +61,7 @@ export default defineConfig({
               items: [
                 { text: "弧形", link: "arc" },
                 { text: "箭头", link: "arrow" },
+                { text: "圆形", link: "circle" },
               ],
             },
           ],
