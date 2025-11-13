@@ -78,4 +78,4 @@ stage.add(layer);
 import { KCircle } from "../components/kshapes"
 </script>
 
-<KCircle />
+<KCircle :radius="70" fill="red" stroke="black" :strokeWidth="4" :width="160" :height="160" />

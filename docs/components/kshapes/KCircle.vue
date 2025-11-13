@@ -7,7 +7,19 @@ import { onMounted, useTemplateRef } from "vue";
 import { KShapeProp } from "../../types";
 import KShape from "./KShape.vue";
 import Konva from "konva";
-const props = defineProps<KShapeProp>();
+const props = withDefaults(
+  defineProps<
+    KShapeProp & {
+      radius?: number;
+    }
+  >(),
+  {
+    fill: "#00bfff",
+    stroke: "black",
+    radius: 60,
+    strokeWidth: 4,
+  }
+);
 const kShape = useTemplateRef("kShape");
 onMounted(() => {
   const containerData = kShape.value?.getContainerData()!;
@@ -21,10 +33,10 @@ onMounted(() => {
   const circle = new Konva.Circle({
     x: stage.width() / 2,
     y: stage.height() / 2,
-    radius: 70,
-    fill: "red",
-    stroke: "black",
-    strokeWidth: 4,
+    radius: props.radius,
+    fill: props.fill,
+    stroke: props.stroke,
+    strokeWidth: props.strokeWidth,
   });
 
   // 将节点添加到图层中

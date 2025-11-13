@@ -12,10 +12,10 @@
 </template>
 
 <script setup lang="ts">
-import { KShapeProp } from "../../types";
 import { useTemplateRef } from "vue";
+import { KShapeContainerProp } from "../../types";
 
-const props = withDefaults(defineProps<KShapeProp>(), {
+const props = withDefaults(defineProps<KShapeContainerProp>(), {
   width: 150,
   height: 150,
   bgColor: "#ddd",
