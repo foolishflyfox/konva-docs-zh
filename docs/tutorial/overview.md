@@ -82,4 +82,4 @@ stage.add(layer);
 
 ## 基础图形
 
-Konva.js 支持的图形包括：[矩形](./shapes/Rect)
+Konva.js 支持的图形包括：[矩形](./shapes/rect)
