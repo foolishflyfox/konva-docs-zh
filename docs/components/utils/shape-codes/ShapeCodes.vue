@@ -38,7 +38,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-
 const tabName = ref("vanilla");
 const file = ref("html");
 

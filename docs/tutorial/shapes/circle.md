@@ -1,14 +1,12 @@
 # HTML5 canvas 圆形教程
 
 <script setup>
-import { ShapeCodes } from "@/components/utils";
+import { ShapeCodes, HighLighterCode } from "@/components/utils";
 import { vanillaHtml } from "./codes/circle";
 </script>
 <ShapeCodes>
   <template #vanilla$html>
-  <pre>
-  {{ vanillaHtml }}
-  </pre>
+  <HighLighterCode :code="vanillaHtml" lang="html" />
   </template>
   <template #vanilla$js>
     <pre>
