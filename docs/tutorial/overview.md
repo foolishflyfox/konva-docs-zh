@@ -79,3 +79,7 @@ import { KCircle } from "../components/kshapes"
 </script>
 
 <KCircle :radius="70" fill="red" stroke="black" :strokeWidth="4" :width="160" :height="160" />
+
+## 基础图形
+
+Konva.js 支持的图形包括：[矩形](./shapes/Rect)
