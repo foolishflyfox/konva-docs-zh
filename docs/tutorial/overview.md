@@ -75,7 +75,7 @@ stage.add(layer);
 结果为：
 
 <script setup>
-import { KCircle } from "../components/kshapes"
+import { KCircle } from "@/components/kshapes"
 </script>
 
 <KCircle :radius="70" fill="red" stroke="black" :strokeWidth="4" :width="160" :height="160" />

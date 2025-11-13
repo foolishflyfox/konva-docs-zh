@@ -1,5 +1,6 @@
 import { defineConfig, DefaultTheme } from "vitepress";
 import { posix } from "path";
+import { fileURLToPath } from "url";
 
 type SidebarItemX = DefaultTheme.SidebarItem & {
   prefix?: string;
@@ -91,6 +92,12 @@ export default defineConfig({
       port: 6001,
       // 允许局域网访问
       host: true,
+    },
+    resolve: {
+      alias: {
+        // 指定 @ 表示的根目录为 docs
+        "@": fileURLToPath(new URL("../", import.meta.url)),
+      },
     },
   },
 });
