@@ -1,16 +1,14 @@
 <template>
   <!-- 如果想保留行号、高亮行等能力，可自己拼 class -->
-  <pre
-    v-if="codeHtml"
-    class="shiki"
-    style="background-color: #2d2d2d"
-    v-html="codeHtml"
-  />
+  <div>
+    <pre v-if="codeHtml" class="shiki" v-html="codeHtml" />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, inject } from "vue";
+import { ref, onMounted, inject, watch } from "vue";
 import type { Highlighter } from "shiki";
+import { useData } from "vitepress";
 
 const props = defineProps<{
   code: string; // 纯代码字符串
@@ -20,16 +18,26 @@ const props = defineProps<{
 const highlighter = inject<Highlighter>("highlighter");
 
 const codeHtml = ref("");
+const { isDark } = useData();
 
-onMounted(async () => {
-  // 取 Markdown 阶段缓存的 highlighter
+function updateCodeHtml(isDarkTheme: boolean) {
   if (highlighter) {
     const html = highlighter.codeToHtml(props.code, {
       lang: props.lang || "ts",
-      theme: "github-light", // 与 VitePress 全局主题保持一致
+      theme: isDarkTheme ? "github-dark" : "github-light", // 与 VitePress 全局主题保持一致
     });
     codeHtml.value = html;
   }
+}
+
+onMounted(async () => {
+  watch(
+    isDark,
+    (v) => {
+      updateCodeHtml(v);
+    },
+    { immediate: true }
+  );
 });
 </script>
 
@@ -37,5 +45,11 @@ onMounted(async () => {
 /* 让行高亮颜色与 VitePress 默认同色 */
 :deep(.highlighted) {
   background: var(--vp-code-line-highlight-color);
+}
+:deep(pre.shiki.github-dark) {
+  padding: 6px 10px;
+}
+:deep(pre.shiki.github-light) {
+  padding: 6px 10px;
 }
 </style>
