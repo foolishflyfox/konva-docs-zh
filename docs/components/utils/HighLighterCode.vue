@@ -24,7 +24,11 @@ function updateCodeHtml(isDarkTheme: boolean) {
   if (highlighter) {
     const html = highlighter.codeToHtml(props.code, {
       lang: props.lang || "ts",
-      theme: isDarkTheme ? "github-dark" : "github-light", // 与 VitePress 全局主题保持一致
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+      defaultColor: isDarkTheme ? "dark" : "light",
     });
     codeHtml.value = html;
   }
