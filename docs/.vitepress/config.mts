@@ -87,6 +87,10 @@ export default defineConfig({
       },
     ],
   },
+  markdown: {
+    // true: 全部显示; false: 全部不显示; number: 只有代码行数 ≥ 该值时才显示
+    lineNumbers: true,
+  },
   vite: {
     server: {
       // 设置服务端口号
