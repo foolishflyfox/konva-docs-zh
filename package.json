@@ -15,6 +15,7 @@
   "packageManager": "pnpm@10.12.1",
   "devDependencies": {
     "@types/node": "^20.19.25",
+    "typescript": "^5.9.3",
     "vitepress": "2.0.0-alpha.12"
   },
   "dependencies": {

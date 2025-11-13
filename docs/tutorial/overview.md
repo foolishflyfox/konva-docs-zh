@@ -78,6 +78,4 @@ stage.add(layer);
 import { KCircle } from "../components/kshapes"
 </script>
 
-todo: 制作一个 vue 组件，用于显示代码和结果，一份代码即可显示，也可执行，可能需要用到匿名插槽。
-
-<KCircle :width="200" />
+<KCircle />
