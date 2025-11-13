@@ -1,6 +1,6 @@
 <template>
   <!-- 如果想保留行号、高亮行等能力，可自己拼 class -->
-  <div>
+  <div :style="{ height: `${height}px`, overflow: 'auto' }">
     <div v-if="codeHtml" v-html="codeHtml" />
   </div>
 </template>
@@ -10,10 +10,16 @@ import { ref, onMounted, inject, watch, computed } from "vue";
 import type { Highlighter } from "shiki";
 import { useData } from "vitepress";
 
-const props = defineProps<{
-  code: string; // 纯代码字符串
-  lang?: string; // 语言，默认 ts
-}>();
+const props = withDefaults(
+  defineProps<{
+    code: string; // 纯代码字符串
+    lang?: string; // 语言，默认 ts
+    height?: number; // 代码容器高度
+  }>(),
+  {
+    height: 350,
+  }
+);
 
 const highlighter = inject<Highlighter>("highlighter");
 
@@ -51,14 +57,20 @@ onMounted(async () => {
 <style scoped>
 /* 设置行号显示 */
 :deep(pre) {
+  padding: 0.5em 0;
   counter-reset: line;
   background-color: var(--vp-code-block-bg) !important;
+  overflow: auto;
+}
+
+:deep(pre > code) {
+  line-height: var(--vp-code-line-height);
 }
 
 :deep(.line) {
   counter-increment: line;
   position: relative;
-  padding-left: 3em;
+  padding-left: 3.2em;
 }
 
 :deep(.line::before) {
