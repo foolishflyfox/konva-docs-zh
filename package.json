@@ -18,6 +18,7 @@
     "vitepress": "2.0.0-alpha.12"
   },
   "dependencies": {
+    "konva": "^10.0.8",
     "vue": "^3.5.24"
   }
 }

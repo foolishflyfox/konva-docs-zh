@@ -47,7 +47,7 @@ Konva 让桌面与移动应用都能拥有高性能动画、平滑过渡、节�
 ```ts
 // 我们先要创建一个 stage
 var stage = new Konva.Stage({
-  container: "container", // 容器 <div> 的 id
+  container: "container", // 要挂载的目标容器 <div> 的 id
   width: 500,
   height: 500,
 });
@@ -75,9 +75,9 @@ stage.add(layer);
 结果为：
 
 <script setup>
-import TestDemo from "../components/TestDemo.vue";
+import {KCircle} from "../components/kshapes"
 </script>
 
 todo: 制作一个 vue 组件，用于显示代码和结果，一份代码即可显示，也可执行，可能需要用到匿名插槽。
 
-<TestDemo />
+<KCircle />
