@@ -1,7 +1,25 @@
 # Konva 框架概览
 
 <script setup>
-import { KCircle } from "@docs/components/kshapes"
+import { KCircle, KShape } from "@docs/components/kshapes";
+import { createLayer } from "@docs/utils";
+
+function basicShapeDrawer(stage) {
+  var triangle = new Konva.Shape({
+    sceneFunc: function (context) {
+      context.beginPath();
+      context.moveTo(20, 50);
+      context.lineTo(220, 80);
+      context.quadraticCurveTo(150, 100, 260, 170);
+      context.closePath();
+      context.fillStrokeShape(this);
+    },
+    fill: '#00D2FF',
+    stroke: 'black',
+    strokeWidth: 4,
+  });
+  createLayer(stage).add(triangle);
+}
 </script>
 
 原文地址: https://konvajs.org/docs/overview.html
@@ -83,3 +101,23 @@ stage.add(layer);
 ## 基础图形
 
 Konva.js 支持的图形包括：[矩形](./shapes/rect)、[圆](./shapes/circle)、[椭圆](./shapes/ellipse.md)、[线](./shapes/line.md)、[多边形](./shapes/line_polygon.md)、[精灵图](./shapes/sprite.md)、[不规则图](./shapes/line_blob.md)、[图片](./shapes/image.md)、[文本](./shapes/text.md)、[文本路径](./shapes/text-path.md)、[星形](./shapes/star.md)、[标签](./shapes/star.md)、[SVG 路径](./shapes/path.md)、[正多边形](./shapes/regular-polygon.md)。另外你也可以创建 [自定义图形](./shapes/custom.md):
+
+```js
+var triangle = new Konva.Shape({
+  sceneFunc: function (context) {
+    context.beginPath();
+    context.moveTo(20, 50);
+    context.lineTo(220, 80);
+    context.quadraticCurveTo(150, 100, 260, 170);
+    context.closePath();
+
+    // special Konva.js method
+    context.fillStrokeShape(this);
+  },
+  fill: "#00D2FF",
+  stroke: "black",
+  strokeWidth: 4,
+});
+```
+
+<KShape :afterMounted="basicShapeDrawer" :width="280" :height="180" />
