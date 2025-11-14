@@ -1,7 +1,6 @@
 import { defineConfig, DefaultTheme } from "vitepress";
 import { posix } from "path";
 import { fileURLToPath } from "url";
-import { link } from "fs";
 
 type SidebarItemX = DefaultTheme.SidebarItem & {
   prefix?: string;
