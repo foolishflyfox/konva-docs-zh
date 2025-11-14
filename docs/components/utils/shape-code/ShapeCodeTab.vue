@@ -32,10 +32,18 @@
       <template v-else-if="tabName === 'vue'">
         <div>
           <div class="filebar">
-            <div>
-              <button @click="switchFile('App')">App.vue</button>
-              <button @click="switchFile('main')">main.js</button>
-            </div>
+            <button
+              @click="switchFile('App')"
+              :class="getFilebarCssClass('App')"
+            >
+              App.vue
+            </button>
+            <button
+              @click="switchFile('main')"
+              :class="getFilebarCssClass('main')"
+            >
+              main.js
+            </button>
           </div>
           <slot v-if="file === 'App'" name="vue$App" />
           <slot v-else name="vue$main" />
@@ -47,7 +55,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { capitalize, useBorderColor } from "../../utils";
+import { capitalize, useBorderColor } from "../../../utils";
 const tabName = ref("vanilla");
 const file = ref("html");
 
@@ -98,7 +106,7 @@ const borderColor = useBorderColor();
 }
 .filebar {
   margin: 8px 3px 0px 3px;
-  padding-bottom: 5px;
+  padding: 0 0 5px 10px;
   border-bottom: 1px solid v-bind(borderColor);
 }
 .filebar > button {
