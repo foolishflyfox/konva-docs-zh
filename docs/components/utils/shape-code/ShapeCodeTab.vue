@@ -6,7 +6,7 @@
         @click="switchTab(v)"
         :class="getLangbarCssClass(v)"
       >
-        {{ capitalize(v) }}
+        {{ getLangbarTitle(v) }}
       </button>
     </div>
 
@@ -69,6 +69,11 @@ function switchTab(newTabName: string) {
 
 function switchFile(newFile: string) {
   file.value = newFile;
+}
+
+function getLangbarTitle(targetTabName: string) {
+  if (targetTabName === "vanilla") return "原生";
+  return capitalize(targetTabName);
 }
 
 function getLangbarCssClass(targetTabName: string) {
