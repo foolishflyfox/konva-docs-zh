@@ -20,6 +20,23 @@ function basicShapeDrawer(stage) {
   });
   createLayer(stage).add(triangle);
 }
+
+function stylesShapeDrawer(stage) {
+  const pentagon = new Konva.RegularPolygon({
+    x: stage.width() / 2,
+    y: stage.height() / 2,
+    sides: 5,
+    radius: 70,
+    fill: 'red',
+    stroke: 'black',
+    strokeWidth: 4,
+    shadowOffsetX: 20,
+    shadowOffsetY: 25,
+    shadowBlur: 40,
+    opacity: 0.5,
+  });
+  createLayer(stage).add(pentagon);
+}
 </script>
 
 原文地址: https://konvajs.org/docs/overview.html
@@ -121,3 +138,30 @@ var triangle = new Konva.Shape({
 ```
 
 <KShape :afterMounted="basicShapeDrawer" :width="280" :height="180" />
+
+## 样式
+
+每个图形支持以下的样式属性：
+
+- Fill: 填充，可以是纯色、渐变色或图片
+- Stoke: 描边（颜色，宽度）
+- Shadow: 阴影（颜色、偏移、不透明度、模糊）
+- Opacity: 不透明度
+
+```js
+var pentagon = new Konva.RegularPolygon({
+  x: stage.width() / 2,
+  y: stage.height() / 2,
+  sides: 5,
+  radius: 70,
+  fill: "red",
+  stroke: "black",
+  strokeWidth: 4,
+  shadowOffsetX: 20,
+  shadowOffsetY: 25,
+  shadowBlur: 40,
+  opacity: 0.5,
+});
+```
+
+<KShape :afterMounted="stylesShapeDrawer" :width="280" :height="180" />
