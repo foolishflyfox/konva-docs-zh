@@ -2,9 +2,6 @@ import { createShapeCodesData } from "@docs/types";
 
 export const codeData = createShapeCodesData();
 
-codeData.vanilla.html = `<style>body, html { margin: 0; padding: 0; }</style>
-<div id='container'></div>`;
-
 codeData.vanilla.js = `import Konva from 'konva';
 
 const stage = new Konva.Stage({
@@ -69,10 +66,3 @@ const circleConfig = {
   strokeWidth: 4
 };
 </script>`;
-
-codeData.vue.main = `import { createApp } from 'vue'
-import App from './App.vue'
-import VueKonva from 'vue-konva';
-import './styles.css';
-
-createApp(App).use(VueKonva).mount('#app')`;

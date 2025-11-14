@@ -57,12 +57,12 @@
 import { ref } from "vue";
 import { capitalize, useBorderColor } from "@docs/utils";
 const tabName = ref("vanilla");
-const file = ref("html");
+const file = ref("js");
 
 function switchTab(newTabName: string) {
   if (tabName.value === newTabName) return;
   tabName.value = newTabName;
-  if (tabName.value === "vanilla") file.value = "html";
+  if (tabName.value === "vanilla") file.value = "js";
   else if (tabName.value === "react") file.value = "";
   else if (tabName.value === "vue") file.value = "App";
 }
