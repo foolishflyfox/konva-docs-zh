@@ -82,4 +82,4 @@ stage.add(layer);
 
 ## 基础图形
 
-Konva.js 支持的图形包括：[矩形](./shapes/rect)、[圆](./shapes/circle)、[椭圆](./shapes/ellipse.md)、[线](./shapes/line.md)、[多边形](./shapes/line_polygon.md)、[精灵图](./shapes/sprite.md)、[不规则图](./shapes/line_blob.md)、[图片](./shapes/image.md)、[文本](./shapes/text.md)、[文本路径](./shapes/text-path.md)、[星形](./shapes/star.md)、[标签](./shapes/star.md)、[SVG 路径](./shapes/path.md)、[正多边形](./shapes/regular-polygon.md)。另外你也能创建 [自定义图形](./shapes/custom.md):
+Konva.js 支持的图形包括：[矩形](./shapes/rect)、[圆](./shapes/circle)、[椭圆](./shapes/ellipse.md)、[线](./shapes/line.md)、[多边形](./shapes/line_polygon.md)、[精灵图](./shapes/sprite.md)、[不规则图](./shapes/line_blob.md)、[图片](./shapes/image.md)、[文本](./shapes/text.md)、[文本路径](./shapes/text-path.md)、[星形](./shapes/star.md)、[标签](./shapes/star.md)、[SVG 路径](./shapes/path.md)、[正多边形](./shapes/regular-polygon.md)。另外你也可以创建 [自定义图形](./shapes/custom.md):

@@ -1,12 +1,12 @@
 <template>
-  <KShape v-bind="props" ref="kShape" />
+  <KShape v-bind="props" :after-mounted="afterMounted" />
 </template>
 
 <script setup lang="ts">
-import { onMounted, useTemplateRef } from "vue";
 import { KShapeProp } from "@docs/types";
 import KShape from "./KShape.vue";
 import Konva from "konva";
+import { createLayer } from "@docs/utils";
 const props = withDefaults(
   defineProps<
     KShapeProp & {
@@ -20,14 +20,10 @@ const props = withDefaults(
     strokeWidth: 4,
   }
 );
-const kShape = useTemplateRef("kShape");
-onMounted(() => {
-  const containerData = kShape.value?.getContainerData()!;
-  const stage = new Konva.Stage({
-    ...containerData,
-  });
+
+function afterMounted(stage: Konva.Stage) {
   // 创建图层
-  const layer = new Konva.Layer();
+  const layer = createLayer(stage);
 
   // 创建圆形节点
   const circle = new Konva.Circle({
@@ -41,10 +37,7 @@ onMounted(() => {
 
   // 将节点添加到图层中
   layer.add(circle);
-
-  // 将图层添加到 stage 中
-  stage.add(layer);
-});
+}
 </script>
 
 <style scoped></style>

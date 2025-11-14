@@ -1,3 +1,5 @@
+import Konva from "konva";
+
 /**
  * Shape 节点容器默认的属性
  */
@@ -5,6 +7,7 @@ export interface KShapeContainerProp {
   width?: number;
   height?: number;
   bgColor?: string;
+  afterMounted?: (stage: Konva.Stage) => void;
 }
 
 export interface KShapeProp extends KShapeContainerProp {

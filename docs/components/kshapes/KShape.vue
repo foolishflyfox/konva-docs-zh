@@ -12,8 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef } from "vue";
+import { onMounted, useTemplateRef } from "vue";
 import { KShapeContainerProp } from "@docs/types";
+import Konva from "konva";
 
 const props = withDefaults(defineProps<KShapeContainerProp>(), {
   width: 150,
@@ -22,15 +23,22 @@ const props = withDefaults(defineProps<KShapeContainerProp>(), {
 });
 
 const container = useTemplateRef("shapeContainerRef");
+const getContainerData = () => {
+  return {
+    container: container.value!,
+    width: props.width,
+    height: props.height,
+  };
+};
 
-defineExpose({
-  getContainerData: () => {
-    return {
-      container: container.value!,
-      width: props.width,
-      height: props.height,
-    };
-  },
+onMounted(() => {
+  const containerData = getContainerData();
+  if (props.afterMounted) {
+    const stage = new Konva.Stage({
+      ...containerData,
+    });
+    props.afterMounted?.(stage);
+  }
 });
 </script>
 
