@@ -209,3 +209,39 @@ Konva 包含多种滤镜：模糊、反转、降噪等。可通过[滤镜 API](.
 一个滤镜使用的例子：
 
 ![滤镜使用示例](./assets/overview/overview-filter-demo.png)
+
+## 动画
+
+你有两种方式创建动画：
+
+1. 通过 `Konva.Animation`，[例子](./animations/moving.md)：
+
+```js
+var anim = new Konva.Animation(function (frame) {
+  var time = frame.time,
+    timeDiff = frame.timeDiff,
+    frameRate = frame.frameRate;
+  // update stuff
+}, layer);
+anim.start();
+```
+
+2. 通过 `Konva.Tween`，[例子](./tweens/linear-easing.md)：
+
+```js
+var tween = new Konva.Tween({
+  node: rect,
+  duration: 1,
+  x: 140,
+  rotation: Math.PI * 2,
+  opacity: 1,
+  strokeWidth: 6,
+});
+tween.play();
+
+// or new shorter method:
+circle.to({
+  duration: 1,
+  fill: "green",
+});
+```
