@@ -17,12 +17,3 @@ print("hello, world")
 ```
 
 :::
-
-<Tabs>
-  <TabItem value="js" label="JavaScript">
-    <Tabs>
-      <TabItem value="main-js" label="main.js">xxx</TabItem>
-      <TabItem value="main-js" label="main.js">yyy</TabItem>
-    </Tabs>
-  </TabItem>
-</Tabs>
