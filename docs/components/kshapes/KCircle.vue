@@ -3,13 +3,13 @@
 </template>
 
 <script setup lang="ts">
-import { KShapeProp } from "@docs/types";
+import { KShapeBaseProp } from "@docs/types";
 import KShape from "./KShape.vue";
 import Konva from "konva";
 import { createLayer } from "@docs/utils";
 const props = withDefaults(
   defineProps<
-    KShapeProp & {
+    KShapeBaseProp & {
       radius?: number;
     }
   >(),

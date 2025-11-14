@@ -13,10 +13,10 @@
 
 <script setup lang="ts">
 import { onMounted, useTemplateRef } from "vue";
-import { KShapeContainerProp } from "@docs/types";
+import { KShapeProps } from "@docs/types";
 import Konva from "konva";
 
-const props = withDefaults(defineProps<KShapeContainerProp>(), {
+const props = withDefaults(defineProps<KShapeProps>(), {
   width: 150,
   height: 150,
   bgColor: "#ddd",

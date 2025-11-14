@@ -7,10 +7,13 @@ export interface KShapeContainerProp {
   width?: number;
   height?: number;
   bgColor?: string;
+}
+
+export interface KShapeProps extends KShapeContainerProp {
   afterMounted?: (stage: Konva.Stage) => void;
 }
 
-export interface KShapeProp extends KShapeContainerProp {
+export interface KShapeBaseProp extends KShapeContainerProp {
   // 填充色
   fill?: string;
   // 线条色
