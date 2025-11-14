@@ -132,6 +132,7 @@ export default defineConfig({
       "/api/": [
         { text: "Konva", link: "konva" },
         { text: "动画", link: "animation" },
+        { text: "滤镜", link: "filters" },
       ].map((e) => addLinkPrefix(e, "/api")),
       "/demo/": [
         { text: "总览", link: "overview" },

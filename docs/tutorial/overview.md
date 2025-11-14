@@ -201,3 +201,11 @@ shape.draggable(true);
 ```
 
 之后，你就可以订阅拖放事件，并设置[移动限制](./drag-drop/complex-drag-drop.md)。
+
+## 滤镜
+
+Konva 包含多种滤镜：模糊、反转、降噪等。可通过[滤镜 API](../api/filters.md) 查看所有滤镜。
+
+一个滤镜使用的例子：
+
+![滤镜使用示例](./assets/overview/overview-filter-demo.png)
