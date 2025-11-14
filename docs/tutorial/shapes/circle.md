@@ -1,4 +1,4 @@
-# HTML5 canvas 圆形教程
+# HTML5 canvas 曲线教程
 
 xxxx
 
