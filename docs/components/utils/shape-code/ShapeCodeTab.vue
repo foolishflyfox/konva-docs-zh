@@ -97,7 +97,7 @@ const borderColor = useBorderColor();
 
 <style scoped>
 .code-container {
-  margin: 2px 0;
+  margin: 5px 0;
   padding: 3px;
   border: 1px solid v-bind(borderColor);
 }
@@ -105,7 +105,7 @@ const borderColor = useBorderColor();
   --active-color: #0584ce;
 }
 .langbar > button {
-  padding: 12px 16px;
+  padding: 12px 16px 5px 16px;
   font-weight: 700;
   font-size: 18px;
 }
