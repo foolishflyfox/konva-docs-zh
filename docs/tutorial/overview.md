@@ -165,3 +165,27 @@ var pentagon = new Konva.RegularPolygon({
 ```
 
 <KShape :afterMounted="stylesShapeDrawer" :width="280" :height="180" />
+
+## 事件
+
+通过 Konva 你能很容易地监听以下事件：
+
+- 用户的输入事件（包括 `click`单击、`dblclick`双击、`mouseover`鼠标移动、`tap`轻击、`dbltap`双轻击、`touchstart`触摸开始等等）；
+- 属性改变事件（`scaleXChange`X 轴缩放、`fillChange`填充改变）；
+- 拖拽事件（`dragstart`拖拽开始、`dragmove`拖拽移动、`dragend`拖拽结束）；
+
+```js
+circle.on("mouseout touchend", function () {
+  console.log("user input");
+});
+
+circle.on("xChange", function () {
+  console.log("position change");
+});
+
+circle.on("dragend", function () {
+  console.log("drag stopped");
+});
+```
+
+详细内容查看 [事件绑定](./events/binding-events)。

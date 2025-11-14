@@ -83,6 +83,12 @@ export default defineConfig({
                 { text: "Wedge 楔形", link: "wedge" },
               ],
             },
+            {
+              text: "事件",
+              collapsed: true,
+              prefix: "events",
+              items: [{ text: "绑定事件", link: "binding-events" }],
+            },
           ],
         },
       ].map((e) => addLinkPrefix(e, "/tutorial")),
