@@ -1,4 +1,4 @@
-# HTML5 canvas 曲线教程
+# 曲线教程
 
 xxxx
 
