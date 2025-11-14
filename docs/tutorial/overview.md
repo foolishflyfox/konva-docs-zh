@@ -1,7 +1,7 @@
 # Konva 框架概览
 
 <script setup>
-import { KCircle } from "@/components/kshapes"
+import { KCircle } from "@docs/components/kshapes"
 </script>
 
 原文地址: https://konvajs.org/docs/overview.html

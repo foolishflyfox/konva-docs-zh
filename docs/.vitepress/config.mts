@@ -100,8 +100,8 @@ export default defineConfig({
     },
     resolve: {
       alias: {
-        // 指定 @ 表示的根目录为 docs
-        "@": fileURLToPath(new URL("../", import.meta.url)),
+        // 指定 docs 表示的根目录为 docs
+        "@docs": fileURLToPath(new URL("../", import.meta.url)),
       },
     },
   },

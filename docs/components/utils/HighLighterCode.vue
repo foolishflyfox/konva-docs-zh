@@ -9,7 +9,7 @@
 import { ref, onMounted, inject, watch, computed } from "vue";
 import type { Highlighter } from "shiki";
 import { useData } from "vitepress";
-import { useBorderColor } from "../../utils";
+import { useBorderColor } from "@docs/utils";
 
 const props = withDefaults(
   defineProps<{

@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
-import { KShapeContainerProp } from "../../types";
+import { KShapeContainerProp } from "@docs/types";
 
 const props = withDefaults(defineProps<KShapeContainerProp>(), {
   width: 150,

@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { onMounted, useTemplateRef } from "vue";
-import { KShapeProp } from "../../types";
+import { KShapeProp } from "@docs/types";
 import KShape from "./KShape.vue";
 import Konva from "konva";
 const props = withDefaults(

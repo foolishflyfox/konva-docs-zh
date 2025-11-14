@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { capitalize, useBorderColor } from "../../../utils";
+import { capitalize, useBorderColor } from "@docs/utils";
 const tabName = ref("vanilla");
 const file = ref("html");
 

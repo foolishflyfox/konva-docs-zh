@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import ShapeCodeTab from "./ShapeCodeTab.vue";
 import HighLighterCode from "../HighLighterCode.vue";
-import { ShapeCodesData } from "../../../types";
+import { ShapeCodesData } from "@docs/types";
 
 defineProps<ShapeCodesData>();
 </script>

@@ -1,4 +1,4 @@
-import { createShapeCodesData } from "../../../../types";
+import { createShapeCodesData } from "@docs/types";
 
 export const codeData = createShapeCodesData();
 
