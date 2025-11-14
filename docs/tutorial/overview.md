@@ -188,4 +188,16 @@ circle.on("dragend", function () {
 });
 ```
 
-详细内容查看 [事件绑定](./events/binding-events)。
+详细内容参见 [事件绑定](./events/binding-events)。
+
+## 拖放
+
+Konva 内置了对拖拽的支持。目前没有 **放置** 事件(例如 `drop`、`dragenter`、`dragleave`、`dragover`)，但[通过框架](./drag-drop/drop-events.md)可以轻而易举地实现它们。
+
+通过设置 `draggable` 属性为 `true` 就启用了拖放功能。
+
+```js
+shape.draggable(true);
+```
+
+之后，你就可以订阅拖放事件，并设置[移动限制](./drag-drop/complex-drag-drop.md)。

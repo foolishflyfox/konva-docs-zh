@@ -1,6 +1,7 @@
 import { defineConfig, DefaultTheme } from "vitepress";
 import { posix } from "path";
 import { fileURLToPath } from "url";
+import { link } from "fs";
 
 type SidebarItemX = DefaultTheme.SidebarItem & {
   prefix?: string;
@@ -47,6 +48,9 @@ export default defineConfig({
       { text: "演示", link: "/demo/overview" },
       { text: "源码分析", link: "/analysis/overview" },
     ],
+    search: {
+      provider: "local",
+    },
     sidebar: {
       "/tutorial/": [
         {
@@ -104,6 +108,22 @@ export default defineConfig({
                 { text: "移除事件", link: "remove-event" },
                 { text: "按名称移除事件", link: "remove-by-name" },
                 { text: "Stage 事件", link: "stage-events" },
+              ],
+            },
+            {
+              text: "拖放",
+              collapsed: true,
+              prefix: "drag-drop",
+              items: [
+                { text: "拖放基础", link: "basic-drag-drop" },
+                { text: "图片拖拽", link: "drag-image" },
+                { text: "组拖拽", link: "drag-group" },
+                { text: "线拖拽", link: "drag-line" },
+                { text: "stage 拖拽", link: "drag-stage" },
+                { text: "拖拽事件", link: "drag-event" },
+                { text: "简单拖拽边界", link: "simple-drag-bounds" },
+                { text: "复杂拖放", link: "complex-drag-drop" },
+                { text: "放置事件", link: "drop-events" },
               ],
             },
           ],
