@@ -38,8 +38,11 @@ export default defineConfig({
   ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    // 设置左上角 title 旁边的图标
+    // 导航栏上显示的 Logo，位于站点标题前
     logo: "/favicon.svg",
+    // 可以自定义此项以替换导航中的默认站点标题 (应用配置中的 title)
+    siteTitle: "Konva 文档",
+    // 导航菜单项的配置
     nav: [
       { text: "首页", link: "/" },
       { text: "教程", link: "/tutorial/intro" },
@@ -50,6 +53,7 @@ export default defineConfig({
     search: {
       provider: "local",
     },
+    // 侧边栏菜单项配置
     sidebar: {
       "/tutorial/": [
         {

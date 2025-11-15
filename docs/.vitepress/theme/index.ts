@@ -5,6 +5,9 @@ import type { Theme } from "vitepress";
 
 export default {
   ...DefaultTheme,
+  /**
+   * 增强 Vue 实例
+   */
   async enhanceApp({ app }) {
     // 创建一个全局的 Shiki 实例
     const highlighter = await createHighlighter({
