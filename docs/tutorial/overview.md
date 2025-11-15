@@ -221,7 +221,7 @@ var anim = new Konva.Animation(function (frame) {
   var time = frame.time,
     timeDiff = frame.timeDiff,
     frameRate = frame.frameRate;
-  // update stuff
+  // 更新数据
 }, layer);
 anim.start();
 ```
@@ -239,9 +239,65 @@ var tween = new Konva.Tween({
 });
 tween.play();
 
-// or new shorter method:
+// 或使用新的简化方法:
 circle.to({
   duration: 1,
   fill: "green",
 });
 ```
+
+## 选择器
+
+当你在开发大型应用时，选择器对搜索元素有大用途。你可以使用 `find()` 函数(返回一个集合)或 `findOne()` 函数(返回集合中的第一个元素)。
+
+```js
+var circle = new Konva.Circle({
+  radius: 10,
+  fill: "red",
+  id: "face",
+  name: "red circle",
+});
+layer.add(circle);
+
+// 接着尝试搜索
+
+// 通过类型搜寻
+layer.find("Circle"); // returns array of all circles
+
+// 通过 id 搜寻
+layer.findOne("#face");
+
+// 通过名称搜寻（类似于 css 类）
+layer.find(".red");
+```
+
+## 序列化与反序列化
+
+所有创建的对象都可以保存为 JSON。你可以将其保存到服务器或本地存储。
+
+```js
+var json = stage.toJSON();
+```
+
+你也可以从 JSON 恢复对象：
+
+```js
+var json =
+  '{"attrs":{"width":578,"height":200},"className":"Stage","children":[{"attrs":{},"className":"Layer","children":[{"attrs":{"x":100,"y":100,"sides":6,"radius":70,"fill":"red","stroke":"black","strokeWidth":4},"className":"RegularPolygon"}]}]}';
+
+var stage = Konva.Node.create(json, "container");
+```
+
+## 性能
+
+Konva 提供了诸多提升应用速度的工具。其中最重要的方法是：
+
+1. 缓存：缓存允许您将元素绘制到缓冲画布中，然后从该画布中绘制元素。对于复杂节点（如带有阴影和描边的文本或形状），这可能会大幅提升性能。[示例](./performance/shape-caching.md)
+
+```js
+shape.cache();
+```
+
+2. 分层机制：由于本框架支持多个 `<canvas>` 元素，您可以酌情放置对象。例如，如果您的应用包含一个复杂的背景和若干移动图形，您可以将背景置于一个图层，将图形置于另一个图层。这样，在更新图形时，就无需重新绘制背景画布。 [示例](./performance/layer-management.md)
+
+你可以从这里找到所有可行的性能优化技巧: [所有性能优化技巧](./performance/all-performance-tips.md) 。
