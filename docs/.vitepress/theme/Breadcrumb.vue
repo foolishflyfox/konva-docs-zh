@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <span> 首页 </span>
-    <span v-for="text of breadcrumbTexts"> {{ text }} &nbsp; </span>
+  <div class="breadcurmb-container">
+    <span v-for="text of breadcrumbTexts"> {{ text }} </span>
   </div>
 </template>
 
@@ -53,4 +52,24 @@ const breadcrumbTexts = computed(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.breadcurmb-container {
+  margin-bottom: 12px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #8886;
+}
+.breadcurmb-container > span {
+  font-weight: bold;
+  font-size: small;
+  opacity: 0.6;
+}
+.breadcurmb-container > span:not(:last-child):after {
+  content: " ";
+  display: inline-block;
+  background: url("./next-symbol.svg") center;
+  width: 10px;
+  height: 10px;
+  opacity: 0.8;
+  margin: 0 1em;
+}
+</style>
