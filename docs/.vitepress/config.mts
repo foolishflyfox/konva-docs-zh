@@ -160,17 +160,32 @@ export default defineConfig({
         },
       ].map((e) => addLinkPrefix(e, "/tutorial")),
       "/api/": [
-        { text: "Konva", link: "konva" },
-        { text: "动画", link: "animation" },
-        { text: "滤镜", link: "filters" },
+        {
+          text: "API",
+          items: [
+            { text: "Konva", link: "konva" },
+            { text: "动画", link: "animation" },
+            { text: "滤镜", link: "filters" },
+          ],
+        },
       ].map((e) => addLinkPrefix(e, "/api")),
       "/demo/": [
-        { text: "总览", link: "overview" },
-        { text: "画布编辑器", link: "canvas-editor" },
+        {
+          text: "演示",
+          items: [
+            { text: "总览", link: "overview" },
+            { text: "画布编辑器", link: "canvas-editor" },
+          ],
+        },
       ].map((e) => addLinkPrefix(e, "/demo")),
       "/analysis/": [
-        { text: "概览", link: "overview" },
-        { text: "示例", link: "demo" },
+        {
+          text: "源码分析",
+          items: [
+            { text: "概览", link: "overview" },
+            { text: "示例", link: "demo" },
+          ],
+        },
       ].map((e) => addLinkPrefix(e, "/analysis")),
     },
     socialLinks: [
