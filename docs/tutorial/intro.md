@@ -4,7 +4,7 @@ outline: deep
 
 # 开启 Konva 之旅
 
-英文原文链接
+原文链接
 
 - https://konvajs.org/
 - https://konvajs.org/docs/index.html
