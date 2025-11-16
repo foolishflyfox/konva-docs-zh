@@ -1,1 +1,1 @@
-# Easings 缓动函数
+# Easings 缓动函数集
