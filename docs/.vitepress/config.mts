@@ -61,6 +61,7 @@ export default defineConfig({
           items: [
             { text: "介绍", link: "intro" },
             { text: "概览", link: "overview" },
+            { text: "AI 工具", link: "ai-tools" },
             {
               text: "形状",
               collapsed: true,
@@ -214,6 +215,14 @@ export default defineConfig({
   markdown: {
     // true: 全部显示; false: 全部不显示; number: 只有代码行数 ≥ 该值时才显示
     lineNumbers: true,
+    // 全局设置自定义标题
+    container: {
+      tipLabel: "提示",
+      warningLabel: "警告",
+      dangerLabel: "危险",
+      infoLabel: "信息",
+      detailsLabel: "详细信息",
+    },
   },
   vite: {
     server: {
