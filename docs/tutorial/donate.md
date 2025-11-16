@@ -1,6 +1,6 @@
 # 捐赠
 
-原文地址: http://localhost:6001/tutorial/donate.html
+> 原文地址: http://localhost:6001/tutorial/donate.html
 
 你好，我叫 Anton。我是 Konva 框架的核心维护者。
 

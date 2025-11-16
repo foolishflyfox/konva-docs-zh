@@ -1,6 +1,6 @@
 # AI 工具
 
-原文地址: https://konvajs.org/docs/ai_tools.html
+> 原文地址: https://konvajs.org/docs/ai_tools.html
 
 ## 借助 Konva 和 AI 代理进行开发
 

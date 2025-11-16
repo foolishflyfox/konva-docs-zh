@@ -1,6 +1,6 @@
 # 需要关于 Konva 库的帮助？
 
-原文地址: https://konvajs.org/docs/support.html
+> 原文地址: https://konvajs.org/docs/support.html
 
 ## 正在寻找关于 Konva 框架的帮助？
 
