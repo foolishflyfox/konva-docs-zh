@@ -62,6 +62,7 @@ export default defineConfig({
             { text: "介绍", link: "intro" },
             { text: "概览", link: "overview" },
             { text: "AI 工具", link: "ai-tools" },
+            { text: "支持", link: "support" },
             {
               text: "形状",
               collapsed: true,
