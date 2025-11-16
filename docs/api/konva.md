@@ -1,4 +1,4 @@
-# Konva
+# Konva 命名空间
 
 > 原文地址: https://konvajs.org/api/Konva.html
 
@@ -39,3 +39,17 @@
 - [Util 工具集](./util.md)
 - [Easings 缓动函数集](./easings.md)
 - [Filters 滤镜集](./filters.md)
+
+## 属性
+
+## 静态变量 autoDrawEnabled
+
+Konva 是否要在发生任意变化时自动更新画布。
+
+**默认值:** `true`
+
+**例子:**
+
+```js
+Konva.autoDrawEnabled = true;
+```
