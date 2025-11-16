@@ -42,7 +42,7 @@
 
 ## 属性
 
-## 静态变量 autoDrawEnabled
+## static autoDrawEnabled
 
 Konva 是否要在发生任意变化时自动更新画布。
 
@@ -52,4 +52,28 @@ Konva 是否要在发生任意变化时自动更新画布。
 
 ```js
 Konva.autoDrawEnabled = true;
+```
+
+## static hitOnDragEnable
+
+是否在拖拽时进行命中检测（即检查图形是否被击中）？为了性能优化，此项默认是关闭的(`false`)。不过，如果您需要在拖拽时查看图形的命中区域或检测交互，请将其开启（设为 true）
+
+**默认值:** `false`
+
+**例子:**
+
+```js
+Konva.hitOnDragEnabled = true;
+```
+
+## static capturePointerEventsEnabled
+
+我们是否应捕获触摸事件并将其绑定到 `touchstart` 的目标元素？这正是 DOM 元素的工作机制。具体场景如下：我们在 div1 上触发 `touchstart`，然后将手指移出该元素，进入另一个元素 div2。DOM 会继续在 div1（而非 div2）上触发 `touchmove` 事件，因为事件已被“捕获”到初始目标中。默认情况下，Konva 不这样做，它会在指针移动时，在另一个元素上触发 `touchmove` 事件。
+
+**默认值:** `false`
+
+**例子:**
+
+```js
+Konva.capturePointerEventsEnabled = true;
 ```
