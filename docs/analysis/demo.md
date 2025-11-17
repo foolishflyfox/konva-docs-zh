@@ -1,5 +1,21 @@
 # Markdown Extension Examples
 
+```mermaid
+graph TD;
+A-->B;
+A-->C;
+B-->D;
+C-->D;
+```
+
+```mindmap
+# root
+## child1
+- child3
+## child2
+- child3
+```
+
 This page demonstrates some of the built-in markdown extensions provided by VitePress.
 
 ## Syntax Highlighting

@@ -1,11 +1,25 @@
-import { defineConfig, DefaultTheme } from "vitepress";
+import { DefaultTheme } from "vitepress";
 import { posix } from "path";
 import { fileURLToPath } from "url";
 import { withMermaid } from "vitepress-plugin-mermaid";
+import { Transformer } from "markmap-lib";
 
 type SidebarItemX = DefaultTheme.SidebarItem & {
   prefix?: string;
 };
+
+// 思维导图配置
+const transformer = new Transformer();
+function escapeHtml(unsafe: any) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+///////////
 
 /**
  * 添加路径前缀
@@ -261,6 +275,25 @@ export default withMermaid({
       dangerLabel: "危险",
       infoLabel: "信息",
       detailsLabel: "详细信息",
+    },
+    config: (md) => {
+      // 设置 markmap (思维导图) 相关内容
+      const temp = md.renderer.rules.fence?.bind(md.renderer.rules)!;
+      md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
+        const token = tokens[idx];
+        if (token.info === "mindmap") {
+          try {
+            const { root } = transformer.transform(token.content.trim());
+            return `<svg class="markmap-svg" data-json='${escapeHtml(
+              JSON.stringify(root)
+            )}'></svg>`;
+          } catch (ex) {
+            return `<pre>${ex}</pre>`;
+          }
+        }
+        return temp(tokens, idx, options, env, slf);
+      };
+      ////////
     },
   },
   vite: {
