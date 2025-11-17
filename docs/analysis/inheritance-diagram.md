@@ -8,6 +8,12 @@ class Container {
 }
 class Stage {
 }
+class Layer {
+}
+class Group {
+}
 
 Container <|-- Stage
+Container <|-- Layer
+Container <|-- Group
 ```
