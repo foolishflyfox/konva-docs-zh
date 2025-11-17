@@ -12,7 +12,7 @@ export function autoDrawEnabledDemo(stage: Konva.Stage) {
   });
   layer.add(circle);
   circle.radius(35);
-  circle.fill("#0b0");
+  circle.fill("#0bf");
 }
 
 // 禁用自动重绘示例
