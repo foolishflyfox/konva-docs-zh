@@ -2,6 +2,11 @@
 
 > 原文地址: https://konvajs.org/api/Konva.html
 
+<script setup>
+import { KShape } from "@docs/components/kshapes";
+import { autoDrawEnabledDemo, closeAutoDrawEnabledDemo } from './codes/konva';
+</script>
+
 ## 类
 
 - [Transform 变换](./transform)
@@ -59,39 +64,45 @@
 // Konva.autoDrawEnabled 默认为 true
 var layer = new Konva.Layer();
 var circle = new Konva.Circle({
-  x: 100,
-  y: 100,
-  radius: 70,
+  x: 50,
+  y: 50,
+  radius: 45,
   fill: "green",
 });
 layer.add(circle);
 
 // 修改属性时自动重绘,无需手动调用 layer.draw()
-circle.radius(50); // 自动触发 layer.batchDraw()
-circle.fill("red"); // 自动触发 layer.batchDraw()
+circle.radius(35); // 自动触发 layer.batchDraw()
+circle.fill("#0bf"); // 自动触发 layer.batchDraw()
 ```
 
-todo: 添加效果图
+<KShape :afterMounted="autoDrawEnabledDemo" :width="100" :height="100" />
+
+可以看到通过改变 circle 的属性，canvas 上显示的画面也改变了。
 
 **示例 2: 禁用自动重绘**
 
-在性能敏感的场景(如大量动画对象),可以禁用自动重绘并手动控制:
+下面的例子添加了 `Konva.autoDrawEnabled = false`。
 
 ```js
+// 关闭自动重绘
 Konva.autoDrawEnabled = false;
+var layer = new Konva.Layer();
+var circle = new Konva.Circle({
+  x: 50,
+  y: 50,
+  radius: 45,
+  fill: "green",
+});
+layer.add(circle);
 
-// 批量更新多个对象
-for (var i = 0; i < bunnys.length; i++) {
-  var bunny = bunnys[i];
-  bunny.position({
-    x: pos.x,
-    y: pos.y,
-  });
-}
-
-// 所有更新完成后手动重绘一次
-layer.draw();
+circle.radius(35);
+circle.fill("#0bf");
 ```
+
+结果为如下，可以看到 circle 都没绘制出来，因为添加 circle 的操作也属于数据变化，但是没有触发重绘，所以没显示出来，可以通过 `layer.draw()` 进行手动重绘。
+
+<KShape :afterMounted="closeAutoDrawEnabledDemo" :width="100" :height="100" />
 
 :::tip
 
