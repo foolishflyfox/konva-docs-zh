@@ -237,6 +237,7 @@ export default defineConfig({
           text: "源码分析",
           items: [
             { text: "概览", link: "overview" },
+            { text: "类继承图", link: "inheritance-diagram" },
             { text: "示例", link: "demo" },
           ],
         },
