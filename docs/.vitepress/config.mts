@@ -3,7 +3,6 @@ import { posix } from "path";
 import { fileURLToPath } from "url";
 // 使用 vitepress-plugin-mermaid，需要安装依赖的几个库，否则不能正常显示
 // pnpm add -D @braintree/sanitize-url dayjs debug cytoscape-cose-bilkent cytoscape
-import { withMermaid } from "vitepress-plugin-mermaid";
 import { Transformer } from "markmap-lib";
 import { renderMermaidGraphsPlugin } from "./mermaid";
 
@@ -309,7 +308,10 @@ export default defineConfig({
       // 允许局域网访问
       host: true,
     },
-    plugins: [renderMermaidGraphsPlugin()],
+    plugins: [
+      // 设置 mermaid 插件
+      renderMermaidGraphsPlugin(),
+    ],
     resolve: {
       alias: {
         // 指定 docs 表示的根目录为 docs

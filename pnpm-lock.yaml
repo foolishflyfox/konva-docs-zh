@@ -8,21 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@braintree/sanitize-url':
-        specifier: ^7.1.1
-        version: 7.1.1
-      cytoscape:
-        specifier: ^3.33.1
-        version: 3.33.1
-      cytoscape-cose-bilkent:
-        specifier: ^4.1.0
-        version: 4.1.0(cytoscape@3.33.1)
-      dayjs:
-        specifier: 1.11.19
-        version: 1.11.19
-      debug:
-        specifier: ^4.4.3
-        version: 4.4.3
       konva:
         specifier: ^10.0.8
         version: 10.0.9
@@ -45,9 +30,6 @@ importers:
       '@types/node':
         specifier: ^20.19.25
         version: 20.19.25
-      mermaid:
-        specifier: ^11.12.1
-        version: 11.12.1
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -57,9 +39,6 @@ importers:
       vitepress:
         specifier: 2.0.0-alpha.12
         version: 2.0.0-alpha.12(@types/node@20.19.25)(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.1)
-      vitepress-plugin-mermaid:
-        specifier: ^2.0.17
-        version: 2.0.17(mermaid@11.12.1)(vitepress@2.0.0-alpha.12(@types/node@20.19.25)(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.1))
 
 packages:
 
@@ -97,9 +76,6 @@ packages:
   '@babel/types@7.28.5':
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
-
-  '@braintree/sanitize-url@6.0.4':
-    resolution: {integrity: sha512-s3jaWicZd0pkP0jf5ysyHUI/RE7MHos6qlToFcGWXVp+ykHOy77OUMrfbgJ9it2C5bow7OIQwYYaHjk9XlBQ2A==}
 
   '@braintree/sanitize-url@7.1.1':
     resolution: {integrity: sha512-i1L7noDNxtFyL5DmZafWy1wRVhGehQmzZaz1HiN5e7iylJMSZR7ekOV7NsIqa5qBldlLrsKv4HbgFUVlQrz8Mw==}
@@ -356,9 +332,6 @@ packages:
     hasBin: true
     peerDependencies:
       puppeteer: ^23
-
-  '@mermaid-js/mermaid-mindmap@9.3.0':
-    resolution: {integrity: sha512-IhtYSVBBRYviH1Ehu8gk69pMDF8DSRqXBRDMWrEfHoaMruHeaP2DXA3PBnuwsMaCdPQhlUUcy/7DBLAEIXvCAw==}
 
   '@mermaid-js/mermaid-zenuml@0.2.2':
     resolution: {integrity: sha512-sUjwk4NWUpy9uaHypYSIGJDks10ZaZo5CHH9lx9xcmyqv9w7yvd4vecUmlUQxmlHStYO+aqSkYKX5/gFjDfypw==}
@@ -1754,9 +1727,6 @@ packages:
     resolution: {integrity: sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==}
     engines: {node: '>= 0.4.0'}
 
-  non-layered-tidy-tree-layout@2.0.2:
-    resolution: {integrity: sha512-gkXMxRzUH+PB0ax9dUN0yYF0S25BqeAYqhgMaLUFmpXLEk7Fcu8f4emJuOAY0V8kjDICxROIKsTAKsV/v355xw==}
-
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
@@ -2324,12 +2294,6 @@ packages:
       yaml:
         optional: true
 
-  vitepress-plugin-mermaid@2.0.17:
-    resolution: {integrity: sha512-IUzYpwf61GC6k0XzfmAmNrLvMi9TRrVRMsUyCA8KNXhg/mQ1VqWnO0/tBVPiX5UoKF1mDUwqn5QV4qAJl6JnUg==}
-    peerDependencies:
-      mermaid: 10 || 11
-      vitepress: ^1.0.0 || ^1.0.0-alpha
-
   vitepress@2.0.0-alpha.12:
     resolution: {integrity: sha512-yZwCwRRepcpN5QeAhwSnEJxS3I6zJcVixqL1dnm6km4cnriLpQyy2sXQDsE5Ti3pxGPbhU51nTMwI+XC1KNnJg==}
     hasBin: true
@@ -2466,9 +2430,6 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
-
-  '@braintree/sanitize-url@6.0.4':
-    optional: true
 
   '@braintree/sanitize-url@7.1.1': {}
 
@@ -2681,17 +2642,6 @@ snapshots:
       - supports-color
       - tsx
       - yaml
-
-  '@mermaid-js/mermaid-mindmap@9.3.0':
-    dependencies:
-      '@braintree/sanitize-url': 6.0.4
-      cytoscape: 3.33.1
-      cytoscape-cose-bilkent: 4.1.0(cytoscape@3.33.1)
-      cytoscape-fcose: 2.2.0(cytoscape@3.33.1)
-      d3: 7.9.0
-      khroma: 2.1.0
-      non-layered-tidy-tree-layout: 2.0.2
-    optional: true
 
   '@mermaid-js/mermaid-zenuml@0.2.2(mermaid@11.12.1)(yaml@2.8.1)':
     dependencies:
@@ -4177,9 +4127,6 @@ snapshots:
 
   netmask@2.0.2: {}
 
-  non-layered-tidy-tree-layout@2.0.2:
-    optional: true
-
   normalize-path@3.0.0: {}
 
   npm2url@0.2.4: {}
@@ -4804,13 +4751,6 @@ snapshots:
       fsevents: 2.3.3
       jiti: 1.21.7
       yaml: 2.8.1
-
-  vitepress-plugin-mermaid@2.0.17(mermaid@11.12.1)(vitepress@2.0.0-alpha.12(@types/node@20.19.25)(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.1)):
-    dependencies:
-      mermaid: 11.12.1
-      vitepress: 2.0.0-alpha.12(@types/node@20.19.25)(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.1)
-    optionalDependencies:
-      '@mermaid-js/mermaid-mindmap': 9.3.0
 
   vitepress@2.0.0-alpha.12(@types/node@20.19.25)(jiti@1.21.7)(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.1):
     dependencies:
