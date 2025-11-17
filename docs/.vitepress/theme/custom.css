@@ -1,35 +1,40 @@
 /* 参考 rollup 项目的 docs/vitepress/theme/custom.css */
-/* :root {
-  --vp-c-brand: hsl(0 85% 57%);
-  --vp-c-brand-light: hsl(0 85% 70%);
-  --vp-c-brand-lighter: hsl(0 85% 80%);
-  --vp-c-brand-dark: hsl(0 85% 57%);
-  --vp-c-brand-darker: hsl(0 85% 40%);
+:root {
+  /* 主品牌色：以 #00bfff 为基础 */
+  --vp-c-brand: hsl(195 100% 55%);
+  --vp-c-brand-light: hsl(195 100% 70%);
+  --vp-c-brand-lighter: hsl(195 100% 80%);
+  --vp-c-brand-dark: hsl(195 85% 45%);
+  --vp-c-brand-darker: hsl(195 85% 35%);
 
+  /* 首页标题渐变（保留你原本的多色过渡风格） */
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: -webkit-linear-gradient(
     120deg,
-    hsl(0 100% 60%),
-    hsl(15 100% 60%) 35%,
-    hsl(23 96% 62%) 45%,
-    hsl(0 100% 60%) 65%,
-    hsl(358 58% 47%)
+    hsl(195 100% 60%),
+    /* 主色亮度 */ hsl(200 100% 60%) 35%,
+    /* 更偏青一点 */ hsl(210 96% 62%) 45%,
+    /* 靛蓝色过渡 */ hsl(195 100% 60%) 65%,
+    /* 回到主色 */ hsl(205 70% 50%) /* 稍深的蓝色 */
   );
-  --vp-home-hero-image-background-image: linear-gradient(
-    -45deg,
-    hsl(0 100% 60% / 80%),
-    hsl(15 100% 60% / 80%) 40%,
-    hsl(23 96% 62% / 80%) 45%,
-    hsl(0 100% 60% / 80%) 60%,
-    hsl(358 58% 47% / 80%)
-  );
-  --vp-home-hero-image-filter: blur(40px);
 
+  /* 首页 Hero 背景模糊渐变 */
+  /* --vp-home-hero-image-background-image: linear-gradient(
+    -45deg,
+    hsl(195 100% 60% / 80%),
+    hsl(200 100% 60% / 80%) 40%,
+    hsl(210 96% 62% / 80%) 45%,
+    hsl(195 100% 60% / 80%) 60%,
+    hsl(205 70% 50% / 80%)
+  );
+  --vp-home-hero-image-filter: blur(40px); */
+
+  /* 辅助灰色（不变） */
   --vp-c-gray-light-3: #d1d1d1;
   --vp-c-gray-light-5: #f2f2f2;
   --vp-c-gray-dark-2: #484848;
   --vp-c-gray-dark-3: #3a3a3a;
-} */
+}
 
 @media (min-width: 640px) {
   :root {
