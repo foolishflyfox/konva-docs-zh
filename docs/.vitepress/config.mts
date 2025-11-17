@@ -1,6 +1,8 @@
 import { DefaultTheme } from "vitepress";
 import { posix } from "path";
 import { fileURLToPath } from "url";
+// 使用 vitepress-plugin-mermaid，需要安装依赖的几个库，否则不能正常显示
+// pnpm add -D @braintree/sanitize-url dayjs debug cytoscape-cose-bilkent cytoscape
 import { withMermaid } from "vitepress-plugin-mermaid";
 import { Transformer } from "markmap-lib";
 
@@ -51,6 +53,9 @@ export default withMermaid({
     // 设置 favicon
     ["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
   ],
+  mermaid: {
+    // mermaid 插件的相关配置
+  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     // 导航栏上显示的 Logo，位于站点标题前
