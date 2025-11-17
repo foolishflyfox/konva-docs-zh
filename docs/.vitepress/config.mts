@@ -53,6 +53,10 @@ export default defineConfig({
     search: {
       provider: "local",
     },
+    outline: {
+      level: "deep", // 显示所有级别标题
+      label: "页面导航",
+    },
     // 侧边栏菜单项配置
     sidebar: {
       "/tutorial/": [

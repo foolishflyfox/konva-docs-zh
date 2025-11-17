@@ -44,15 +44,62 @@
 
 ## static autoDrawEnabled
 
-Konva 是否要在发生任意变化时自动更新画布。
+`Konva.autoDrawEnabled` 是一个全局配置属性,用于控制 Konva 是否在节点属性变化时自动重绘画布，默认值为 **true**。
 
-**默认值:** `true`
+该值为 `true` 时，会在以下情况自动调用 [layer.batchDraw()](./layer#batch-draw) 进行重绘:
 
-**例子:**
+- 修改节点属性(如位置、颜色、大小等)
+- 添加或删除节点
+- 执行缓存操作
+- 改变节点顺序
+
+**示例 1: 自动重绘(默认行为)**
 
 ```js
-Konva.autoDrawEnabled = true;
+// Konva.autoDrawEnabled 默认为 true
+var layer = new Konva.Layer();
+var circle = new Konva.Circle({
+  x: 100,
+  y: 100,
+  radius: 70,
+  fill: "green",
+});
+layer.add(circle);
+
+// 修改属性时自动重绘,无需手动调用 layer.draw()
+circle.radius(50); // 自动触发 layer.batchDraw()
+circle.fill("red"); // 自动触发 layer.batchDraw()
 ```
+
+todo: 添加效果图
+
+**示例 2: 禁用自动重绘**
+
+在性能敏感的场景(如大量动画对象),可以禁用自动重绘并手动控制:
+
+```js
+Konva.autoDrawEnabled = false;
+
+// 批量更新多个对象
+for (var i = 0; i < bunnys.length; i++) {
+  var bunny = bunnys[i];
+  bunny.position({
+    x: pos.x,
+    y: pos.y,
+  });
+}
+
+// 所有更新完成后手动重绘一次
+layer.draw();
+```
+
+:::tip
+
+- 自动重绘功能在 Konva 8.0.0 版本引入
+- 实现上使用 `batchDraw()` 而非 `draw()` 是因为它会延迟到下一个动画帧执行，性能更好
+- 在高性能场景(如粒子系统、大量动画对象)中,建议禁用自动重绘并手动控制重绘时机,避免每次属性变化都触发重绘
+
+:::
 
 ## static hitOnDragEnable
 
