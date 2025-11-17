@@ -85,6 +85,11 @@ svg[id^="mermaid-"] .edgeLabel {
   color: #ccc !important;
 }
 
+/* 设置类图中类背景色的明暗主题切换 */
+.dark svg[id^="mermaid-"] .basic.label-container {
+  fill: #aaa8 !important;
+}
+
 /* 解决 mermaid 绘图时，类图的线条为 1， 导致虚线显示问题*/
 svg[id^="mermaid-"] path.edge-thickness-normal.edge-pattern-solid.relation {
   stroke-width: 1.1 !important;
