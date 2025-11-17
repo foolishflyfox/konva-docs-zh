@@ -103,3 +103,8 @@ svg[id^="mermaid-"] path.edge-thickness-normal.edge-pattern-solid.relation {
 svg[id^="mermaid-"] .node path {
   stroke-width: 1.5 !important;
 }
+
+/* 解决思维导图连接线与文本下划线错位问题 */
+.markmap-svg.markmap path.markmap-link {
+  stroke-width: 1.5px;
+}
