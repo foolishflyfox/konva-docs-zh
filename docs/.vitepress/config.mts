@@ -8,7 +8,7 @@ type SidebarItemX = DefaultTheme.SidebarItem & {
   prefix?: string;
 };
 
-// 思维导图配置
+// 思维导图支持步骤一
 const transformer = new Transformer();
 function escapeHtml(unsafe: any) {
   return unsafe
@@ -19,7 +19,7 @@ function escapeHtml(unsafe: any) {
     .replace(/'/g, "&#039;");
 }
 
-///////////
+////结束思维导图设置/////
 
 /**
  * 添加路径前缀
@@ -277,7 +277,7 @@ export default withMermaid({
       detailsLabel: "详细信息",
     },
     config: (md) => {
-      // 设置 markmap (思维导图) 相关内容
+      // 思维导图支持步骤二
       const temp = md.renderer.rules.fence?.bind(md.renderer.rules)!;
       md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
         const token = tokens[idx];
@@ -293,7 +293,7 @@ export default withMermaid({
         }
         return temp(tokens, idx, options, env, slf);
       };
-      ////////
+      ////结束思维导图设置////
     },
   },
   vite: {

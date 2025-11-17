@@ -8,7 +8,7 @@ import Breadcrumb from "./Breadcrumb.vue";
 // @ts-ignore
 import { Markmap } from "markmap-view";
 
-// 渲染思维导图
+// 思维导图支持步骤三: 渲染函数定义
 function renderMindmap() {
   const mindmaps = document.querySelectorAll(".markmap-svg");
   for (const mindmap of mindmaps) {
@@ -70,6 +70,7 @@ export default {
   },
   setup() {
     onContentUpdated(() => {
+      // 思维导图支持步骤四: 使用渲染函数
       renderMindmap();
     });
   },
