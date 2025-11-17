@@ -1,10 +1,11 @@
-import { DefaultTheme } from "vitepress";
+import { DefaultTheme, defineConfig } from "vitepress";
 import { posix } from "path";
 import { fileURLToPath } from "url";
 // 使用 vitepress-plugin-mermaid，需要安装依赖的几个库，否则不能正常显示
 // pnpm add -D @braintree/sanitize-url dayjs debug cytoscape-cose-bilkent cytoscape
 import { withMermaid } from "vitepress-plugin-mermaid";
 import { Transformer } from "markmap-lib";
+import { renderMermaidGraphsPlugin } from "./mermaid";
 
 type SidebarItemX = DefaultTheme.SidebarItem & {
   prefix?: string;
@@ -46,16 +47,16 @@ function addLinkPrefix(
 }
 
 // https://vitepress.dev/reference/site-config
-export default withMermaid({
+export default defineConfig({
   title: "Konva",
   description: "关于 Konva 的文档(中文版)",
   head: [
     // 设置 favicon
     ["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
   ],
-  mermaid: {
-    // mermaid 插件的相关配置
-  },
+  // mermaid: {
+  // mermaid 插件的相关配置
+  // },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     // 导航栏上显示的 Logo，位于站点标题前
@@ -308,6 +309,7 @@ export default withMermaid({
       // 允许局域网访问
       host: true,
     },
+    plugins: [renderMermaidGraphsPlugin()],
     resolve: {
       alias: {
         // 指定 docs 表示的根目录为 docs

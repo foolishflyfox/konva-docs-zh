@@ -7,6 +7,7 @@ import { h } from "vue";
 import Breadcrumb from "./Breadcrumb.vue";
 // @ts-ignore
 import { Markmap } from "markmap-view";
+import "./custom.css";
 
 // 思维导图支持步骤三: 渲染函数定义
 function renderMindmap() {
