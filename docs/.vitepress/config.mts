@@ -1,6 +1,7 @@
 import { defineConfig, DefaultTheme } from "vitepress";
 import { posix } from "path";
 import { fileURLToPath } from "url";
+import { withMermaid } from "vitepress-plugin-mermaid";
 
 type SidebarItemX = DefaultTheme.SidebarItem & {
   prefix?: string;
@@ -29,7 +30,7 @@ function addLinkPrefix(
 }
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
+export default withMermaid({
   title: "Konva",
   description: "关于 Konva 的文档(中文版)",
   head: [
