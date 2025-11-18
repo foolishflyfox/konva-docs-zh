@@ -154,3 +154,79 @@ rect.getClientRect();
 rect.getClientRect({ skipStroke: true });
 // 返回对象 { x: 0, y: 50, width: 100, height: 200 }
 ```
+
+### on(evtStr, handler)
+
+为节点绑定事件。KonvaJS 支持以下事件：mouseover（鼠标悬停）、mousemove（鼠标移动）、mouseout（鼠标移出）、mouseenter（鼠标进入）、mouseleave（鼠标离开）、mousedown（鼠标按下）、mouseup（鼠标释放）、wheel（滚轮）、contextmenu（右键菜单）、click（单击）、dblclick（双击）、touchstart（触摸开始）、touchmove（触摸移动）、touchend（触摸结束）、tap（轻击）、dbltap（双击触摸）、dragstart（拖拽开始）、dragmove（拖拽移动）和 dragend（拖拽结束）。
+
+要同时绑定多个事件，请传入以空格分隔的事件字符串，例如：'mousedown mouseup mousemove'。如需为事件添加命名空间，请使用类似 'click.foobar' 的格式来按名称绑定事件。
+
+**参数：**
+
+- `evtStr`: String，例如 `'click'`，`'mousedown touchstart'`，`'mousedown.foo touchstart.foo'`
+- `handler`: function， 事件处理函数。该函数的第一个参数是事件对象。事件对象包含以下属性：target 是事件的主要目标，currentTarget 是当前绑定了监听器的节点，evt 是原生浏览器事件对象。
+
+**返回：** `Konva.Node`
+
+::: tip
+
+1. 事件的命名空间什么用
+2. 为什么需要 target 和 currentTarget
+3. evt 是什么，evt.evt 是什么
+4. 事件传播是什么模型，和 DOM 的一样吗
+
+:::
+
+**例子：**
+
+```js
+// 添加 click 事件的监听器
+node.on("click", function () {
+  console.log("you clicked me!");
+});
+
+// 获取目标节点
+node.on("click", function (evt) {
+  console.log(evt.target);
+});
+
+// 停止事件传递
+node.on("click", function (evt) {
+  evt.cancelBubble = true;
+});
+
+// 绑定多个事件监听器
+node.on("click touchstart", function () {
+  console.log("you clicked/touched me!");
+});
+
+// 命名空间监听器
+node.on("click.foo", function () {
+  console.log("you clicked/touched me!");
+});
+
+// 获取事件类型
+node.on("click tap", function (evt) {
+  var eventType = evt.type;
+});
+
+// 获取原生事件对象
+node.on("click tap", function (evt) {
+  var nativeEvent = evt.evt;
+});
+
+// 对于变更事件，获取变更前的旧值和变更后的新值。
+node.on("xChange", function (evt) {
+  var oldVal = evt.oldVal;
+  var newVal = evt.newVal;
+});
+
+// 通过事件代理获取多个事件目标
+// 注意：在 TypeScript 下只声明了2参数的on方法，因此3参数的on方法不能使用
+// 在 JavaScript 下使用没有问题，如果要强用，需要使用类型断言 as any
+// 测试文件中的3参数的事件委托测试也被标记为 skip，说明该功能可能不是官方主推的 API
+layer.on("click", "Group", function (evt) {
+  var shape = evt.target;
+  var group = evt.currentTarget;
+});
+```
