@@ -108,3 +108,7 @@ svg[id^="mermaid-"] .node path {
 .markmap-svg.markmap path.markmap-link {
   stroke-width: 1.5px;
 }
+
+tr:has(div.add-row) {
+  background-color: #10b98124 !important;
+}
