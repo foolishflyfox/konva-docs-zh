@@ -109,6 +109,6 @@ svg[id^="mermaid-"] .node path {
   stroke-width: 1.5px;
 }
 
-tr:has(div.add-row) {
+tr:has(.add-row) {
   background-color: #10b98124 !important;
 }
