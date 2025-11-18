@@ -10,7 +10,8 @@ import { KShape } from "@docs/components/kshapes";
 - [类关系图](../analysis/inheritance-diagram.md)
 - 父类：无
 - 子类：[Container](./container) / [Shape](./shape)
-  :::
+
+:::
 
 Node 节点类，节点是可被变换、分层并具有绑定事件的实体。Stage、Layer、Group 和 Shape 都继承自 Node。
 
@@ -105,3 +106,45 @@ node.clearCache();
 查询节点当前是否已经缓存。
 
 **返回值:** 布尔类型。
+
+### getClientRect(config)
+
+返回节点的客户端矩形区域 {x, y, width, height}。该矩形区域包含所有样式效果（描边、阴影等）。此方法的功能类似于 DOM 的 getBoundingClientRect API。
+
+**参数：**
+
+- `config`: 对象
+- `config.skipTransform`: 布尔，可选，是否跳过变换(位置、旋转、缩放)的应用，为 `true` 时，返回节点的原始尺寸，不考虑任何变换
+- `config.skipShadow`: 布尔，可选，是否跳过阴影效果的计算，为 `true` 时，计算边界框时不包含阴影区域
+- `config.skipStroke`: 布尔，可选，是否跳过描边宽度的计算，为 `true` 时，计算边界框时不包含描边宽度
+- `config.relativeTo`: Container 对象，可选，相对于哪个父容器计算客户端矩形，可以获取相对于特定父节点的坐标，而不是绝对坐标
+
+**返回值:** 对象，包含了 `{x, y, width, height}` 属性的矩形
+
+**例子：**
+
+```js
+var rect = new Konva.Rect({
+  width: 100,
+  height: 100,
+  x: 50,
+  y: 50,
+  strokeWidth: 4,
+  stroke: "black",
+  offsetX: 50,
+  scaleY: 2,
+});
+
+// 获取客户端矩形，不考虑变换(位置、旋转、缩放、偏移、等等)
+rect.getClientRect({ skipTransform: true });
+// returns {
+//     x : -2,   // 两个像素：stroke / 2
+//     y : -2,
+//     width : 104, // 因为 stroke 增加了 4 个像素
+//     height : 104
+//}
+
+// 获取客户端矩形，考虑变换
+rect.getClientRect();
+// 返回对象 {x: -2, y: 46, width: 104, height: 208}
+```
