@@ -34,8 +34,8 @@ Node 节点类，节点是可被变换、分层并具有绑定事件的实体。
 | `scaleY`(可选)        | `Number`   | y 方向上的缩放                           |
 | `rotation`(可选)      | `Number`   | 旋转角度                                 |
 | `offset`(可选)        | `Object`   | 相对于中心点和旋转点的偏移               |
-| `offsetX`(可选)       | `Number`   | x 方向上的便宜                           |
-| `offsetY`(可选)       | `Number`   | y 方向上的便宜                           |
+| `offsetX`(可选)       | `Number`   | x 方向上的偏移                           |
+| `offsetY`(可选)       | `Number`   | y 方向上的偏移                           |
 | `draggable`(可选)     | `Boolean`  | 节点是否可被拖拽                         |
 | `dragDistance`(可选)  | `Number`   | 触发拖拽的距离阈值                       |
 | `dragBoundFunc`(可选) | `function` | 拖拽过程中限制或修改节点的位置的回调函数 |

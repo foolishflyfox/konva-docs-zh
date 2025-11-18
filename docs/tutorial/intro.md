@@ -17,7 +17,7 @@ Konva 让桌面与移动应用都能拥有高性能动画、平滑过渡、节�
 
 你能在 Stage 上绘制图形，为它们添加事件监听，并独立地对它们进行移动、缩放和旋转，即使应用中包含成千上万个图形，也能实现高性能的动画。
 
-Konva 项目从 [KineticJS](https://github.com/ericdrowell/KineticJS) 分叉(fork)而来。
+Konva 项目从 [KineticJS](https://github.com/ericdrowell/KineticJS) 派生(fork)而来。
 
 ## 使用用户
 
@@ -62,7 +62,7 @@ npm install konva
 ## 应用例子
 
 - [Polotno](https://polotno.dev/?utm_source=konvajs): Web 端用于制作设计编辑器的 SDK。
-- [SMMplanner](https://smmplanner.com/home/auth/signin): 用于在定时发布中创建 Instagram 故事的构造器。
+- [SMMplanner](https://smmplanner.com/home/auth/signin): 用于在定时发布中创建 Instagram 故事的构建器。
 - [SpreadSheet Grid](https://www.rowsncolumns.app/): 使用 React 写的类 Excel 的数据表格组件。
 - [Windoor craft (中国)](https://windowcc.com/home): 中文名叫画门窗，是一个门窗设计器。
 - [Pixteller](https://pixteller.com/): 一款可在数秒内创建或自定义任何图像的设计工具。
@@ -73,7 +73,7 @@ npm install konva
 - [Let's Role](https://lets-role.com/): 在虚拟环境中进行桌面角色扮演游戏（TableTop RPG）。
 - [csgoboard](https://csgoboard.com/board/new): 为 Valve 的游戏《反恐精英》（Counter-Strike）打造的互动棋盘/面板。
 - [brainzilla](https://www.brainzilla.com/puzzles/jigsaw/): 在线拼图游戏。
-- [react-avatar](https://github.com/kirill3333/react-avatar): 载入、裁剪与预览头像制作。
+- [react-avatar](https://github.com/kirill3333/react-avatar): 加载、裁剪与预览头像制作。
 - [Color wars game](https://mcalus3.github.io/color-wars-web/): 颜色战争，本地轮流多人模式街机游戏，注重竞技性。
 - [Opdome](https://www.opdome.com/): 在线图片字典，可作为小儿识字工具。
 - [E-cards](https://e-cards.shop/de/cards/create/2/1): 企业电子贺卡的在线商店。
