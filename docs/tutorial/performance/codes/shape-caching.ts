@@ -1,6 +1,102 @@
 import { createShapeCodesData } from "@docs/types";
+import { createLayer } from "@docs/utils";
+import Konva from "konva";
 
 export const codeData = createShapeCodesData();
+
+export function shapeCachingPerformanceDemo(stage: Konva.Stage) {
+  const layer = createLayer(stage);
+  const group = new Konva.Group({
+    x: stage.width() / 2,
+    y: stage.height() / 2,
+  });
+  layer.add(group);
+  const addCircles = (count: number) => {
+    const radius = 300;
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * radius;
+      const x = Math.cos(angle) * distance;
+      const y = Math.sin(angle) * distance;
+      const circle = new Konva.Circle({
+        x,
+        y,
+        radius: 5 + Math.random() * 10,
+        fill: Konva.Util.getRandomColor(),
+        shadowColor: "black",
+        shadowBlur: 10,
+        shadowOpacity: 0.5,
+        shadowOffset: { x: 2, y: 2 },
+        listening: false,
+      });
+      group.add(circle);
+    }
+    if (group.isCached()) {
+      group.clearCache();
+      group.cache();
+    }
+  };
+  addCircles(5000);
+  const fpsText = new Konva.Text({
+    x: 10,
+    y: 10,
+    text: "FPS: 0",
+    fontSize: 16,
+    fill: "white",
+    shadowColor: "black",
+    shadowBlur: 5,
+    shadowOffset: { x: 1, y: 1 },
+  });
+  layer.add(fpsText);
+  const countText = new Konva.Text({
+    x: 10,
+    y: 40,
+    text: "Circles: 5000",
+    fontSize: 16,
+    fill: "white",
+    shadowColor: "black",
+    shadowBlur: 5,
+    shadowOffset: { x: 1, y: 1 },
+  });
+  layer.add(countText);
+  const anim = new Konva.Animation((frame) => {
+    group.rotation(frame.time * 0.05);
+    fpsText.text("FPS: " + frame.frameRate.toFixed(1));
+  }, layer);
+  stage.on("click", () => {
+    addCircles(1000);
+    countText.text("Circles: " + group.children.length);
+  });
+  const container = stage.container();
+  container.style.position = "relative";
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.id = "cache-toggle";
+  checkbox.style.position = "absolute";
+  checkbox.style.top = "70px";
+  checkbox.style.left = "10px";
+  checkbox.style.zIndex = "100";
+  container.appendChild(checkbox);
+
+  const label = document.createElement("label");
+  label.htmlFor = "cache-toggle";
+  label.textContent = "启用缓存";
+  label.style.position = "absolute";
+  label.style.top = "70px";
+  label.style.left = "30px";
+  label.style.color = "white";
+  label.style.textShadow = "0 0 5px black";
+  label.style.zIndex = "100";
+  container.appendChild(label);
+  checkbox.addEventListener("change", () => {
+    if (checkbox.checked) {
+      group.cache();
+    } else {
+      group.clearCache();
+    }
+  });
+  anim.start();
+}
 
 codeData.vanilla.js = `import Konva from 'konva';
 
@@ -13,14 +109,14 @@ const stage = new Konva.Stage({
 const layer = new Konva.Layer();
 stage.add(layer);
 
-// Create a group of circles
+// 创建一个放置圆形的组
 const group = new Konva.Group({
   x: stage.width() / 2,
   y: stage.height() / 2,
 });
 layer.add(group);
 
-// Add initial circles
+// 添加圆形的函数
 const addCircles = (count) => {
   const radius = 300;
   for (let i = 0; i < count; i++) {
@@ -43,12 +139,17 @@ const addCircles = (count) => {
 
     group.add(circle);
   }
+  if (group.isCached()) {
+    // 已经缓存了的，需要重新缓存才能看到效果
+    group.clearCache();
+    group.cache();
+  }
 };
 
-// Add initial circles
+// 添加初始圆形
 addCircles(5000);
 
-// Add FPS counter
+// 添加 FPS 计数显示文本
 const fpsText = new Konva.Text({
   x: 10,
   y: 10,
@@ -61,11 +162,11 @@ const fpsText = new Konva.Text({
 });
 layer.add(fpsText);
 
-// Add circle count text
+// 添加圆形数量显示文本
 const countText = new Konva.Text({
   x: 10,
   y: 40,
-  text: 'Circles: 1000',
+  text: 'Circles: 5000',
   fontSize: 16,
   fill: 'white',
   shadowColor: 'black',
@@ -74,21 +175,21 @@ const countText = new Konva.Text({
 });
 layer.add(countText);
 
-// Create animation
+// 创建动画
 const anim = new Konva.Animation((frame) => {
   group.rotation(frame.time * 0.05);
   
-  // Update FPS counter
+  // 更新帧率计数
   fpsText.text('FPS: ' + frame.frameRate.toFixed(1));
 }, layer);
 
-// Add click handler to add more circles
+// 单击 stage 添加更多的圆形
 stage.on('click', () => {
   addCircles(1000);
   countText.text('Circles: ' + group.children.length);
 });
 
-// Add DOM checkbox
+// 向 DOM 添加复选框
 const container = stage.container();
 const checkbox = document.createElement('input');
 checkbox.type = 'checkbox';
@@ -101,7 +202,7 @@ container.appendChild(checkbox);
 
 const label = document.createElement('label');
 label.htmlFor = 'cache-toggle';
-label.textContent = 'Enable Caching';
+label.textContent = '启用缓存';
 label.style.position = 'absolute';
 label.style.top = '70px';
 label.style.left = '30px';
@@ -110,7 +211,7 @@ label.style.textShadow = '0 0 5px black';
 label.style.zIndex = '100';
 container.appendChild(label);
 
-// Toggle caching
+// 切换是否启用缓存
 checkbox.addEventListener('change', () => {
   if (checkbox.checked) {
     group.cache();
@@ -121,9 +222,7 @@ checkbox.addEventListener('change', () => {
 
 anim.start();
 `;
-const xxx = `a
-\${f}
-b`;
+
 codeData.react = `import { Stage, Layer, Circle, Text, Group } from 'react-konva';
 import { useEffect, useRef, useState } from 'react';
 import Konva from 'konva';
@@ -135,16 +234,16 @@ const App = () => {
   const groupRef = useRef(null);
 
   useEffect(() => {
-    // Add initial circles
+    // 添加初始圆形
     addCircles(5000);
 
-    // Setup animation
+    // 设置动画
     const anim = new Konva.Animation((frame) => {
       if (groupRef.current) {
         groupRef.current.rotation(frame.time * 0.05);
       }
       
-      // Update FPS counter
+      // 更新帧率
       fpsTextRef.current.text('FPS: ' + frame.frameRate.toFixed(1));
     }, fpsTextRef.current.getLayer());
 
@@ -152,7 +251,7 @@ const App = () => {
     return () => anim.stop();
   }, []);
 
-  // Toggle caching
+  // 切换缓存状态
   useEffect(() => {
     if (groupRef.current) {
       if (isCached) {
@@ -163,7 +262,7 @@ const App = () => {
     }
   }, [isCached]);
 
-  // Add circles
+  // 添加圆形的函数
   const addCircles = (count) => {
     const newCircles = [];
     const radius = 300;
@@ -252,7 +351,7 @@ const App = () => {
             marginLeft: '10px'
           }}
         >
-          Enable Caching
+          启用缓存
         </label>
       </div>
     </>
@@ -311,7 +410,7 @@ codeData.vue.app = `<template>
         for="cache-toggle"
         style="color: white; text-shadow: 0 0 5px black; margin-left: 10px"
       >
-        Enable Caching
+        启用缓存
       </label>
     </div>
 </template>
@@ -331,7 +430,7 @@ const fpsTextRef = ref(null);
 const groupRef = ref(null);
 const circles = ref([]);
 
-// Add circles
+// 添加圆形的函数
 const addCircles = (count) => {
   console.log('addCircles', count);
   const radius = 300;
@@ -360,7 +459,7 @@ const addCircles = (count) => {
   circles.value = [...circles.value, ...newCircles];
 };
 
-// Toggle caching
+// 切换缓存状态
 watch(isCached, (value) => {
   if (groupRef.value) {
     if (value) {
@@ -385,7 +484,7 @@ const fpsConfig = ref({
 let anim = null;
 
 onMounted(() => {
-  // Add initial circles
+  // 添加初始圆形
   addCircles(5000);
 
   anim = new Konva.Animation((frame) => {
@@ -393,7 +492,7 @@ onMounted(() => {
       groupRef.value.getNode().rotation(frame.time * 0.05);
     }
     
-    // Update FPS counter
+    // 更新帧率值
     fpsTextRef.value.getNode().text('FPS: ' + frame.frameRate.toFixed(1));
   }, layerRef.value.getNode());
 

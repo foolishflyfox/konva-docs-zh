@@ -1,7 +1,7 @@
 <script setup>
 import { KShape } from "@docs/components/kshapes";
 import { ShapeCode } from "@docs/components/utils";
-import { codeData } from './codes/shape-caching'
+import { codeData, shapeCachingPerformanceDemo } from './codes/shape-caching';
 </script>
 
 # 图形缓存性能优化技巧
@@ -42,6 +42,6 @@ import { codeData } from './codes/shape-caching'
 - 观察 FPS 数值，可以看出性能差异
 - 该圆形组合会持续旋转
 
-todo: 显示图形
+<KShape :afterMounted="shapeCachingPerformanceDemo" :width=700 :height=700 />
 
 <ShapeCode v-bind="codeData" />
