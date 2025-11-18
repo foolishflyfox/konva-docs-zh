@@ -1,3 +1,8 @@
+<script setup>
+import { KShape } from "@docs/components/kshapes";
+// import { autoDrawEnabledDemo, closeAutoDrawEnabledDemo } from './codes/konva';
+</script>
+
 # Node 节点
 
 ::: info 类信息
@@ -34,3 +39,69 @@ Node 节点类，节点是可被变换、分层并具有绑定事件的实体。
 | `draggable`(可选)     | `Boolean`  | 节点是否可被拖拽                         |
 | `dragDistance`(可选)  | `Number`   | 触发拖拽的距离阈值                       |
 | `dragBoundFunc`(可选) | `function` | 拖拽过程中限制或修改节点的位置的回调函数 |
+
+## 成员方法
+
+### cache()
+
+缓存节点可以提高绘图效率、应用滤镜或创建更精确的命中区域。对于所有基本图形，缓存画布的大小将被自动检测。如需缓存自定义 Konva.Shape 实例，您需要传入该形状的边界框属性。更多信息可参阅 [图形缓存](../tutorial/performance/shape-caching)。
+
+**参数：**
+
+- `config`: 对象，可选
+- `config.x`: 数值，可选
+- `config.y`: 数值，可选
+- `config.width`: 数值，可选
+- `config.height`: 数值，可选
+- `config.offset`: 数值，可选。沿所有方向增加画布尺寸，每个方向增加的偏移像素量
+- `config.drawBoard`: 布尔，可选。如果设置为 true，则将围绕缓存区域绘制一圈红色边框，用于调试目的
+- `config.pixelRatio`: 数值，可选。调整缓存图像的质量（或像素比率）。`pixelRatio = 2` 将生成双倍尺寸的缓存。
+- `config.imageSmoothingEnabled `: 布尔，可选。控制为缓存所创建画布的 `imageSmoothingEnabled` 属性。
+- `config.hitCanvasPixelRatio`: 数值，可选。调整缓存命中画布的质量（或像素比率）。
+
+**返回结果:** `Konva.Node`，即调用 `cache()` 函数对象的实例。
+
+**例子:**
+
+```js
+// 缓存一个形状，其边界框的 x、y 位置位于中心点，
+// 且边界框的宽度和高度等于通过 shape.width() 和 shape.height() 获取的形状宽度和高度
+image.cache();
+
+// 缓存节点并指定边界框的位置和尺寸。
+node.cache({
+  x: -30,
+  y: -30,
+  width: 100,
+  height: 200,
+});
+
+// 缓存节点并在边界框周围绘制红色边框
+// 用于调试目的
+node.cache({
+  x: -30,
+  y: -30,
+  width: 100,
+  height: 200,
+  offset: 10,
+  drawBorder: true,
+});
+```
+
+### clearCache()
+
+清除缓存的 canvas。
+
+**返回值:** `Konva.Node`
+
+**例子:**
+
+```js
+node.clearCache();
+```
+
+### isCached()
+
+查询节点当前是否已经缓存。
+
+**返回值:** 布尔类型。
