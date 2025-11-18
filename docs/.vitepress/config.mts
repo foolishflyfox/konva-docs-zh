@@ -1,6 +1,7 @@
 import { DefaultTheme, defineConfig } from "vitepress";
 import { posix } from "path";
 import { fileURLToPath } from "url";
+import { githubSvg } from "./icon-svgs";
 // 使用 vitepress-plugin-mermaid，需要安装依赖的几个库，否则不能正常显示
 // pnpm add -D @braintree/sanitize-url dayjs debug cytoscape-cose-bilkent cytoscape
 import { Transformer } from "markmap-lib";
@@ -265,7 +266,9 @@ export default defineConfig({
     },
     socialLinks: [
       {
-        icon: "github",
+        icon: {
+          svg: githubSvg,
+        },
         link: "https://github.com/foolishflyfox/konva-docs-zh",
       },
     ],
