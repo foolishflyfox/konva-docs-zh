@@ -1,6 +1,8 @@
 <script setup>
 import { KShape } from "@docs/components/kshapes";
-// import { autoDrawEnabledDemo, closeAutoDrawEnabledDemo } from './codes/konva';
+import { getClientRectDemo } from './codes/node';
+
+getClientRectDemo();
 </script>
 
 # Node 节点
@@ -147,4 +149,8 @@ rect.getClientRect({ skipTransform: true });
 // 获取客户端矩形，考虑变换
 rect.getClientRect();
 // 返回对象 {x: -2, y: 46, width: 104, height: 208}
+
+// 获取客户端矩形，不考虑描边
+rect.getClientRect({ skipStroke: true });
+// 返回对象 { x: 0, y: 50, width: 100, height: 200 }
 ```
