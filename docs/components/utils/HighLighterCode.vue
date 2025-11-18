@@ -30,7 +30,7 @@ const lineNumberBorderColor = useBorderColor();
 
 function updateCodeHtml(isDarkTheme: boolean) {
   if (highlighter) {
-    const html = highlighter.codeToHtml(props.code, {
+    const html = highlighter.codeToHtml(`${props.height}\n` + props.code, {
       lang: props.lang || "ts",
       themes: {
         light: "github-light",
