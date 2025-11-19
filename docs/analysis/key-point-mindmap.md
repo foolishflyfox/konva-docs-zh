@@ -10,6 +10,9 @@
 - 是否有缓存 isCached
 #### 位置信息
 - 获取客户端矩形区域 [getClientRect](../api/node#getclientrect-config)
+- 获取节点绝对位置 getAbsolutePosition
+- 移动节点 move
+- 旋转角度 rotate
 #### 事件
 - 事件绑定 on
 - 事件解绑 off
@@ -31,6 +34,7 @@
 #### 节点关系
 - 查询祖先节点 getAncestors
 - 获取节点深度 getDepth
+- 移动节点到父节点最顶层 moveToTop
 #### 鼠标相关
-- 获取当前鼠标相对节点位置
+- 获取鼠标相对节点位置 getRelativePointerPosition
 ```

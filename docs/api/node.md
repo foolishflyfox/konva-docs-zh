@@ -451,3 +451,61 @@ node.setAttrs({
 // 若需获取该点击相对于矩形的位置，您可以使用该函数
 rect.getRelativePointerPosition();
 ```
+
+### getAbsolutePosition(Ancestor)
+
+获取节点的绝对位置。该函数可用于计算相对于任何祖先节点的绝对位置。
+
+**参数：**
+
+- `Ancestor`: `Node`，可选，祖先节点
+
+**返回值：** `{x: number, y: number}`
+
+**例子：**
+
+```js
+// 返回相对于 canvas 左上角的绝对位置
+node.getAbsolutePosition();
+
+// 计算节点在 Stage 内的绝对位置
+// Stage 的变换会被忽略
+node.getAbsolutePosition(stage);
+```
+
+### move(change)
+
+相对于节点当前位置移动一定距离。
+
+**参数：**
+
+- `config`: 类型 `{x: number, y: number}`
+
+**返回值：** `Konva.Node`
+
+**例子：**
+
+```js
+// node 在 x 方向上移动 1 个像素，在 y 方向上移动 2 个像素
+node.move({ x: 1, y: 2 });
+```
+
+### rotate(theta)
+
+相对于节点当前的旋转角度再旋转 theta 度。
+
+**参数：**
+
+- `theta`: `number` 类型
+
+**返回值：** `Konva.Node`
+
+### moveToTop()
+
+将节点移动到相对于其兄弟节点的最上层。操作的是节点在其父容器的子节点数组中的位置，它的实现是:
+
+1. 从父容器的 children 数组中移除当前节点
+2. 将节点添加到数组末尾(最后一个位置)
+3. 重新设置所有子节点的索引
+
+**返回值：** `boolean`，是否移动成功
