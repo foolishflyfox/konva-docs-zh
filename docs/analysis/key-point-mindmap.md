@@ -3,14 +3,12 @@
 ```mindmap
 # Konva
 ## 图形
-### Node
+### [Node](../api/node)
 #### 缓存
 - 创建缓存 cache
 - 清理缓存 clearCache
 - 是否有缓存 isCached
 #### 位置信息
-- 获取客户端矩形区域 getClientRect
+- 获取客户端矩形区域 [getClientRect](../api/node#getclientrect-config)
 #### 鼠标相关
-## child2
-- child3
 ```

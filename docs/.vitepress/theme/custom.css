@@ -34,6 +34,9 @@
   --vp-c-gray-light-5: #f2f2f2;
   --vp-c-gray-dark-2: #484848;
   --vp-c-gray-dark-3: #3a3a3a;
+
+  /* 思维导图线宽 */
+  --markmap-line-width: 5px;
 }
 
 @media (min-width: 640px) {
@@ -106,7 +109,18 @@ svg[id^="mermaid-"] .node path {
 
 /* 解决思维导图连接线与文本下划线错位问题 */
 .markmap-svg.markmap path.markmap-link {
-  stroke-width: 1.5px;
+  stroke-width: var(--markmap-line-width);
+}
+.markmap-node > line {
+  stroke-width: var(--markmap-line-width);
+}
+.markmap-node {
+  /* 思维导图字体大小 */
+  font-size: 28px;
+  /* 思维导图字体加粗 */
+  font-weight: 500;
+  /* 思维导图行高 */
+  line-height: 36px;
 }
 
 tr:has(.add-row) {

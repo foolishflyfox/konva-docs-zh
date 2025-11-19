@@ -14,8 +14,11 @@ function renderMindmap() {
   const mindmaps = document.querySelectorAll(".markmap-svg");
   for (const mindmap of mindmaps) {
     const dataJson = mindmap.getAttribute("data-json");
+    mindmap.removeAttribute("data-json");
     if (mindmap instanceof SVGElement && dataJson) {
       if (mindmap.children.length > 0) continue;
+      mindmap.style.width = "100%";
+      mindmap.style.maxWidth = "100vw";
       const mp = Markmap.create(
         mindmap,
         {
