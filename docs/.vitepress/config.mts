@@ -259,6 +259,8 @@ export default defineConfig({
           items: [
             { text: "概览", link: "overview" },
             { text: "类继承图", link: "inheritance-diagram" },
+            { text: "要点导图", link: "key-point-mindmap" },
+            { text: "坐标系", link: "coordinate-system" },
             { text: "示例", link: "demo" },
           ],
         },
