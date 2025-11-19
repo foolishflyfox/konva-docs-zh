@@ -28,10 +28,13 @@ function renderMindmap() {
         },
         JSON.parse(dataJson)
       );
-      // 重新设置 SVG 的高度
-      setTimeout(() => {
+      let hasAdjusted = false;
+      const adjustPage = () => {
+        if (hasAdjusted) return;
         const width = mp.state.rect.x2 - mp.state.rect.x1; // SVG 的实际宽度
         const height = mp.state.rect.y2 - mp.state.rect.y1; // SVG 的实际高度
+        if (!width || !height) return;
+        hasAdjusted = true;
         const aspectRatio = height / width; // 高宽比
         // 定义一个子方法用于重新设置 mindmap 的高度
         function setMindmapHeight(mindmap: SVGElement, aspectRatio: number) {
@@ -45,7 +48,13 @@ function renderMindmap() {
         });
         // 初始设置时调用子方法
         setMindmapHeight(mindmap, aspectRatio);
-      }, 0);
+      };
+      // 重新设置 SVG 的高度
+      setTimeout(adjustPage, 0);
+      // 解决通过 `cmd + 超链接` 打开思维导图，错过了初始化时机，导致思维导图过小的问题
+      document.addEventListener("visibilitychange", () => {
+        setTimeout(adjustPage, 50);
+      });
     }
   }
 }
