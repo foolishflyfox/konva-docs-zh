@@ -70,6 +70,7 @@ export default defineConfig({
       { text: "API", link: "/api/konva" },
       { text: "演示", link: "/demo/overview" },
       { text: "源码分析", link: "/analysis/overview" },
+      { text: "要点", link: "/analysis/key-point-mindmap" },
     ],
     search: {
       provider: "local",
