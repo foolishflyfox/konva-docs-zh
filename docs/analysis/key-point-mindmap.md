@@ -35,6 +35,9 @@
 - 查询祖先节点 getAncestors
 - 获取节点深度 getDepth
 - 移动节点到父节点最顶层 moveToTop
+- 向上移动节点 moveUp
+- 向下移动节点 moveDown
+- 移动节点到父节点最底层 moveToBottom
 #### 鼠标相关
 - 获取鼠标相对节点位置 getRelativePointerPosition
 ```
