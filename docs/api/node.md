@@ -157,23 +157,79 @@ rect.getClientRect({ skipStroke: true });
 
 ### on(evtStr, handler)
 
-为节点绑定事件。KonvaJS 支持以下事件：mouseover（鼠标悬停）、mousemove（鼠标移动）、mouseout（鼠标移出）、mouseenter（鼠标进入）、mouseleave（鼠标离开）、mousedown（鼠标按下）、mouseup（鼠标释放）、wheel（滚轮）、contextmenu（右键菜单）、click（单击）、dblclick（双击）、touchstart（触摸开始）、touchmove（触摸移动）、touchend（触摸结束）、tap（轻击）、dbltap（双击触摸）、dragstart（拖拽开始）、dragmove（拖拽移动）和 dragend（拖拽结束）。
+为节点绑定事件。KonvaJS 支持以下事件：
 
-要同时绑定多个事件，请传入以空格分隔的事件字符串，例如：'mousedown mouseup mousemove'。如需为事件添加命名空间，请使用类似 'click.foobar' 的格式来按名称绑定事件。
+- `mouseover`（鼠标悬停）
+- `mousemove`（鼠标移动）
+- `mouseout`（鼠标移出）
+- `mouseenter`（鼠标进入）
+- `mouseleave`（鼠标离开）
+- `mousedown`（鼠标按下）
+- `mouseup`（鼠标释放）
+- `wheel`（滚轮）
+- `contextmenu`（右键菜单）
+- `click`（单击）
+- `dblclick`（双击）
+- `touchstart`（触摸开始）
+- `touchmove`（触摸移动）
+- `touchend`（触摸结束）
+- `tap`（轻击）
+- `dbltap`（双击触摸）
+- `dragstart`（拖拽开始）
+- `dragmove`（拖拽移动）
+- `dragend`（拖拽结束）。
+
+要同时绑定多个事件，请传入以空格分隔的事件字符串，例如：`'mousedown mouseup mousemove'`。如需为事件添加命名空间，请使用类似 `'click.foobar'` 的格式来按名称绑定事件。
 
 **参数：**
 
-- `evtStr`: String，例如 `'click'`，`'mousedown touchstart'`，`'mousedown.foo touchstart.foo'`
-- `handler`: function， 事件处理函数。该函数的第一个参数是事件对象。事件对象包含以下属性：target 是事件的主要目标，currentTarget 是当前绑定了监听器的节点，evt 是原生浏览器事件对象。
+- `evtStr`: string，例如 `'click'`，`'mousedown touchstart'`，`'mousedown.foo touchstart.foo'`
+- `handler`: function， 事件处理函数。该函数的第一个参数是事件对象。事件对象为 `KonvaEventObject` 类型，包含以下属性：
+  - type: string，事件类型名称，注意，该值不会带上命名空间
+  - target: (`Shape | Stage`)是事件的主要目标，即最初触发事件的节点
+  - currentTarget 是当前绑定了监听器的节点，evt 是原生浏览器事件对象。
+  - evt: EventType，原生浏览器事件对象
+  - pointerId: number，指针 ID，用于多点触控场景
+  - cancelBubble: boolean，设置为 true 可以阻止事件冒泡
+  - child: Node，可选，子节点引用
 
 **返回：** `Konva.Node`
 
-::: tip
+::: tip Q&A
 
-1. 事件的命名空间什么用
-2. 为什么需要 target 和 currentTarget
-3. evt 是什么，evt.evt 是什么
-4. 事件传播是什么模型，和 DOM 的一样吗
+**问题 1: 事件的命名空间有什么用?**
+
+A：命名空间提供了细粒度的事件管理能力，在开发复杂应用或插件时，使用命名空间可以避免移除其他代码的监听器，提高代码的可维护性和模块化程度。使用场景包括：
+
+- 选择性移除监听：当您有多个相同类型的事件监听器时，可以通过命名空间精确移除特定的监听器，例如：
+
+```js
+circle.on("click.foo", function () {});
+circle.on("click.bar", function () {});
+
+// 只移除 foo 命名空间的监听器
+circle.off("click.foo"); // bar 监听器仍然存在
+```
+
+- 批量移除同一命名空间的所有事件：您可以使用 .foo 语法移除所有使用该命名空间的监听器，无论事件类型，例如：
+
+```js
+circle.on("click.foo", function () {});
+circle.on("touch.foo", function () {});
+circle.on("click.bar", function () {});
+
+// 移除所有 foo 命名空间的监听器
+circle.off(".foo"); // click.foo 和 touch.foo 都被移除
+```
+
+**问题 2: 为什么需要 target 和 currentTarget？**
+
+A：这两个字段的存在是为了支持事件冒泡（event bubbling）机制。它们在事件传播过程中有不同的含义：
+
+- `target`：最初触发事件的节点，在整个冒泡过程中保持不变；
+- `currentTarget`：当前正在处理事件的节点（即事件监听器所在的节点），在冒泡过程中会变化
+
+冒泡过程：当一个事件发生时，它会从最深层的节点开始向上冒泡到父节点。**与 DOM 事件模型不同，Konva 的事件模型只有冒泡阶段，没有捕获阶段。**
 
 :::
 
@@ -222,9 +278,9 @@ node.on("xChange", function (evt) {
 });
 
 // 通过事件代理获取多个事件目标
-// 注意：在 TypeScript 下只声明了2参数的on方法，因此3参数的on方法不能使用
+// 注意：在 TypeScript 下只声明了 2 参数的on方法，因此 3 参数的on方法不能使用
 // 在 JavaScript 下使用没有问题，如果要强用，需要使用类型断言 as any
-// 测试文件中的3参数的事件委托测试也被标记为 skip，说明该功能可能不是官方主推的 API
+// 测试文件中的 3 参数的事件委托测试也被标记为 skip，说明该功能可能不是官方主推的 API
 layer.on("click", "Group", function (evt) {
   var shape = evt.target;
   var group = evt.currentTarget;
