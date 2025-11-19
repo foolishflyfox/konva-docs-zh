@@ -48,6 +48,9 @@ function addLinkPrefix(
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  // 设置 public 根目录，与站点部署有关
+  // 参考 https://vitepress.dev/zh/guide/deploy#setting-a-public-base-path
+  base: "/konva-docs-zh/",
   title: "Konva",
   description: "关于 Konva 的文档(中文版)",
   head: [
