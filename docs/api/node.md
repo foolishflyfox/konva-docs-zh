@@ -2,7 +2,7 @@
 import { KShape } from "@docs/components/kshapes";
 import { getClientRectDemo } from './codes/node';
 
-getClientRectDemo();
+// getClientRectDemo();
 </script>
 
 # Node 节点
@@ -361,3 +361,9 @@ shape.getAncestors().forEach(function (node) {
   console.log(node.id());
 });
 ```
+
+### getAttrs()
+
+获取节点所有属性组成的对象。
+
+**返回值：** `Object`
