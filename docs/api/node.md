@@ -286,3 +286,78 @@ layer.on("click", "Group", function (evt) {
   var group = evt.currentTarget;
 });
 ```
+
+### off(evtStr)
+
+移除节点上的事件绑定。传入由空格分隔的事件类型字符串可一次性移除多个事件绑定，例如 `"mousedown mouseup mousemove"` 。通过包含命名空间可移除特定名称的事件绑定，例如 `"click.foobar"` 。若仅提供命名空间名称如 `".foobar"`，则会移除该命名空间下的所有事件。
+
+**参数：**
+
+- `evtStr`: string，例如 `'click'`, `'mousedown touchstart'`, `'.foobar'`
+
+**返回值：** `Konva.Node`
+
+**例子：**
+
+```js
+// 移除事件监听器
+node.off("click");
+
+// 移除多个事件监听器
+node.off("click touchstart");
+
+// 按名称移除监听器
+node.off("click.foo");
+```
+
+### remove()
+
+将节点从其父节点中移除，但不销毁该节点。你可以之后复用该节点。
+
+**返回值：** `Konva.Node`
+
+**例子：**
+
+```js
+node.remove();
+```
+
+### destroy()
+
+将一个节点从其父节点中移除，并将其销毁。销毁后将不能复用该节点。如果该节点是一个容器（例如 Group、Stage 或 Layer 类型），那其子元素也都将被销毁。
+
+**例子：**
+
+```js
+node.destroy();
+```
+
+### getAttr(attr)
+
+获取节点属性。
+
+**参数：**
+
+- `attr`: string，属性名
+
+**返回值：** `number | string | object | Array`
+
+**例子：**
+
+```js
+var x = node.getAttr("x");
+```
+
+### getAncestors()
+
+获取节点的祖先节点。
+
+**返回值：**：`Node[]`
+
+**例子：**
+
+```js
+shape.getAncestors().forEach(function (node) {
+  console.log(node.id());
+});
+```
