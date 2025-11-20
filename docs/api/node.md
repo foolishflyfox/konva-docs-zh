@@ -527,3 +527,103 @@ node.move({ x: 1, y: 2 });
 将节点移动到相对于其兄弟节点的最底层。
 
 **返回值：** `boolean`，是否移动成功
+
+### getAbsoluteOpacity()
+
+返回节点的绝对不透明度，即节点最终渲染时的实际不透明度。它的计算逻辑是：
+
+- 从节点自身的 opacity() 值开始
+- 递归地乘以所有父节点的绝对不透明度
+- 返回最终的累积结果
+
+例如,如果一个圆形的 `opacity` 是 0.5,它的父 Layer 的 `opacity` 也是 0.5,那么圆形的 `getAbsoluteOpacity()` 将返回 0.25 (0.5 × 0.5)。
+
+### moveTo(newContainer)
+
+将节点移动到另一个容器中。
+
+**参数：**
+
+- `newContainer`: `Container` 类型
+
+**返回值：** `Konva.Node`，被移动的节点
+
+**例子：**
+
+```js
+// 将节点从当前图层移动到 layer2
+node.moveTo(layer2);
+```
+
+### toObject()
+
+将节点转换成对象，用于序列化。返回一个对象。
+
+**返回值：** `Object` 类型
+
+### toJSON()
+
+将节点转换成 JSON 字符串，返回一个 JSON 字符串。
+
+**返回值：** `string`
+
+### getParent()
+
+获取节点的父容器。
+
+**返回值：** `Konva.Node`
+
+### findAncestors(selector, includeSelf, stopNode)
+
+获取该节点的所有祖先节点（父节点以及父节点的父节点，等等）
+
+**参数：**
+
+- `selector`: `string`，节点选择器，选择器类型包括
+  - ID 选择器: 以 `#` 开头
+  - Name 选择器: 以 `.` 开头
+  - 类型选择器: 节点类名
+  - 多选择器: 用逗号分隔
+  - 函数选择器: `(node) => void` 类型函数
+- `includeSelf`: `boolean`，可选，是否认为本节点也属于其自身的祖先节点
+- `stopNode`: `Konva.Node`，可选，是其祖先节点中的一个，遇到该节点就停止搜索
+
+**返回值：** `Node[]`
+
+**例子：**
+
+```js
+// 获取 Group 类别的祖先节点
+var parentGroups = node.findAncestors("Group");
+```
+
+### findAncestor(selector, includeSelf, stopNode)
+
+获取满足选择器的第一个祖先节点。
+
+**参数：**
+
+- `selector`: `string`，节点选择器
+- `includeSelf`: `boolean`，可选，是否认为本节点也属于其自身的祖先节点
+- `stopNode`: `Konva.Node`，可选，是其祖先节点中的一个，遇到该节点就停止搜索
+
+**返回值：** `Konva.Node | undefined`
+
+**例子：**
+
+```js
+// 获取第一个 name 为 .mygroup 的祖先节点
+var group = node.findAncestors(".mygroup");
+```
+
+### getLayer()
+
+获取图层祖先
+
+**返回值：** `Konva.Layer`
+
+### getStage()
+
+获取 Stage 祖先
+
+**返回值：** `Konva.Stage`

@@ -29,10 +29,17 @@
 - 是否可见 isVisible
 - 显示 show
 - 隐藏 hide
+- 获取绝对不透明度 getAbsoluteOpacity
 #### 层级
 - 获取绝对层级 getAbsoluteZIndex
 #### 节点关系
 - 查询祖先节点 getAncestors
+- 查询父节点 getParent
+- 按选择器搜索祖先节点 findAncestors
+- 按选择器搜索首个祖先节点 findAncestor
+- 获取图层祖先 getLayer
+- 获取Stage祖先 getStage
+- 改变节点所在容器 moveTo
 - 获取节点深度 getDepth
 - 移动节点到父节点最顶层 moveToTop
 - 向上移动节点 moveUp
@@ -40,4 +47,13 @@
 - 移动节点到父节点最底层 moveToBottom
 #### 鼠标相关
 - 获取鼠标相对节点位置 getRelativePointerPosition
+#### 序列化
+- 节点转换成对象 toObject
+- 节点转换成 JSON 字符串 toJSON
+## 选择器
+- ID 选择器: 以 `#` 开头
+- Name 选择器: 以 `.` 开头
+- 类型选择器: 节点类名
+- 多选择器: 用逗号分隔
+- 函数选择器: `(node) => void` 类型函数
 ```
