@@ -70,7 +70,23 @@ export interface GetSet<Type, This> {
 // 主要用于表示 “可被继承的类” 的构造函数类型
 type Constructor = abstract new (...args: any) => any;
 
+// 定义类型约束工具类型，用于强制类型参数 T 必须是 string 类型（提取 T 中 string 相关的部分），例如
+// type A = EnforceString<"a" | "b">; // 结果 A = "a" | "b"
+// type B = EnforceString<"a" | 2>; // 结果 B = "a"
+// type C = EnforceString<`age-${number}`>; // 结果 C = `age-${number}`
+// const c1: C = 'xxx'; // 报错
+// const c2: C = "age-a"; // 报错
+// const c3: C = "age-1"; // 正确
+// type D = EnforceString<number>; // 结果 D = never
+// type E = EnforceString<boolean>; // 结果 E = never
+// type F = EnforceString<string | number>; // 结果 F = string
+// type G = EnforceString<any>; // 结果 G = any
+// type H = EnforceString<unknown>; // 结果 H = never
 type EnforceString<T> = T extends string ? T : never;
+
+// 定义一个组合工具类型，用于提取类的实例属性名称，并确保它们是字符串类型，对该类型的解析：
+// T 是一个类，可以通过 new T 创建实例
+// InstanceType<T> 获取 T 类的实例类型
 type Attr<T extends Constructor> = EnforceString<keyof InstanceType<T>>;
 
 export const Factory = {
