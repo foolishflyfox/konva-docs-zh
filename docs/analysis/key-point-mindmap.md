@@ -7,10 +7,16 @@
 #### 元信息
 - 获取类型 `getType`
 - 获取类名 `getClassName`
+- 获取/设置名称 `name`
+- 添加名称 `addName`
+- 移除名称 `removeName`
+- 检查是否有名称 `hasName`
 #### 缓存
 - 创建缓存 `cache`
 - 清理缓存 `clearCache`
 - 是否有缓存 `isCached`
+#### 绘图
+- 重绘 `draw`
 #### 节点变换
 - 获取客户端矩形区域 [`getClientRect`](../api/node#getclientrect-config)
 - 移动节点 `move`
@@ -21,17 +27,22 @@
 - 获取绝对缩放 `getAbsoluteScale`
 - 获取绝对旋转 `getAbsoluteRotation`
 #### 事件
-- 事件绑定 `on`
-- 事件解绑 `off`
-- 是否处于监听状态 `isListening`
-- 事件触发 `fire`
+##### 事件绑定 `on`
+##### 事件解绑 `off`
+##### 是否处于监听状态 `isListening`
+##### 事件触发 `fire`
+##### 拖拽
+- 开始拖拽 `startDrag`
+- 结束拖拽 `stopDrag`
+- 是否为拖拽模式 `isDragging`
 #### 节点操作
 - 移除节点 `remove`
 - 销毁节点 `destroy`
 #### 属性操作
 - 获取属性 `getAttr`
+- 设置属性 `setAttr`
 - 获取所有属性 `getAttrs`
-- 设置属性 `setAttrs`
+- 批量设置属性 `setAttrs`
 #### 属性
 ##### 可见性
 - 是否可见 `isVisible`
@@ -69,4 +80,5 @@
 - 类型选择器: 节点类名
 - 多选择器: 用逗号分隔
 - 函数选择器: `(node) => void` 类型函数
+
 ```

@@ -806,3 +806,114 @@ var image = node.toImage({
 - 对于形状类型，`nodeType` 是 `Shape`，但 `className` 是具体的形状的类名称
 
 :::
+
+### addName
+
+向节点添加名称。
+
+**参数：**
+
+- `name`: `string`，名称
+
+**例子：**
+
+```js
+node.name("red");
+node.addName("selected");
+node.name(); // 返回 'red selected'
+```
+
+### hasName(name)
+
+检查节点是否有指定名称。
+
+**参数：**
+
+- `name`: `string`
+
+**返回值：** `boolean`
+
+```js
+node.name("red");
+node.hasName("red"); // 返回 true
+node.hasName("selected"); // 返回 false
+node.hasName(""); // 返回 false
+```
+
+### removeName(name)
+
+从节点中移除名称
+
+**参数：**
+
+- `name`: `string`
+
+**返回值：** `Konva.Node`
+
+**例子：**
+
+```js
+node.name("red selected");
+node.removeName("selected");
+node.hasName("selected"); // 返回 false
+node.name(); // 返回 'red'
+```
+
+### setAttr(attr, val)
+
+设置属性
+
+**参数：**
+
+- `attr`: `string`，属性名
+- `val`: 属性值
+
+**返回值：** `Konva.Node`
+
+**例子：**
+
+```js
+node.setAttr("x", 5);
+```
+
+### draw()
+
+绘制场景图和交互图。如果正在绘制的节点是 stage，所有图层都将被清空并重新绘制。
+
+**返回值：** `Konve.Node`
+
+**通常情况下不需要手动调用**。从 Konva 8.0.0 版本开始，引入了自动绘制机制。 当您修改节点属性、添加/移除节点或进行缓存操作时，Konva 会自动调用 `layer.batchDraw()` 来重绘。这个功能由 Konva.autoDrawEnabled 属性控制,默认为 true。
+
+需要手动调用的场景：
+
+- 场景 1: 禁用自动绘制时。如果您设置了 `Konva.autoDrawEnabled = false`,则需要手动调用 `draw()` 或 `batchDraw()`。
+- 场景 2: 需要立即同步绘制。`draw()` 是同步的，会立即执行绘制。相比之下，`batchDraw()` 会将绘制延迟到下一个动画帧(使用 `requestAnimationFrame`)。
+
+### startDrag()
+
+初始化拖放。`startDrag()` 方法用于手动启动节点的拖拽操作。 它的主要功能是:
+
+- 如果拖拽元素不存在,先创建拖拽元素
+- 将拖拽状态设置为 `dragging`
+- 触发 `dragstart` 事件
+
+**通常情况下不需要手动调用：**在正常的拖拽流程中,Konva 会自动处理拖拽。
+
+1. 当用户按下鼠标/触摸时,会创建拖拽元素(状态为 `ready`)
+2. 当指针移动超过 `dragDistance` 时,自动调用 `startDrag()` 开始拖拽
+3. 拖拽过程中持续更新位置
+
+**需要手动调用的场景：**
+
+1. **程序化启动拖拽**：如果您想在没有用户交互的情况下启动拖拽,可以直接调用 `startDrag()`
+2. **Transformer 中的拖拽同步**：在 Transformer 类中,当一个节点开始拖拽时,会手动调用其他节点的 `startDrag()` 来同步拖拽，这确保了当拖拽一个被 Transformer 选中的节点时,其他选中的节点也会跟随移动。
+3. **自定义拖拽逻辑**：如果您需要在特定条件下才启动拖拽(例如只有在按住某个键时才允许拖拽),可以监听 `mousedown` 事件并根据条件手动调用
+4. 正常情况下,只有当指针移动超过 `dragDistance` 时才会开始拖拽。如果您想立即开始拖拽而不等待移动距离,可以直接调用 `startDrag()`
+
+### stopDrag()
+
+停止拖放。
+
+### isDragging()
+
+判断节点是否处于拖拽模式。
