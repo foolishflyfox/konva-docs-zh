@@ -627,3 +627,99 @@ var group = node.findAncestors(".mygroup");
 获取 Stage 祖先
 
 **返回值：** `Konva.Stage`
+
+### fire(eventType, evt, bubble)
+
+触发事件
+
+**参数：**
+
+- `eventType`: `string`，事件类型，可以是常规事件，例如 `click`、`mouseover`，也可以是自定义事件，例如 `myCustomEvent`
+- `evt`: `Event`，可选，事件对象内容
+- `bubble`: `boolean`，可选，将该值设置为 false 或保留为 undefined 将导致事件不会冒泡，将该值设置为 true 将导致事件进行冒泡
+
+**返回值：** `Konva.Node`
+
+**例子：**
+
+```js
+// 手动触发点击事件
+node.fire("click");
+
+// 触发自定义事件
+node.fire("foo");
+
+// 触发携带事件数据的自定义事件
+node.fire("foo", {
+  bar: 10,
+});
+
+// 触发点击事件并进行事件冒泡
+node.fire("click", null, true);
+```
+
+### getAbsoluteTransform(top)
+
+获取节点相对于祖先节点的绝对变换（会考虑其祖先节点的变换）
+
+**参数：**
+
+- `top`: `Konva.Node`，可选，指定作为参考节点的祖先节点
+
+**返回值：** `Konva.Transform`
+
+### getAbsoluteScale(top)
+
+获取节点的绝对缩放（会考虑其祖先节点的缩放）
+
+**参数：**
+
+- `top`: `Konva.Node`，可选，指定作为参考节点的祖先节点
+
+**返回值：** `{x: number, y: number}`
+
+### getAbsoluteRotation()
+
+获取节点的绝对旋转（会考虑其祖先节点的旋转）
+
+**返回值：** `number`
+
+### getTransform()
+
+获取节点变换（不考虑祖先节点变换）
+
+**返回值：** `Konva.Transform`
+
+### clone(obj)
+
+克隆节点。返回一个具有相同属性的新节点实例，您还可以通过对象字面量覆盖节点属性，从而使用现有节点作为其他节点的模板
+
+**参数：**
+
+- `obj`: 对象，可选，指定的需要覆盖的属性
+
+**返回值：** `Konva.Node`
+
+**例子：**
+
+```js
+// 简单的克隆
+var clone = node.clone();
+
+// 克隆一个节点，并覆盖新节点的 x 属性
+var clone = node.clone({ x: 5 });
+```
+
+### toCanvas(config)
+
+将节点转换为一个 HTML Canvas 元素。它返回一个原生的 `HTMLCanvasElement` 对象，其中包含了所有节点及其子节点的渲染结果。
+
+**参数：**
+
+- `config`：`CanvasConfig`，可选
+  - `x`: `number` 可选，canvas 导出区域的 X 坐标
+  - `y`: `number` 可选，canvas 导出区域的 Y 坐标
+  - `width`: `number` 可选，canvas 导出区域的宽度
+  - `height`: `number` 可选，canvas 导出区域的高度
+  - `pixoRatio`: `number` 可选，输出 canvas 的像素比率，默认值为 1。您可以使用此属性提高图像质量，pixelRatio 将用于乘以导出图像的尺寸，例如您以 500x500 尺寸导出且 pixelRatio = 2，则生成的图像尺寸将为 1000x1000。
+  - `imageSmoothingEnable`: `boolean` 可选，如果要禁用图像平滑处理，请将此值设置为 false，不传时启用图形平滑处理

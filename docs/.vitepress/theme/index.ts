@@ -50,10 +50,10 @@ function renderMindmap() {
         setMindmapHeight(mindmap, aspectRatio);
       };
       // 重新设置 SVG 的高度
-      setTimeout(adjustPage, 0);
+      setTimeout(adjustPage, 100);
       // 解决通过 `cmd + 超链接` 打开思维导图，错过了初始化时机，导致思维导图过小的问题
       document.addEventListener("visibilitychange", () => {
-        setTimeout(adjustPage, 50);
+        setTimeout(adjustPage, 100);
       });
     }
   }
