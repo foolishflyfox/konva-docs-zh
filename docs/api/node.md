@@ -917,3 +917,24 @@ node.setAttr("x", 5);
 ### isDragging()
 
 判断节点是否处于拖拽模式。
+
+### isClientRectOnScreen(margin)
+
+判断节点是否(至少部分)在用户可见区域内。它返回一个布尔值,表示节点的客户端矩形区域是否与 Stage 的可见区域有交集。
+
+**参数：**
+
+- `margin`: `{ x: number; y: number }` 可选，在判断时为节点或屏幕区域添加额外的边距，这个边距参数可以用于提前判断即将进入屏幕的节点,或者扩大可见区域的判断范围
+
+**返回值：** `Konva.Node`
+
+**例子：**
+
+```js
+var isOnScreen = node.isClientRectOnScreen();
+
+var isOnScreen = node.isClientRectOnScreen({
+  x: stage.width(),
+  y: stage.height(),
+});
+```
