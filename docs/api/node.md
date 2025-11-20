@@ -938,3 +938,55 @@ var isOnScreen = node.isClientRectOnScreen({
   y: stage.height(),
 });
 ```
+
+### Node.create(json, container)
+
+可以使用 JSON 字符串或对象创建节点。反序列化不会生成自定义形状绘制函数、图像或事件处理程序（这会使序列化对象变得非常庞大）。
+
+如果您的应用程序使用自定义形状、图像和事件处理程序（很可能如此），那么在加载到 Stage 后，您需要选择相应的形状，并通过 `on()`、`setSceneFunc()` 和 `setImage()` 方法来设置这些属性。
+
+**参数：**
+
+- `json`: `string | object`
+- `container`: 可选的容器 DOM 元素，仅在创建 Stage 节点时使用。
+
+### zIndex(index)
+
+获取/设置节点相对于其同父级兄弟节点的 zIndex 顺序。请记住，zIndex 不是绝对的（不像在 CSS 中）。它仅相对于父元素。
+
+**参数：**
+
+- `index`: `number` 可选，不填为获取；
+
+**返回值：** `Number`
+
+**例子：**
+
+```js
+// 获取 index
+var index = node.zIndex();
+
+// 设置 index
+node.zIndex(2);
+```
+
+### absolutePosition(pos)
+
+获取或设置节点的绝对位置。绝对位置是指节点相对于 Stage 左上角的最终位置，它考虑了节点自身的位置以及所有祖先节点的变换，因为 Stage 也是节点的祖先节点，因此 Stage 的移动，也会导致绝对位置的改变。
+
+**参数：**
+
+- `pos`: `{x: number, y: number}`，位置信息
+
+**例子：**
+
+```js
+// 获取位置
+var position = node.absolutePosition();
+// 设置位置
+node.absolutePosition({ x: 5, y: 10 });
+```
+
+### position(pos)
+
+获取或设置节点相对于父节点的位置。

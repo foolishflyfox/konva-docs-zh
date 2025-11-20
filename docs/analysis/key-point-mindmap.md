@@ -22,6 +22,7 @@
 - 移动节点 `move`
 - 旋转角度 `rotate`
 - 获取节点绝对位置 `getAbsolutePosition`
+- 节点绝对位置 `absolutePosition`
 - 获取绝对变换 `getAbsoluteTransform`
 - 获取变换 `getTransform`
 - 获取绝对缩放 `getAbsoluteScale`
@@ -51,6 +52,7 @@
 - 获取绝对不透明度 `getAbsoluteOpacity`
 #### 层级
 - 获取绝对层级 `getAbsoluteZIndex`
+- 获取/设置层级 `zindex`
 #### 节点关系
 - 查询祖先节点 `getAncestors`
 - 查询父节点 `getParent`
@@ -69,6 +71,7 @@
 #### 节点转换
 - 转换成对象 `toObject`
 - 转换成 JSON 字符串 `toJSON`
+- 从 JSON 创建 `Node.create`
 - 克隆 `clone`
 - 转换为 Canvas 元素 `toCanvas`
 - 转换为 Base64 字符串 `toDataURL`

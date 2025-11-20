@@ -265,6 +265,14 @@ export default defineConfig({
             { text: "类继承图", link: "inheritance-diagram" },
             { text: "要点导图", link: "key-point-mindmap" },
             { text: "坐标系", link: "coordinate-system" },
+            {
+              text: "类型增强",
+              collapsed: true,
+              prefix: "type-enhance",
+              items: [
+                { text: "addGetterSetter 解析", link: "add-getter-setter" },
+              ],
+            },
             { text: "示例", link: "demo" },
           ],
         },
