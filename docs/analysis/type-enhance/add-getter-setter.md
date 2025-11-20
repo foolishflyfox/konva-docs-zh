@@ -35,6 +35,55 @@ abstract class A {
 
 这是因为 tsconfig.json 还有另一行配置 `"strictPropertyInitialization": false`。这个配置表示**禁用类属性初始化的严格检查**，即 TypeScript 不会检查类属性是否在声明时或构造函数中被初始化，因此抑制了上述报错。
 
-## GetSet 是什么
+## GetSet 是什么?
 
-既然在 Node 类中
+`GetSet` 的定义如下：
+
+```ts
+export interface GetSet<Type, This> {
+  (): Type;
+  (v: Type | null | undefined): This;
+}
+```
+
+这个范型接口定义了一个 **具有重载功能的通用函数类型**，既可以作为 getter，也可以作为 setter。其有两个范型参数：
+
+- `Type`: 要获取或设置的值类型
+- `This`: 设置值时返回的类型（通常是链式调用，返回自身）
+
+作为 getter 时，是无参数的调用，用法为：`const value = obj.getSet()`。
+
+作为 setter 时，时带参调用，用法为 `obj.getSet(newValue)`。
+
+## 如何实现类中属性的 GetSet 声明？
+
+在 Node.ts 中有这么一行：`addGetterSetter(Node, 'absolutePosition')`，该函数就是对 `absolutePosition` 字段的实现。
+
+有代码：`const addGetterSetter = Factory.addGetterSetter`，我们要看一下 `Factory.addGetterSetter` 函数的实现。
+
+## Factory.addGetterSetter 的实现
+
+`Factory.addGetterSetter` 的定义如下：
+
+```ts
+// 定义了一个抽象构造函数类型，该类型可以接受任意的参数，返回任意类型的实例
+// 主要用于表示 “可被继承的类” 的构造函数类型
+type Constructor = abstract new (...args: any) => any;
+
+type EnforceString<T> = T extends string ? T : never;
+type Attr<T extends Constructor> = EnforceString<keyof InstanceType<T>>;
+
+export const Factory = {
+  addGetterSetter<T extends Constructor, U extends Attr<T>>(
+    constructor: T,
+    attr: U,
+    def?: Value<T, U>,
+    validator?: ValidatorFunc<Value<T, U>>,
+    after?: AfterFunc<T>
+  ): void {
+    Factory.addGetter(constructor, attr, def);
+    Factory.addSetter(constructor, attr, validator, after);
+    Factory.addOverloadedGetterSetter(constructor, attr);
+  },
+};
+```
