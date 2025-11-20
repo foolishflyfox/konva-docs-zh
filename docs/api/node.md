@@ -723,3 +723,65 @@ var clone = node.clone({ x: 5 });
   - `height`: `number` 可选，canvas 导出区域的高度
   - `pixoRatio`: `number` 可选，输出 canvas 的像素比率，默认值为 1。您可以使用此属性提高图像质量，pixelRatio 将用于乘以导出图像的尺寸，例如您以 500x500 尺寸导出且 pixelRatio = 2，则生成的图像尺寸将为 1000x1000。
   - `imageSmoothingEnable`: `boolean` 可选，如果要禁用图像平滑处理，请将此值设置为 false，不传时启用图形平滑处理
+
+### toDataURL(config)
+
+创建一个复合数据 URL（base64 字符串）。如果未指定 MIME 类型，则默认生成"image/png"。对于"image/jpeg"格式，需指定质量级别（取值范围 0.0-1.0）。
+
+**参数：**
+
+- `config`: 配置对象，可选
+  - `mimeType`: `string` 可选，可以是 `"image/png"` 或 `"image/jpeg"`，默认值为 `"image/png"`
+  - `quality`: `number` 可选，指定 jpeg 图像质量。若使用 `"image/jpeg"` 格式，可指定 0 到 1 之间的质量参数：0 表示极低质量，1 表示最佳质量
+  - `x`: `number` 可选，导出区域的 X 坐标
+  - `y`: `number` 可选，导出区域的 Y 坐标
+  - `width`: `number` 可选，导出区域的宽度
+  - `height`: `number` 可选，导出区域的高度
+  - `pixoRatio`: `number` 可选，输出的像素比率，默认值为 1。您可以使用此属性提高图像质量，pixelRatio 将用于乘以导出图像的尺寸，例如您以 500x500 尺寸导出且 pixelRatio = 2，则生成的图像尺寸将为 1000x1000。
+  - `imageSmoothingEnable`: `boolean` 可选，如果要禁用图像平滑处理，请将此值设置为 false，不传时启用图形平滑处理
+
+**返回值：** `string`
+
+### toImage(config)
+
+将节点转换为图像。由于 toImage 方法是异步的，生成的图像只能通过配置回调函数或返回的 Promise 对象获取。该方法最常用于将复杂图形缓存为图像，从而避免重复绘制。
+
+**参数：**
+
+- `config`: 配置对象，可选
+  - `callback`: `(img: HTMLImageElement) => void` 可选，转换完成后的回调函数
+  - `mimeType`: `string` 可选，可以是 `"image/png"` 或 `"image/jpeg"`，默认值为 `"image/png"`
+  - `quality`: `number` 可选，指定 jpeg 图像质量。若使用 `"image/jpeg"` 格式，可指定 0 到 1 之间的质量参数：0 表示极低质量，1 表示最佳质量
+  - `x`: `number` 可选，导出区域的 X 坐标
+  - `y`: `number` 可选，导出区域的 Y 坐标
+  - `width`: `number` 可选，导出区域的宽度
+  - `height`: `number` 可选，导出区域的高度
+  - `pixoRatio`: `number` 可选，输出的像素比率，默认值为 1。您可以使用此属性提高图像质量，pixelRatio 将用于乘以导出图像的尺寸，例如您以 500x500 尺寸导出且 pixelRatio = 2，则生成的图像尺寸将为 1000x1000。
+  - `imageSmoothingEnable`: `boolean` 可选，如果要禁用图像平滑处理，请将此值设置为 false，不传时启用图形平滑处理
+
+**返回值：** `Promise<HTMLImageElement>`
+
+**例子：**
+
+```js
+var image = node.toImage({
+  callback(img) {
+    // 操作 img
+  },
+});
+```
+
+### toBlob(config)
+
+将节点转换为 Blob 对象。由于 toBlob 方法是异步的，生成的 Blob 只能通过配置回调函数或返回的 Promise 对象获取。
+
+- `config`: 配置对象，可选
+  - `callback`: `(img: Blob) => void` 可选，转换完成后的回调函数
+  - `x`: `number` 可选，导出区域的 X 坐标
+  - `y`: `number` 可选，导出区域的 Y 坐标
+  - `width`: `number` 可选，导出区域的宽度
+  - `height`: `number` 可选，导出区域的高度
+  - `pixoRatio`: `number` 可选，输出的像素比率，默认值为 1。您可以使用此属性提高图像质量，pixelRatio 将用于乘以导出图像的尺寸，例如您以 500x500 尺寸导出且 pixelRatio = 2，则生成的图像尺寸将为 1000x1000。
+  - `imageSmoothingEnable`: `boolean` 可选，如果要禁用图像平滑处理，请将此值设置为 false，不传时启用图形平滑处理
+
+**返回值：** `Promise<Blob>`

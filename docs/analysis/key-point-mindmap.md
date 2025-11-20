@@ -57,6 +57,9 @@
 - 转换成 JSON 字符串 `toJSON`
 - 克隆 `clone`
 - 转换为 Canvas 元素 `toCanvas`
+- 转换为 Base64 字符串 `toDataURL`
+- 转换为图片元素 `toImage`
+- 转换为二进制块 `toBlob`
 ## 选择器
 - ID 选择器: 以 `#` 开头
 - Name 选择器: 以 `.` 开头
