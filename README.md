@@ -4,7 +4,7 @@
   <img src="docs/public/konva.svg" />
 </p>
 
-这是一个关于 Konva 的使用手册与源码分析的基于 VitePress 的仓库，包括对 Konva 官网手册的翻译、自我总结的博客以及源码分析。
+这是一个包含 Konva 的使用与源码分析的基于 VitePress 的仓库，包括对 Konva 官网手册的翻译、自我总结的博客以及源码分析。
 
 ## 特点
 
@@ -19,7 +19,7 @@
 - 编译：`pnpm docs:build`
 - 预览：`pnpm docs:preview`
 
-**注意：在下载本项目后，需要初始化如下内容：**
+**注意：在下载本项目后，需要修改如下内容：**
 
 1. 修改 `docs/.vitepress/puppeteer-config.json` 文件中的 `executablePath` 字段，将其修改为你电脑上的 Chrome 浏览器的路径，用于 mermaid 的渲染。通常路径如下：
    - Windows: 可以优先查看以下路径是否有 chrome.exe
