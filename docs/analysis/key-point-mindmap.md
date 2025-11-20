@@ -4,6 +4,9 @@
 # Konva
 ## 图形
 ### [Node](../api/node)
+#### 元信息
+- 获取类型 `getType`
+- 获取类名 `getClassName`
 #### 缓存
 - 创建缓存 `cache`
 - 清理缓存 `clearCache`

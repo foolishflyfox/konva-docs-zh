@@ -785,3 +785,24 @@ var image = node.toImage({
   - `imageSmoothingEnable`: `boolean` 可选，如果要禁用图像平滑处理，请将此值设置为 false，不传时启用图形平滑处理
 
 **返回值：** `Promise<Blob>`
+
+### getClassName()
+
+获取节点类名，例如可能返回 `Stage`、`Layer`、`Group`，或者是图形名，如 `Rect`、`Circle`、`Text` 等等。
+
+**返回值：** `string`
+
+### getType()
+
+获取节点类型，例如可能返回 `Stage`、`Layer`、`Group` 或 `Shape`
+
+**返回值：** `string`
+
+:::tip
+
+- 节点的 `type` 是节点的抽象类型,表示节点在 Konva 层次结构中的位置(如 `Stage、Layer、Group`、`Shape`)
+- 节点的 `className` 是节点的具体类名,表示节点的实际类(如 `Circle`、`Rect`、`Text`)
+- 对于容器类型(`Stage`、`Layer`、`Group`)，`nodeType` 和 `className` 通常相同
+- 对于形状类型，`nodeType` 是 `Shape`，但 `className` 是具体的形状的类名称
+
+:::
