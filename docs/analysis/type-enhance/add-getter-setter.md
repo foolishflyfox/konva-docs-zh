@@ -3,6 +3,11 @@
 ## 内容总结
 
 - 构造函数定义: `type Constructor = abstract new (...args: any) => any;`
+- 类含义：
+  - 在 **运行上下文** 中表示类的构造函数；
+  - 在 **类型注解上下文** 中表示类型；
+  - `typeof 类名` 表示的是类的构造函数的类型；
+  - `InstanceType<typeof 类名>` 表示的是类的类型；
 
 ## 引言
 
