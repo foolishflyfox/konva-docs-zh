@@ -9,6 +9,10 @@
   - `typeof 类名` 表示的是类的构造函数的类型；
   - `InstanceType<typeof 类名>` 表示的是类的类型；
   - `Attr<类名>` 表示指定类的属性名组成的字符串组合类型；
+- `addGetterSetter` 的实现
+  - 如果开发者没有自定义 `getXxx` 成员方法，添加 `getXxx` 方法，从 `attrs` 成员变量中取出属性值
+  - 如果开发者没有自定义 `setXxx` 成员方法，添加 `setXxx` 方法，设置属性到 `attrs`，并返回类实例
+  - 添加 `xxx` 成员方法，当方法有入参时，执行 `setXxx` 方法，否则执行 `getXxx` 方法
 
 ## 引言
 
@@ -329,9 +333,10 @@ export const Factory = {
 
 ## Factory.addGetter 的实现
 
-`Factory.addGetter` 函数的定义如下：
+`Factory.addGetter` 函数的实现如下：
 
 ```ts
+// 如果 T 类没有 getXxx 方法，为其添加 getXxx 方法，即从 T 类的 attrs 中获取 attr 属性值并返回
 addGetter<T extends Constructor, U extends Attr<T>>(
   constructor: T, // 类
   attr: U, // 属性名
@@ -354,4 +359,73 @@ addGetter<T extends Constructor, U extends Attr<T>>(
 
 ## Factory.addSetter 的实现
 
+`Factory.addSetter` 的实现如下：
+
+```js
+// 如果 T 类没有 setXxx 方法，该函数为 T 类添加 setXxx 方法
+addSetter<T extends Constructor, U extends Attr<T>>(
+  constructor: T,
+  attr: U,
+  validator?: ValidatorFunc<Value<T, U>>,
+  after?: AfterFunc<T>
+) {
+  // 将属性名转换为函数名
+  const method = SET + Util._capitalize(attr);
+
+  if (!constructor.prototype[method]) {
+    Factory.overWriteSetter(constructor, attr, validator, after);
+  }
+}
+
+// 覆盖 T 类的 setXxx 方法
+overWriteSetter<T extends Constructor, U extends Attr<T>>(
+  constructor: T,
+  attr: U,
+  validator?: ValidatorFunc<Value<T, U>>,
+  after?: AfterFunc<T>
+) {
+  const method = SET + Util._capitalize(attr);
+  constructor.prototype[method] = function (val) {
+    if (validator && val !== undefined && val !== null) {
+      // 校验 / 转换数值
+      val = validator.call(this, val, attr);
+    }
+    // 为节点设置属性
+    this._setAttr(attr, val);
+
+    if (after) {
+      // 完成设置后的回调函数执行
+      after.call(this);
+    }
+    //
+    return this;
+  };
+}
+```
+
 ## Factory.addOverloadedGetterSetter 的实现
+
+`Factory.addOverloadedGetterSetter` 函数的定义如下：
+
+```ts
+addOverloadedGetterSetter<T extends Constructor, U extends Attr<T>>(
+  constructor: T,
+  attr: U
+) {
+  // 获取 getXxx, setXxx 方法名
+  const capitalizedAttr = Util._capitalize(attr),
+    setter = SET + capitalizedAttr,
+    getter = GET + capitalizedAttr;
+
+  constructor.prototype[attr] = function () {
+    // setting
+    if (arguments.length) {
+      // 如果带参数，则调用 setXxx 函数
+      this[setter](arguments[0]);
+      return this;
+    }
+    // 如果不带参数，则调用 getXxx 函数
+    return this[getter]();
+  };
+}
+```
