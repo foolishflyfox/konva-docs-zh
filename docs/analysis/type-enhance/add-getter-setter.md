@@ -215,4 +215,29 @@ type FruitArray = Fruit[]; // 类型定义
 type A = typeof Fruit;
 // 赋值语句后的 Fruit 作为值，就是 Fruit 类的构造函数，因此下面的语句不会报错
 const a: A = Fruit;
+// InstanceType 获取的是一个构造函数的返回值类型，即 type B = Fruit
+type B = InstanceType<typeof Fruit>;
+// b 也是 Fruit 类的实例
+const b: B = new Fruit(10);
 ```
+
+`keyof` 是 TypeScript 在类型注解上下文中是一个关键字，获取一个类型所有的键，例如：
+
+```ts
+interface School {
+  studentCount: number;
+  location: string;
+}
+// SchoolKey 是 'studentCount' | 'location' 类型
+type SchoolKey = keyof School;
+```
+
+type Attr<T extends Constructor> = EnforceString<keyof InstanceType<T>>;
+
+因此 `Attr<Fruit>` 的含义就很好解释了：
+
+1. `InstanceType<T>`: 得到 `Fruit` 类的类型
+2. `keyof InstanceType<T>`: 得到 `Fruit` 类的所有 `key`，组成 `'k1' | 'k2' | 'k3' ...` 的类型
+3. `EnforceString<keyof InstanceType<T>>`: 从 `Fruit` 类型中抽取类型为字符串的 `key`
+
+即 `Attr<Fruit>` 的含义就是取出 Fruit 类中所有字符串类型的 key 组成新的字符串组合类型。
