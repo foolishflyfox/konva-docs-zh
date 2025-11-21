@@ -1,5 +1,11 @@
 # addGetterSetter 源码解析
 
+## 内容总结
+
+- 构造函数定义: `type Constructor = abstract new (...args: any) => any;`
+
+## 引言
+
 在看 `Node` 类的时候，发现有很多属性方法都是只定义了类型，而没有实现，也没有声明为 `abstract`，如下所示：
 
 ```ts {3-6}
@@ -66,27 +72,10 @@ export interface GetSet<Type, This> {
 `Factory.addGetterSetter` 的定义如下：
 
 ```ts
-// 定义了一个抽象构造函数类型，该类型可以接受任意的参数，返回任意类型的实例
-// 主要用于表示 “可被继承的类” 的构造函数类型
 type Constructor = abstract new (...args: any) => any;
 
-// 定义类型约束工具类型，用于强制类型参数 T 必须是 string 类型（提取 T 中 string 相关的部分），例如
-// type A = EnforceString<"a" | "b">; // 结果 A = "a" | "b"
-// type B = EnforceString<"a" | 2>; // 结果 B = "a"
-// type C = EnforceString<`age-${number}`>; // 结果 C = `age-${number}`
-// const c1: C = 'xxx'; // 报错
-// const c2: C = "age-a"; // 报错
-// const c3: C = "age-1"; // 正确
-// type D = EnforceString<number>; // 结果 D = never
-// type E = EnforceString<boolean>; // 结果 E = never
-// type F = EnforceString<string | number>; // 结果 F = string
-// type G = EnforceString<any>; // 结果 G = any
-// type H = EnforceString<unknown>; // 结果 H = never
 type EnforceString<T> = T extends string ? T : never;
 
-// 定义一个组合工具类型，用于提取类的实例属性名称，并确保它们是字符串类型，对该类型的解析：
-// T 是一个类，可以通过 new T 创建实例
-// InstanceType<T> 获取 T 类的实例类型
 type Attr<T extends Constructor> = EnforceString<keyof InstanceType<T>>;
 
 export const Factory = {
@@ -102,4 +91,128 @@ export const Factory = {
     Factory.addOverloadedGetterSetter(constructor, attr);
   },
 };
+```
+
+下面逐条解释上述代码含义。
+
+---
+
+```ts
+type Constructor = abstract new (...args: any) => any;
+```
+
+上述代码定义了一个抽象构造函数类型，该类型可以接受任意的参数，返回任意类型的实例，主要用于表示 “可被继承的类” 的构造函数类型，作为类型时表示一个类。
+
+---
+
+```ts
+type EnforceString<T> = T extends string ? T : never;
+```
+
+上述代码定义了一个类型约束工具类型，用于强制类型参数 T 必须是 string 类型（提取 T 中 string 相关的部分），例如
+
+```ts
+type A = EnforceString<"a" | "b">; // 结果 A = "a" | "b"
+type B = EnforceString<"a" | 2>; // 结果 B = "a"
+type C = EnforceString<`age-${number}`>; // 结果 C = `age-${number}`
+const c1: C = "xxx"; // ❌ 类型报错: 不能将类型“"xxx"”分配给类型“`age-${number}`”
+const c2: C = "age-a"; // ❌ 类型报错: 不能将类型“"age-a"”分配给类型“`age-${number}`”
+const c3: C = "age-1"; // ✅ 正确
+type D = EnforceString<number>; // 结果 D = never
+type E = EnforceString<boolean>; // 结果 E = never
+type F = EnforceString<string | number>; // 结果 F = string
+type G = EnforceString<any>; // 结果 G = any
+type H = EnforceString<unknown>; // 结果 H = never
+```
+
+`EnforceString` 的主要用途为：
+
+1. 泛型约束
+
+```ts
+function processString<T>(value: T & EnforceString<T>): void {
+  console.log(value.toUpperCase());
+}
+processString("hello"); // ✅ 正确
+processString(123); // ❌ 类型报错: 类型“123”的参数不能赋给类型“never”的参数
+processString(true); // ❌ 类型报错: 类型“true”的参数不能赋给类型“never”的参数
+```
+
+2. 类型安全的 API 设计
+
+```ts
+// 确保配置对象中的特定属性必须是字符串
+interface Config<T> {
+  // name 必须是字符串类型
+  name: EnforceString<T>;
+}
+
+type ValidConfigA = Config<"abc" | "xxx">; // ✅ 正确，{ name: "abc" | "xxx" }
+type ValidConfigB = Config<string>; // ✅ 正确
+type InvalidConfig = Config<number>; // { name: never }，即 name 字段因为类型问题不能使用
+```
+
+---
+
+```ts
+type Attr<T extends Constructor> = EnforceString<keyof InstanceType<T>>;
+```
+
+上述代码定义了一个组合工具类型，用于提取类的实例属性名称，并确保它们是字符串类型。这里用到了 `InstanceType` 类型，该类型是 TypeScript 中的一个内置工具类型，用于从构造函数类型中提取其实例类型。其定义为：
+
+```ts
+type InstanceType<T extends abstract new (...args: any) => any> =
+  T extends abstract new (...args: any) => infer R ? R : any;
+```
+
+这里又用到了 TypeScript 中的一个类型推断关键字 `infer`，用于在条件类型中声明一个待推断的类型变量。
+
+基本语法为：`T extends infer U ? U : never` 。核心用途是在条件类型中提取和重用部分类型。下面是提取函数返回类型的一个例子：
+
+```ts
+type MyReturnType<T> = T extends (...args: any[]) => infer R ? R : never;
+
+function getUser() {
+  return { name: "John", age: 30 };
+}
+// 获取 getUser 函数的返回结果
+type User = MyReturnType<typeof getUser>; // { name: string, age: number }
+```
+
+在 TypeScript 中，一个类即可表示类型，也可以表示值。例如有下面的一个类定义：
+
+```ts
+class Fruit {
+  weight: number;
+  constructor(w: number) {
+    this.weight = w;
+  }
+}
+```
+
+在 **运行时上下文** 中使用时，`Fruit` 是一个值，即 `Fruit` 的构造函数本身：
+
+```ts
+// Fruit 作为值使用
+const apple = new Fruit(10); // 构造函数调用
+const FruitClass = Fruit; // 赋值给变量
+console.log(Fruit.prototype); // 访问原型
+```
+
+在 **类型注解上下文** 中使用时，`Fruit` 是一个类型：
+
+```ts
+// Fruit 作为类型使用
+const apple: Fruit = new Fruit(10); // 类型注解
+function processFruit(fruit: Fruit) {} // 参数类型
+type FruitArray = Fruit[]; // 类型定义
+```
+
+通过 `typeof 类名` 获取的是类的构造函数类型，因此下面的代码是正确的：
+
+```ts
+// typeof 后面必须跟一个值，因此 A 类型代表的是 Fruit 类的构造函数类型
+type A = typeof Fruit;
+// 赋值语句后的 Fruit 作为值，就是 Fruit 类的构造函数，因此下面的语句不会报错
+const a: A = Fruit;
 ```
