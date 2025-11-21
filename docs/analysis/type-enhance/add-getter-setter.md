@@ -304,3 +304,54 @@ type AfterFunc<T extends Constructor> = (this: InstanceType<T>) => void;
 ```
 
 定义了一个入参为类实例的函数，该函数在 `setter` 方法成功设置属性后被调用。
+
+### addGetterSetter 逻辑
+
+`addGetterSetter` 函数的定义如下：
+
+```ts {9-11}
+export const Factory = {
+  addGetterSetter<T extends Constructor, U extends Attr<T>>(
+    constructor: T,
+    attr: U,
+    def?: Value<T, U>,
+    validator?: ValidatorFunc<Value<T, U>>,
+    after?: AfterFunc<T>
+  ): void {
+    Factory.addGetter(constructor, attr, def);
+    Factory.addSetter(constructor, attr, validator, after);
+    Factory.addOverloadedGetterSetter(constructor, attr);
+  },
+};
+```
+
+其中 9 ～ 11 行为具体的实现。可以看到，`addGetterSetter` 可以拆分成 3 个步骤，下面分别解释这 3 个函数。
+
+## Factory.addGetter 的实现
+
+`Factory.addGetter` 函数的定义如下：
+
+```ts
+addGetter<T extends Constructor, U extends Attr<T>>(
+  constructor: T, // 类
+  attr: U, // 属性名
+  def?: Value<T, U> // 没有获取属性值返回的默认值
+) {
+  // 将属性名转换为函数名：首字母大写，在最前面加上 get
+  // 例如 absolutePosition 变为 getAbsolutePosition
+  const method = GET + Util._capitalize(attr);
+
+  // 如果 getXxx 的函数被定义了，则使用已定义的 getXxx 函数
+  // 如果没被定义，则在原型上自动添加 getXxx 函数
+  constructor.prototype[method] =
+    constructor.prototype[method] ||
+    function (this: Node) { // 显式指定 this 的类型
+      const val = this.attrs[attr]; // 所有的数据都存在 attrs 属性中
+      return val === undefined ? def : val;
+    };
+}
+```
+
+## Factory.addSetter 的实现
+
+## Factory.addOverloadedGetterSetter 的实现
