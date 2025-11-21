@@ -95,7 +95,7 @@ export const Factory = {
 
 下面逐条解释上述代码含义。
 
----
+### 类型定义：构造器
 
 ```ts
 type Constructor = abstract new (...args: any) => any;
@@ -103,7 +103,7 @@ type Constructor = abstract new (...args: any) => any;
 
 上述代码定义了一个抽象构造函数类型，该类型可以接受任意的参数，返回任意类型的实例，主要用于表示 “可被继承的类” 的构造函数类型，作为类型时表示一个类。
 
----
+### 类型定义：获取字符串类型
 
 ```ts
 type EnforceString<T> = T extends string ? T : never;
@@ -152,7 +152,7 @@ type ValidConfigB = Config<string>; // ✅ 正确
 type InvalidConfig = Config<number>; // { name: never }，即 name 字段因为类型问题不能使用
 ```
 
----
+### 类型定义：类属性名对应字符串组合类
 
 ```ts
 type Attr<T extends Constructor> = EnforceString<keyof InstanceType<T>>;
@@ -231,8 +231,6 @@ interface School {
 // SchoolKey 是 'studentCount' | 'location' 类型
 type SchoolKey = keyof School;
 ```
-
-type Attr<T extends Constructor> = EnforceString<keyof InstanceType<T>>;
 
 因此 `Attr<Fruit>` 的含义就很好解释了：
 
