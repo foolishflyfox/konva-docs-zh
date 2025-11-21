@@ -245,3 +245,62 @@ type SchoolKey = keyof School;
 3. `EnforceString<keyof InstanceType<T>>`: 从 `Fruit` 类型中抽取类型为字符串的 `key`
 
 即 `Attr<Fruit>` 的含义就是取出 Fruit 类中所有字符串类型的 key 组成新的字符串组合类型。
+
+### 类型定义：获取一个类指定字段的值类型
+
+`addGetterSetter` 的第三个参数类型为：`def?: Value<T, U>`，我们来看一下 `Value` 这个工具类型的作用，其相关定义为：
+
+```ts
+export interface GetSet<Type, This> {
+  (): Type;
+  (v: Type | null | undefined): This;
+}
+
+type ExtractGetSet<T> = T extends GetSet<infer U, any> ? U : never;
+
+type Value<T extends Constructor, U extends Attr<T>> = ExtractGetSet<
+  InstanceType<T>[U]
+>;
+```
+
+以 `Node` 类为例，`InstanceType<T>[U]` 表示获取 `Node` 类中指定的 `U` 字段的的值类型，该类型一定为 `GetSet<Type, This>` 的子类，例如：
+
+```ts
+absolutePosition: GetSet<Vector2d, this>;
+```
+
+`Value<T, U>` 的含义就是提取类型 `T` 中 `addGetterSetter` 第二个参数指定的属性 `attr` 对应的值的类型作为第三个参数 `def` 的类型。第三个参数填写的是属性 `attr` 的默认值。
+
+### 类型定义：值校验函数类型
+
+`addGetterSetter` 第四个参数的类型为：
+
+```ts
+validator?: ValidatorFunc<Value<T, U>>
+```
+
+其中 `Value<T, U>` 是一个属性值类型，`ValidatorFunc` 的定义如下：
+
+```ts
+type ValidatorFunc<T> = (val: T, attr: string) => T;
+```
+
+该函数类型就是接受属性值和属性名作为参数，对数据进行处理后，返回与原属性值类型相同的值。
+
+在执行设置动作时，会调用校验函数，如果校验出错，可以进行相应的操作，如在控制台打印报警信息。
+
+### 类型参数：设置成功后回调函数类型
+
+`addGetterSetter` 第五个参数为：
+
+```ts
+after?: AfterFunc<T>
+```
+
+该函数类型的定义为：
+
+```ts
+type AfterFunc<T extends Constructor> = (this: InstanceType<T>) => void;
+```
+
+定义了一个入参为类实例的函数，该函数在 `setter` 方法成功设置属性后被调用。
