@@ -17,6 +17,7 @@
 - 是否有缓存 `isCached`
 #### 绘图
 - 重绘 `draw`
+- 读/写混合操作 `globalCompositeOperation`
 #### 节点变换
 - 获取客户端矩形区域 [`getClientRect`](../api/node#getclientrect-config)
 - 移动节点 `move`
@@ -27,6 +28,7 @@
 - 获取变换 `getTransform`
 - 获取绝对缩放 `getAbsoluteScale`
 - 获取绝对旋转 `getAbsoluteRotation`
+- 相对父元素位置 `position` / `x` / `y`
 #### 事件
 ##### 事件绑定 `on`
 ##### 事件解绑 `off`

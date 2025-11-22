@@ -1,6 +1,12 @@
 <script setup>
 import { KShape } from "@docs/components/kshapes";
-import { getClientRectDemo } from './codes/node';
+import { 
+  getClientRectDemo, 
+  showBaseCompositeOperationType, 
+  showSpecialCompositeOperationType,
+  showColorCompositeOperationType,
+  showHslColorCompositeOperationType,
+} from './codes/node';
 
 // getClientRectDemo();
 </script>
@@ -990,3 +996,69 @@ node.absolutePosition({ x: 5, y: 10 });
 ### position(pos)
 
 获取或设置节点相对于父节点的位置。
+
+**参数：**
+
+- `pos`: `{x: number, y: number}`，位置信息
+
+### x(x)
+
+获取/设置 x 的位置（相对于父节点的位置）。
+
+### y(y)
+
+获取/设置 y 的位置（相对于父节点的位置）。
+
+### globalCompositeOperation(type)
+
+获取/设置节点的全局合成操作。全局合成操作不会影响节点的事件命中区域。因此即使修改了该属性，节点仍会按照默认的"source-over"合成模式触发事件。
+
+**参数：**
+
+- `type`: `string` 类型，可以取如下值
+
+**基础混合模式**
+
+- `'source-over'`: 默认，新内容绘制在现有内容之上
+- `'source-in'`: 只显示新内容与现有内容重叠的部分
+- `'source-out'`: 只显示新内容不与现有内容重叠的部分
+- `'source-atop'`: 新内容只在与现有内容重叠的地方显示
+- `'destination-over'`: 新内容绘制在现有内容之下
+- `'destination-in'`: 只保留现有内容与新内容重叠的部分
+- `'destination-out'`: 只保留现有内容不与新内容重叠的部分
+- `'destination-atop'`: 现有内容只在与新内容重叠的地方保留
+
+<KShape :afterMounted="showBaseCompositeOperationType" :width="600" :height="210" />
+
+**特殊混合模式效果：**
+
+- `'lighter'`: 重叠区域的颜色值相加
+- `'copy'`: 只显示新内容
+- `'xor'`: 只显示不重叠的部分
+
+<KShape :afterMounted="showSpecialCompositeOperationType" :width="600" :height="110" />
+
+**颜色混合模式效果：**
+
+- `'multiply'`: 颜色相乘,产生更暗的颜色
+- `'screen'`: 颜色反相相乘再反相,产生更亮的颜色
+- `'overlay'`: 根据现有颜色混合 multiply 和 screen
+- `'darken'`: 保留较暗的颜色
+- `'lighten'`: 保留较亮的颜色
+- `'color-dodge'`: 提亮现有颜色以反映新颜色
+- `'color-burn'`: 加深现有颜色以反映新颜色
+- `'hard-light'`: 类似 overlay,但基于新颜色
+- `'soft-light'`: 类似 hard-light,但效果更柔和
+- `'difference'`: 从较亮颜色中减去较暗颜色
+- `'exclusion'`: 类似 difference,但对比度更低
+
+<KShape :afterMounted="showColorCompositeOperationType" :width="600" :height="310" />
+
+**HSL 混合模式：**
+
+- `'hue'`: 使用新内容的色调,保留现有内容的饱和度和亮度
+- `'saturation'`: 使用新内容的饱和度,保留现有内容的色调和亮度
+- `'color'`: 使用新内容的色调和饱和度,保留现有内容的亮度
+- `'luminosity';`: 使用新内容的亮度,保留现有内容的色调和饱和度
+
+<KShape :afterMounted="showHslColorCompositeOperationType" :width="600" :height="110" />
