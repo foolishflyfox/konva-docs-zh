@@ -55,7 +55,14 @@ export default defineConfig({
   description: "关于 Konva 的文档(中文版)",
   head: [
     // 设置 favicon
-    ["link", { rel: "icon", type: "image/svg+xml", href: "./favicon.svg" }],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/konva-docs-zh/favicon.svg",
+      },
+    ],
   ],
   // mermaid: {
   // mermaid 插件的相关配置
