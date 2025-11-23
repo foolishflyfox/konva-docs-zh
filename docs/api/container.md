@@ -211,6 +211,6 @@ container.clipFunc(function (ctx) {
 });
 ```
 
-### 继承的函数
+## 继承的函数
 
 都是从 `Konva.Node` 继承而来的函数，可参考 [Node](./node) 。
