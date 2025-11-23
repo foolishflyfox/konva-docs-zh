@@ -201,3 +201,34 @@ export function filtersDemo(stage: Konva.Stage) {
     true
   );
 }
+
+export const transformsEnabledDemo = {
+  node: new Konva.Rect({
+    x: 30,
+    y: 30,
+    width: 50,
+    height: 50,
+    offset: { x: 20, y: 20 },
+    rotation: 45,
+    scaleX: 1.3,
+    scaleY: 0.7,
+    skewX: 0.5,
+    skewY: 0.3,
+    fill: "orange",
+  }),
+  transformsDraw(stage: Konva.Stage, transforms: string) {
+    const layer = createLayer(stage);
+    const tmpNode = transformsEnabledDemo.node.clone() as Konva.Rect;
+    tmpNode.transformsEnabled(transforms);
+    layer.add(tmpNode);
+  },
+  allTransformsDraw: function (stage: Konva.Stage) {
+    transformsEnabledDemo.transformsDraw(stage, "all");
+  },
+  positionTransformsDraw(stage: Konva.Stage) {
+    transformsEnabledDemo.transformsDraw(stage, "position");
+  },
+  noneTransformsDraw(stage: Konva.Stage) {
+    transformsEnabledDemo.transformsDraw(stage, "none");
+  },
+};

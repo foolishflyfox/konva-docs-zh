@@ -20,6 +20,7 @@
 - 重绘 `draw`
 - 读/写混合操作 `globalCompositeOperation`
 #### 节点变换
+- 读写允许变换的模式 `transformsEnabled`
 - 获取客户端矩形区域 [`getClientRect`](../api/node#getclientrect-config)
 - 移动节点 `move`
 - 在现有基础上旋转的角度 `rotate`
@@ -58,6 +59,7 @@
 #### 属性
 ##### 可见性
 - 是否可见 `isVisible`
+- 设置可见属性 `visible`
 - 显示 `show`
 - 隐藏 `hide`
 - 获取绝对不透明度 `getAbsoluteOpacity`

@@ -7,7 +7,8 @@ import {
   showColorCompositeOperationType,
   showHslColorCompositeOperationType,
   offsetDemo,
-  filtersDemo
+  filtersDemo,
+  transformsEnabledDemo
 } from './codes/node';
 
 // getClientRectDemo();
@@ -1285,3 +1286,58 @@ node.filters([
 下面分别是添加了 `filters` 的效果:
 
 <KShape :after-mounted="filtersDemo" :width="400" :height="250" />
+
+### visible
+
+获取/设置可见性属性。取值可为 `true` 或 `false`，默认值为 `true`。若需结合节点父级状态判断其实际可见性，请使用 `isVisible()` 方法。
+
+**参数：**
+
+- `visible`: `boolean`
+
+例子：
+
+```js
+// 获取 visible 属性
+var visible = node.visible();
+
+// 设置属性为不可见
+node.visible(false);
+
+// 设置属性为可见
+node.visible(true);
+```
+
+### transformsEnable(enabled)
+
+读写是否启用变换操作。可以是 `all` / `none` / `position` 。默认值为 `all`。
+
+- `all`: 应用所有变换属性(位置、缩放、旋转、倾斜、偏移等)
+- `position`: 仅应用位置和偏移变换(`x`, `y`, `offsetX`, `offsetY`)
+- `none`: 不应用任何变化，节点会保持在其父容器的原点位置，因为 `x`/`y` 都不生效了。
+
+设置为 `"position"` 可以显著提升绘制性能，特别适用于：
+
+- 大量简单移动的对象（如粒子系统）
+- 不需要旋转或缩放的元素
+
+**例子：**
+
+```js
+// 允许位置变换，提高绘图效率
+node.transformsEnabled("position");
+// 允许所有变换
+node.transformsEnabled("all");
+```
+
+下面是为 `all` 时的图形绘制：
+
+<KShape :after-mounted="transformsEnabledDemo.allTransformsDraw" />
+
+下面为 `position` 时的图形绘制：
+
+<KShape :after-mounted="transformsEnabledDemo.positionTransformsDraw" />
+
+下面为 `none` 时的图形绘制：
+
+<KShape :after-mounted="transformsEnabledDemo.noneTransformsDraw" />
