@@ -1487,3 +1487,37 @@ circle.to({
 **参数：**
 
 - `embossBlend`：`boolean`
+
+### enhance(amount)
+
+获取/设置 Enhance(增强)滤镜的配置属性,用于调整图像的颜色范围,使其跨越最宽的可能范围。和 `Konva.Filters.Enhance` 过滤器一起使用，值在 -1 ～ 1 之间。
+
+**参数：**
+
+- `amount`: `number`
+
+### hue(hue)
+
+获取/设置图像色调的配置属性，可以与 `Konva.Filters.HSV` 或 `Konva.Filters.HSL` 滤镜配合使用。 它表示色调的偏移量,以度数为单位,取值范围为 0 到 359。
+
+**参数：**
+
+- `hue`: `number`，值在 0 ～ 359 之间。
+
+### saturation(saturation)
+
+获取/设置 hsv 饱和度，可以与 `Konva.Filters.HSV` 或 `Konva.Filters.HSL` 滤镜配合使用。
+
+**参数：**
+
+- `saturation`: 0 表示饱和度不变，-1.0 表示饱和度减半，1.0 表示饱和度翻倍，其他数值依此类推。
+
+### luminance
+
+获取/设置 HSL 明度，需与` Konva.Filters.HSL` 滤镜配合使用。
+
+**参数：**
+
+- `value`: `number`，值在 -1 ~ 1 之间。
+
+### value(value)

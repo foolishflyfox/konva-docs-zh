@@ -103,6 +103,10 @@
 - 浮雕化等级 `embossWhiteLevel`
 - 浮雕画方向 `embossDirection`
 - 浮雕混合方式 `embossBlend`
+- 增强 `enhance`
+- 色调 `hue`
+- 饱和度 `saturation`
+- HSL明度 `luminance`
 ## 选择器
 - ID 选择器: 以 `#` 开头
 - Name 选择器: 以 `.` 开头
