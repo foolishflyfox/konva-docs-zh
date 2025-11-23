@@ -114,6 +114,21 @@
 - 像素尺寸 `pixelSize`
 - 色阶数 `levels`
 - RGB 颜色通道 `red/green/blue`
+- alpha 通道 `alpha`
+- 阈值 `threshold`
+### [Container](../api/container)
+#### 子节点
+- 子节点 `getChildren`
+- 是否有子节点 `hasChildren`
+- 移除所有子节点 `removeChildren`
+- 销毁所有子节点 `destroyChildren`
+- 添加子节点 `add`
+- 寻找子节点 `find`
+- 寻找一个子节点 `findOne`
+- 是否为祖先节点 `isAncestorOf`
+- 与指定点相交的节点 `getAllIntersections`
+- 裁剪区 `clip/clipX/clipY/clipWidth/clipHeight`
+- 裁剪函数 `clipFunc`
 ## 选择器
 - ID 选择器: 以 `#` 开头
 - Name 选择器: 以 `.` 开头
