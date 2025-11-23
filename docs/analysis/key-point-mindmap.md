@@ -7,10 +7,11 @@
 #### 元信息
 - 获取类型 `getType`
 - 获取类名 `getClassName`
-- 获取/设置名称 `name`
+- 读写名称 `name`
 - 添加名称 `addName`
 - 移除名称 `removeName`
 - 检查是否有名称 `hasName`
+- 读写id `id`
 #### 缓存
 - 创建缓存 `cache`
 - 清理缓存 `clearCache`
@@ -21,23 +22,31 @@
 #### 节点变换
 - 获取客户端矩形区域 [`getClientRect`](../api/node#getclientrect-config)
 - 移动节点 `move`
-- 旋转角度 `rotate`
+- 在现有基础上旋转的角度 `rotate`
+- 设置旋转角度 `roation`
+- 获取绝对旋转 `getAbsoluteRotation`
 - 获取节点绝对位置 `getAbsolutePosition`
 - 节点绝对位置 `absolutePosition`
 - 获取绝对变换 `getAbsoluteTransform`
 - 获取变换 `getTransform`
 - 获取绝对缩放 `getAbsoluteScale`
-- 获取绝对旋转 `getAbsoluteRotation`
+- 读写缩放 `scale`/`scaleX`/`scaleY`
+- 读写倾斜值 `skew`/`skewX`/`skewY`
 - 相对父元素位置 `position` / `x` / `y`
+- 偏移 `offset`/`offsetX`/`offsetY`
 #### 事件
 ##### 事件绑定 `on`
 ##### 事件解绑 `off`
-##### 是否处于监听状态 `isListening`
+##### 事件监听
+- 是否处于监听状态 `isListening`
+- 读写本节点监听 `listening`
+- 阻止默认行为 `preventDefault`
 ##### 事件触发 `fire`
 ##### 拖拽
 - 开始拖拽 `startDrag`
 - 结束拖拽 `stopDrag`
 - 是否为拖拽模式 `isDragging`
+- 读写拖拽阈值 `dragDistance`
 #### 节点操作
 - 移除节点 `remove`
 - 销毁节点 `destroy`
@@ -52,6 +61,9 @@
 - 显示 `show`
 - 隐藏 `hide`
 - 获取绝对不透明度 `getAbsoluteOpacity`
+- 读写不透明度 `opacity`
+##### 宽度 `width`
+##### 高度 `height`
 #### 层级
 - 获取绝对层级 `getAbsoluteZIndex`
 - 获取/设置层级 `zindex`

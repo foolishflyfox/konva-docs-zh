@@ -6,6 +6,8 @@ import {
   showSpecialCompositeOperationType,
   showColorCompositeOperationType,
   showHslColorCompositeOperationType,
+  offsetDemo,
+  filtersDemo
 } from './codes/node';
 
 // getClientRectDemo();
@@ -1062,3 +1064,224 @@ node.absolutePosition({ x: 5, y: 10 });
 - `'luminosity';`: 使用新内容的亮度,保留现有内容的色调和饱和度
 
 <KShape :afterMounted="showHslColorCompositeOperationType" :width="600" :height="110" />
+
+### opacity(opacity)
+
+获取/设置不透明度。不透明度值的范围是 0 到 1。不透明度为 0 的节点完全透明，不透明度为 1 的节点完全不透明。
+
+**参数：**
+
+- `opacity`: `number`
+
+### name(name)
+
+读写 `name` 属性。
+
+**例子：**
+
+```js
+// 获取 name
+var name = node.name();
+
+// 设置 name
+node.name("foo");
+
+// 设置多个 name (类似 css 的 class)
+node.name("foo bar");
+```
+
+### id(id)
+
+读写 `id`。`id` 是整个页面的全局变量。
+
+**参数：**
+
+- `id`: `string`
+
+**例子：**
+
+```js
+// 获取 id
+var id = node.id();
+
+// 设置 id
+node.id("foo");
+```
+
+### rotation(rotation)
+
+读写旋转角度。
+
+**参数：**
+
+- `rotation`: `number`
+
+### scale(scale)
+
+读写缩放。
+
+**参数：**
+
+- `scale`: `{ x: number, y: number }`
+
+**例子：**
+
+```js
+// 获取缩放
+var scale = node.scale();
+
+// 设置缩放
+node.scale({ x: 2, y: 3 });
+```
+
+### scaleX(x)
+
+读写 x 方向上的缩放。
+
+### scaleY(y)
+
+读写 y 方向上的缩放。
+
+### skew(skew)
+
+读写倾斜值。
+
+**参数：**
+
+- `skew`: `{ x: number, y: number }`
+
+**例子：**
+
+```js
+// 获取倾斜值
+var skew = node.skew();
+
+// 设置倾斜值
+node.skew({ x: 20, y: 10 });
+```
+
+### skewX(x)
+
+读写 x 轴倾斜值。
+
+### skewY(y)
+
+读写 y 轴倾斜值。
+
+### offset(offset)
+
+设置节点偏移。**注意：offset 是从节点位置减去的，因此正值会使图形向左上方移动，这与直觉可能相反。**
+
+**参数：**
+
+- `offset`: `{ x: number, y: number }`
+
+例如下面的示例，蓝色的为原节点，绿色的为偏移量设置为 `{ x: 25, y: 45 }` 的效果。
+
+<KShape :afterMounted="offsetDemo" :width="180" :height="180" />
+
+### offsetX(x)
+
+设置 X 方向上的偏移。
+
+### offsetY(y)
+
+设置 Y 方向上的偏移。
+
+### dragDistance(distance)
+
+读写拖动阈值。
+
+**参数：**
+
+- `distance`: `number`
+
+**例子：**
+
+```js
+// 获取拖拽阈值
+var dragDistance = Node.dragDistance();
+// 设置拖拽阈值，下面的代码表示只有指针拖拽移动大于3像素时才真正开始拖拽
+node.dragDistance(3);
+// 或者全局设置
+Konva.dragDistance = 3;
+```
+
+### width(width)
+
+读写宽度。
+
+### height(height)
+
+读写高度。
+
+### listening(listening)
+
+获取/设置监听属性。若需通过节点父级状态判断其是否处于监听状态，请使用 `isListening()` 方法。监听属性设为 `false` 的节点将不会在点击图中被检测到，因此容器 `getIntersection()` 方法会忽略这些节点。
+
+**参数：**
+
+- `listenging`: `boolean`
+
+**例子：**
+
+```js
+// 获取 listening 属性
+var listening = node.listening();
+
+// 停止事件监听，从点击图中移除节点及其所有的子节点
+node.listening(false);
+
+// 根据父级状态监听事件
+node.listening(true);
+```
+
+### preventDefault(preventDefault)
+
+获取/设置阻止默认行为属性。默认情况下，所有图形都会阻止浏览器在指针移动或点击时的默认行为，这能避免在拖放节点时触发原生滚动。但某些情况下您可能需要启用默认操作，此时可将该属性设为 false。
+
+**例子：**
+
+```js
+// 获取 preventDefault 属性
+var shouldPrevent = shape.preventDefault();
+
+// 设置 preventDefault
+shape.preventDefault(false);
+```
+
+### filters(filters)
+
+获取/设置滤镜属性。支持函数滤镜、CSS 滤镜字符串或混合数组。CSS 滤镜会优先使用浏览器原生功能进行处理，而函数滤镜则通过 ImageData 操作实现。在不支持 CSS 滤镜的浏览器中，系统会自动降级为函数滤镜。
+
+**参数：**
+
+- `filters`: 数组，滤镜函数/CSS 滤镜字符串组成的数组
+
+**例子：**
+
+```js
+// 获取滤镜
+var filters = node.filters();
+
+// 仅设置 CSS 滤镜，不需要缓存，使用浏览器功能
+// 注：结果测试，也是需要使用 node.cache() 的，否则没有效果，官网这里写的可能有点问题
+node.cache();
+node.filters(["blur(5px)", "brightness(1.2)", "constract(1.5)"]);
+
+// 仅设置函数滤镜，需要缓存
+node.cache();
+node.filters([Konva.Filters.Blur, Konva.Filters.Sepia, Konva.Filters.Invert]);
+
+// CSS 和函数滤镜混合，需要缓存
+node.cache();
+node.filters([
+  "blur(3px)", // CSS 滤镜
+  Konva.Filters.Invert, // 函数滤镜
+  "brightness(1.5)", // CSS 滤镜
+]);
+```
+
+下面分别是添加了 `filters` 的效果:
+
+<KShape :after-mounted="filtersDemo" :width="400" :height="250" />

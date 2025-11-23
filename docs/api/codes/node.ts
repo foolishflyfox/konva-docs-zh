@@ -1,5 +1,6 @@
 import { createLayer } from "@docs/utils";
 import Konva from "konva";
+import { FilterFunction } from "konva/lib/Node";
 
 export function getClientRectDemo() {
   const rect = new Konva.Rect({
@@ -125,4 +126,78 @@ export function showHslColorCompositeOperationType(stage: Konva.Stage) {
     "color",
     "luminosity",
   ]);
+}
+
+export function offsetDemo(stage: Konva.Stage) {
+  const layer = createLayer(stage);
+  const rect1 = new Konva.Rect({
+    x: 50,
+    y: 50,
+    width: 100,
+    height: 100,
+    fill: "blue",
+    opacity: 0.5,
+  });
+  const rect2 = (rect1.clone() as Konva.Rect)
+    .fill("green")
+    .offset({ x: 25, y: 45 });
+  layer.add(rect1, rect2);
+}
+
+function addFilteredNodes(
+  layer: Konva.Layer,
+  node: Konva.Node,
+  filters: (FilterFunction | string)[],
+  rowIndex: number,
+  withCache: boolean
+) {
+  const y = rowIndex * 80 + 10;
+  const x0 = 10;
+  for (let i = 0; i < filters.length + 1; i++) {
+    const x = x0 + i * 90;
+    const tmpNode = node.clone({ x, y });
+    const tmpFilters = filters.slice(0, i);
+    if (tmpFilters.length) {
+      if (withCache) {
+        tmpNode.cache();
+        tmpNode.fill("green");
+        // 直接再度调用 cache 就行，不需要先 clearCache 就能刷新缓存
+        // tmpNode.cache();
+      }
+      tmpNode.filters(tmpFilters);
+    }
+    layer.add(tmpNode);
+  }
+}
+
+export function filtersDemo(stage: Konva.Stage) {
+  const layer = createLayer(stage);
+  const node = new Konva.Rect({ width: 60, height: 60, fill: "#0bf" });
+  addFilteredNodes(
+    layer,
+    node,
+    ["blur(5px)", "brightness(1.2)", "contrast(1.5)"],
+    0,
+    true
+  );
+
+  addFilteredNodes(
+    layer,
+    node,
+    [Konva.Filters.Blur, Konva.Filters.Sepia, Konva.Filters.Invert],
+    1,
+    true
+  );
+
+  addFilteredNodes(
+    layer,
+    node,
+    [
+      "blur(3px)", // CSS filter
+      Konva.Filters.Invert, // function filter
+      "brightness(1.5)", // CSS filter
+    ],
+    2,
+    true
+  );
 }
