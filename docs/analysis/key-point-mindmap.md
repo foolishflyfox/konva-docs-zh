@@ -107,11 +107,17 @@
 - 色调 `hue`
 - 饱和度 `saturation`
 - HSL明度 `luminance`
+- HSV值 `value`
+- 万花筒对称层级 `kaleidoscopePower`
+- 万花筒图案角度 `kaleidoscopeAngle`
+- 噪点强度 `noise`
+- 像素尺寸 `pixelSize`
+- 色阶数 `levels`
+- RGB 颜色通道 `red/green/blue`
 ## 选择器
 - ID 选择器: 以 `#` 开头
 - Name 选择器: 以 `.` 开头
 - 类型选择器: 节点类名
 - 多选择器: 用逗号分隔
 - 函数选择器: `(node) => void` 类型函数
-
 ```

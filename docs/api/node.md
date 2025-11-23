@@ -1521,3 +1521,89 @@ circle.to({
 - `value`: `number`，值在 -1 ~ 1 之间。
 
 ### value(value)
+
+获取/设置 hsv 值。与 `Konva.Filters.HSV` 滤镜配合使用。
+
+**参数：**
+
+- `value`: `number`，0 表示数值不变，-1.0 表示数值减半，1.0 表示数值翻倍，其他数值依此类推。
+
+### kaleidoscopePower(power)
+
+获取/设置万花筒对称层级。需与 `Konva.Filters.Kaleidoscope` 滤镜配合使用。
+
+**参数：**
+
+- `power`: 整数，万花筒对称层级
+
+### kaleidoscopeAngle(degrees)
+
+获取/设置万花筒图案角度。需与 `Konva.Filters.Kaleidoscope` 滤镜配合使用。
+
+**参数：**
+
+- `degrees`: 整数，角度
+
+### noise(noise)
+
+获取/设置噪点强度。取值必须在 0 到 1 之间。需与 `Konva.Filters.Noise` 滤镜配合使用。
+
+**参数：**
+
+- `noise`：`number`，噪点强度
+
+### pixelSize(pixelSize)
+
+获取/设置像素块尺寸。需与 `Konva.Filters.Pixelate` 滤镜配合使用。
+
+**参数：**
+
+- `pixelSize`: 整数，像素块尺寸
+
+### levels(level)
+
+获取/设置色阶数。取值必须在 0 到 1 之间。需与 Konva.Filters.Posterize 滤镜配合使用。
+
+**参数：**
+
+- `level`: `number`，0 ～ 1 之间
+
+### red(red)
+
+获取/设置红色通道数值。需与 `Konva.Filters.RGB` / `Konva.Filters.RGBA` 滤镜配合使用。
+
+**参数：**
+
+- `red`: 整数，0 ～ 255 之间
+
+### green(green)
+
+获取/设置绿色通道数值。需与 `Konva.Filters.RGB` / `Konva.Filters.RGBA` 滤镜配合使用。
+
+**参数：**
+
+- `green`: 整数，0 ～ 255 之间
+
+### blue(blue)
+
+获取/设置蓝色通道数值。需与 `Konva.Filters.RGB` / `Konva.Filters.RGBA` 滤镜配合使用。
+
+**参数：**
+
+- `blue`: 整数，0 ～ 255 之间
+
+### alpha(alpha)
+
+获取/设置 Alpha 通道数值。需与 `Konva.Filters.RGBA` 滤镜配合使用。
+
+**参数：**
+
+- `alpha`: 小数，0 ～ 1 之间
+
+### threshold(threshold)
+
+获取/设置阈值。取值必须在 0 到 1 之间。需与 `Konva.Filters.Threshold` 或 `Konva.Filters.Mask` 滤镜配合使用。
+
+**参数：**
+
+- `threshold`: `number`，0 ～ 1
