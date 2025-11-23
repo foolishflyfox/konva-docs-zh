@@ -1437,3 +1437,53 @@ circle.to({
 **参数：**
 
 - `radius`: `number`
+
+### brightness(brightness)
+
+获取/设置滤镜亮度。亮度值范围在-1 到 1 之间。正值使像素变亮，负值使像素变暗。需与 `Konva.Filters.Brighten` 滤镜配合使用。
+
+**参数：**
+
+- `brightness`: `number`，0 ～ 1 之间的数
+
+### contrast(contrast)
+
+获取/设置滤镜对比度。对比度值范围在-100 到 100 之间。需与 `Konva.Filters.Contrast` 滤镜配合使用。
+
+**参数：**
+
+- `contrast`: `number`，-100 ～ 100 之间的值
+
+### embossStrength(level)
+
+获取/设置浮雕化强度。需与 `Konva.Filters.Emboss` 滤镜配合使用。
+
+**参数：**
+
+- `level`: `number`，0 ～ 1 之间的值，默认值为 0.5
+
+### embossWhiteLevel(embossWhiteLevel)
+
+获取/设置浮雕高光等级。需与 `Konva.Filters.Emboss` 滤镜配合使用。
+
+**参数：**
+
+- `embossWhiteLevel`: `number`，0 ～ 1 之间的值，默认值为 0.5
+
+### embossDirection(embossDirection)
+
+获取/设置浮雕效果方向。需与 `Konva.Filters.Emboss` 滤镜配合使用。
+
+**参数：**
+
+- `embossDirection`: `'top-left' | 'top' | 'top-right' | 'right' | 'right-bottom' | 'bottom' | 'bottom-left' | 'left' `，默认值是 `top-left`
+
+### embossBlend(embossBlend)
+
+获取/设置浮雕混合方式。需与 `Konva.Filters.Emboss` 滤镜配合使用。
+
+设置为 `true` 时,浮雕效果会与原始图像颜色混合,将计算出的差异值添加到原始像素的 RGB 值上。当设置为 `false` 时,会生成纯灰度的浮雕效果,所有像素的 RGB 值都设置为相同的灰度值。
+
+**参数：**
+
+- `embossBlend`：`boolean`
