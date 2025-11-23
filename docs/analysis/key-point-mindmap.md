@@ -35,6 +35,7 @@
 - 读写倾斜值 `skew`/`skewX`/`skewY`
 - 相对父元素位置 `position` / `x` / `y`
 - 偏移 `offset`/`offsetX`/`offsetY`
+- 补间节点属性 `to`
 #### 事件
 ##### 事件绑定 `on`
 ##### 事件解绑 `off`
@@ -48,6 +49,8 @@
 - 结束拖拽 `stopDrag`
 - 是否为拖拽模式 `isDragging`
 - 读写拖拽阈值 `dragDistance`
+- 读写拖拽边界函数 `dragBoundFunc`
+- 读写允许拖拽标志 `draggable`
 #### 节点操作
 - 移除节点 `remove`
 - 销毁节点 `destroy`
@@ -64,8 +67,7 @@
 - 隐藏 `hide`
 - 获取绝对不透明度 `getAbsoluteOpacity`
 - 读写不透明度 `opacity`
-##### 宽度 `width`
-##### 高度 `height`
+##### 宽高 `size`/`width`/`height`
 #### 层级
 - 获取绝对层级 `getAbsoluteZIndex`
 - 获取/设置层级 `zindex`
@@ -93,6 +95,8 @@
 - 转换为 Base64 字符串 `toDataURL`
 - 转换为图片元素 `toImage`
 - 转换为二进制块 `toBlob`
+#### 滤镜
+- 模糊半径 `blurRadius`
 ## 选择器
 - ID 选择器: 以 `#` 开头
 - Name 选择器: 以 `.` 开头

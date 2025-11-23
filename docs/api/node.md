@@ -1341,3 +1341,99 @@ node.transformsEnabled("all");
 下面为 `none` 时的图形绘制：
 
 <KShape :after-mounted="transformsEnabledDemo.noneTransformsDraw" />
+
+### size(size)
+
+设置节点尺寸
+
+**参数：**
+
+- `size`: `{ width: number, height: number }`
+
+**例子：**
+
+```js
+// 获取节点尺寸
+var size = node.size();
+var width = size.width;
+var height = size.height;
+
+// 设置尺寸
+node.size({
+  width: 100,
+  height: 200,
+});
+```
+
+### dragBoundFunc(dragBoundFunc)
+
+获取/设置拖拽边界函数。此函数用于重写默认的拖放位置。
+
+**参数：**
+
+- `dragBoundFunc`: `(this: Node, pos: Vector2d) => Vector2d`
+
+**例子：**
+
+```js
+// 获取拖拽边界函数
+var dragBoundFuncs = node.dragBoundFunc();
+
+// 设置仅允许垂直拖拽
+node.dragBoundFunc(function (pos) {
+  // 输入的 pos 是节点的绝对位置
+  // 因此您的返回也应该是绝对位置
+  return {
+    x: this.absolutePosition().x(),
+    y: pos.y,
+  };
+});
+```
+
+### draggable(draggable)
+
+设置是否可拖拽的标识。
+
+**参数：**
+
+- `draggable`: `boolean`
+
+**例子：**
+
+```js
+// 获取是否允许拖拽标志
+var draggable = node.draggable();
+
+// 允许拖拽
+node.draggable(true);
+
+// 不允许拖拽
+node.draggable(false);
+```
+
+### to(params)
+
+补间节点属性。这是 [Konva.Tween](./tween.md) 对象的简化用法。
+
+**参数值：**
+
+- `params`: 补间参数
+
+**例子：**
+
+```js
+circle.to({
+  x: 50,
+  duration: 0.5,
+  onUpdate: () => console.log("props updated"),
+  onFinish: () => console.log("finished"),
+});
+```
+
+### blurRadius(radius)
+
+获取/设置模糊半径。需与 `Konva.Filters.Blur` 滤镜配合使用。
+
+**参数：**
+
+- `radius`: `number`
