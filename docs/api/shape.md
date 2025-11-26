@@ -43,6 +43,12 @@
 | <a class="add-row"/>`fillRadialGradientColorStops`(可选)  | `Array`    | 径向渐变中颜色过渡的关键点                  |
 | <a class="add-row"/>`fillEnabled`(可选)                   | `Boolean`  | 是否允许填充，默认为 true                   |
 | <a class="add-row"/>`fillPriority`(可选)                  | `String`   | 选择填充的模式，纯色/图案/线性渐变/径向渐变 |
+| <a class="add-row"/>`stroke`(可选)                        | `String`   | 描边颜色                                    |
+| <a class="add-row"/>`strokeWidth`(可选)                   | `Number`   | 描边宽度                                    |
+| <a class="add-row"/>`fillAfterStrokeEnabled`(可选)        | `Boolean`  | 是否先描边后填充，默认为 false              |
+| <a class="add-row"/>`hitStrokeWidth`(可选)                | `Number`   | 击中的描边大小。默认 auto，等于 strokeWidth |
+| <a class="add-row"/>`strokeHitEnable`(可选)               | `Boolean`  | 已废弃，建议用 hitStrokeWidth               |
+| <a class="add-row"/>`perfectDrawEnabled`(可选)            | `Boolean`  | 是否使用缓存画布(效果好，性能差)，默认 true |
 | `x` (可选)                                                | `Number`   | 位置：x 坐标                                |
 | `y` (可选)                                                | `Number`   | 位置：y 坐标                                |
 | `width` (可选)                                            | `Number`   | 宽度                                        |
