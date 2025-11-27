@@ -3,7 +3,6 @@
 xxxx
 
 <script setup>
-import { ShapeCode } from "@docs/components/utils";
 import { codeData } from "./codes/circle";
 </script>
 <div>
