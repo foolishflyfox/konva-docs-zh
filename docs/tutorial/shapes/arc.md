@@ -1,19 +1,5 @@
 # 弧形
 
-xxx
+通过实例化 `Konva.Arc()` 对象，你可以创建一个圆弧。
 
-::: code-group
-
-```js [main.js]
-console.log("hello, world");
-```
-
-```html [index.html]
-<div>xxx</div>
-```
-
-```python
-print("hello, world")
-```
-
-:::
+完整的属性和方法可参见 [Arc API](../../api/arc)。
