@@ -123,6 +123,6 @@ svg[id^="mermaid-"] .node path {
   line-height: 36px;
 }
 
-tr:has(.add-row) {
+tr:has(.ar) {
   background-color: #10b98124 !important;
 }
