@@ -1,8 +1,8 @@
 import { createShapeCodesData } from "@docs/types";
 
-export const codeData = createShapeCodesData();
+export const codesData = createShapeCodesData();
 
-codeData.vanilla.js = `import Konva from 'konva';
+codesData.vanilla.js = `import Konva from 'konva';
 
 const stage = new Konva.Stage({
   container: 'container',
@@ -24,7 +24,7 @@ const circle = new Konva.Circle({
 
 layer.add(circle);`;
 
-codeData.react = `import { Stage, Layer, Circle } from 'react-konva';
+codesData.react = `import { Stage, Layer, Circle } from 'react-konva';
 
 const App = () => {
   return (
@@ -43,7 +43,7 @@ const App = () => {
   );
 };`;
 
-codeData.vue.app = `<template>
+codesData.vue.app = `<template>
   <v-stage :config="stageSize">
     <v-layer>
       <v-circle :config="circleConfig" />
