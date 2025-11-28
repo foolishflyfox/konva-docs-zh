@@ -14,14 +14,14 @@ const layer = new Konva.Layer();
 stage.add(layer);
 
 const arrow = new Konva.Arrow({
-  x: stage.width() / 4, // 箭头的起始位置
-  y: stage.height() / 4, // 箭头的结束位置
-  points: [0, 0, 100, 100], // 
-  pointerLength: 30,
-  pointerWidth: 15,
-  fill: 'green',
-  stroke: 'orange',
-  strokeWidth: 4
+  x: stage.width() / 4, // 箭头位置的 x 坐标
+  y: stage.height() / 4, // 箭头位置的 y 坐标
+  points: [0, 0, 100, 100], // 坐标点坐标，可以多个点
+  pointerLength: 30, // 箭头长度
+  pointerWidth: 15, // 箭头宽度
+  fill: 'green', // 填充色
+  stroke: 'orange', // 描边色
+  strokeWidth: 4 // 描边宽度
 });
 
 layer.add(arrow);
