@@ -29,18 +29,16 @@ class Shape {
 }
 link Shape "../api/shape"
 
-class Rect {}
-link Rect "../api/rect"
-
-class Ellipse {}
-link Ellipse "../api/ellipse"
-
 
 Node <|-- Container
 Node <|-- Shape
 Container <|-- Stage
 Container <|-- Layer
 Container <|-- Group
-Shape <|-- Rect
-Shape <|-- Ellipse
 ```
+
+继承自 Shape 的类包括：
+
+- `Arc`
+- `Line`
+  - `Arrow`
