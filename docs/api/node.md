@@ -1,5 +1,4 @@
 <script setup>
-import { KShape } from "@docs/components/kshapes";
 import { 
   getClientRectDemo, 
   showBaseCompositeOperationType, 

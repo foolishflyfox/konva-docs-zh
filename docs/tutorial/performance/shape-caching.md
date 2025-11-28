@@ -1,5 +1,4 @@
 <script setup>
-import { KShape } from "@docs/components/kshapes";
 import { ShapeCode } from "@docs/components/utils";
 import { codeData, shapeCachingPerformanceDemo } from './codes/shape-caching';
 </script>

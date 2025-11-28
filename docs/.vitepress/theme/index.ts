@@ -8,6 +8,7 @@ import Breadcrumb from "./Breadcrumb.vue";
 // @ts-ignore
 import { Markmap } from "markmap-view";
 import { ShapeCode } from "../../components/utils";
+import { KShape } from "../../components/kshapes";
 import "./custom.css";
 
 // 思维导图支持步骤三: 渲染函数定义
@@ -74,6 +75,7 @@ export default {
     // 注入到 Vue app 实例
     app.provide("highlighter", highlighter);
     app.component("ShapeCode", ShapeCode);
+    app.component("KShape", KShape);
   },
   /**
    * 自定义布局: 添加面包屑
