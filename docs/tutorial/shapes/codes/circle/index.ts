@@ -1,5 +1,5 @@
 import { createShapeCodesData } from "@docs/types";
-
+export * from "./demos";
 export const codesData = createShapeCodesData();
 
 codesData.vanilla.js = `import Konva from 'konva';
@@ -14,12 +14,12 @@ const layer = new Konva.Layer();
 stage.add(layer);
 
 const circle = new Konva.Circle({
-  x: stage.width() / 2,
-  y: stage.height() / 2,
-  radius: 70,
-  fill: 'red',
-  stroke: 'black',
-  strokeWidth: 4
+  x: stage.width() / 2, // 圆心 x 坐标
+  y: stage.height() / 2, // 圆形 y 坐标
+  radius: 70, // 半径
+  fill: 'red', // 填充色
+  stroke: 'black', // 描边色
+  strokeWidth: 4 // 描边宽度
 });
 
 layer.add(circle);`;
