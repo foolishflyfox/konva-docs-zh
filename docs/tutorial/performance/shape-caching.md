@@ -1,6 +1,6 @@
 <script setup>
 import { ShapeCode } from "@docs/components/utils";
-import { codeData, shapeCachingPerformanceDemo } from './codes/shape-caching';
+import { codesData, shapeCachingPerformanceDemo } from './codes/shape-caching';
 </script>
 
 # 图形缓存性能优化技巧
@@ -43,4 +43,4 @@ import { codeData, shapeCachingPerformanceDemo } from './codes/shape-caching';
 
 <KShape :afterMounted="shapeCachingPerformanceDemo" :width=700 :height=700 />
 
-<ShapeCode v-bind="codeData" />
+<ShapeCode v-bind="codesData" />

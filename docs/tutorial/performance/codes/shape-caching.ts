@@ -2,7 +2,7 @@ import { createShapeCodesData } from "@docs/types";
 import { createLayer } from "@docs/utils";
 import Konva from "konva";
 
-export const codeData = createShapeCodesData();
+export const codesData = createShapeCodesData();
 
 export function shapeCachingPerformanceDemo(stage: Konva.Stage) {
   const layer = createLayer(stage);
@@ -98,7 +98,7 @@ export function shapeCachingPerformanceDemo(stage: Konva.Stage) {
   anim.start();
 }
 
-codeData.vanilla.js = `import Konva from 'konva';
+codesData.vanilla.js = `import Konva from 'konva';
 
 const stage = new Konva.Stage({
   container: 'container',
@@ -223,7 +223,7 @@ checkbox.addEventListener('change', () => {
 anim.start();
 `;
 
-codeData.react = `import { Stage, Layer, Circle, Text, Group } from 'react-konva';
+codesData.react = `import { Stage, Layer, Circle, Text, Group } from 'react-konva';
 import { useEffect, useRef, useState } from 'react';
 import Konva from 'konva';
 
@@ -361,7 +361,7 @@ const App = () => {
 export default App;
 `;
 
-codeData.vue.app = `<template>
+codesData.vue.app = `<template>
   <v-stage 
     :config="stageSize"
     @click="addCircles(1000)"
