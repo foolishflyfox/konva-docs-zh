@@ -13,14 +13,14 @@ const layer = new Konva.Layer();
 stage.add(layer);
 
 const arc = new Konva.Arc({
-  x: stage.width() / 2,
-  y: stage.height() / 2,
-  innerRadius: 40,
-  outerRadius: 70,
-  angle: 60,
-  fill: 'yellow',
-  stroke: 'black',
-  strokeWidth: 4
+  x: stage.width() / 2, // 圆弧中心点 x 坐标
+  y: stage.height() / 2, // 圆弧中心点 y 坐标
+  innerRadius: 40, // 内圆半径
+  outerRadius: 70, // 外圆半径
+  angle: 60, // 圆弧的绘制角度数
+  fill: 'yellow', // 填充颜色
+  stroke: 'black', // 描边颜色
+  strokeWidth: 4 // 描边宽度
 });
 
 layer.add(arc);
