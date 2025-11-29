@@ -29,6 +29,10 @@ class Label {
 }
 link Label "../api/label"
 
+class Transformer {
+}
+link Transformer "../api/transformer"
+
 class Shape {
 }
 link Shape "../api/shape"
@@ -40,6 +44,7 @@ Container <|-- Stage
 Container <|-- Layer
 Container <|-- Group
 Group <|-- Label
+Group <|-- Transformer
 ```
 
 继承自 Shape 的类包括：
