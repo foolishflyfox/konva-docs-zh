@@ -6,7 +6,7 @@ import { codesData, groupDemo } from './codes/group';
 
 通过实例化 `Konva.Group()` 对象，你可以创建一个组。
 
-完整的属性和方法可参见 [Group API](../../api/group.md)。
+完整的属性和方法可参见 [Group API](../../api/group)。
 
 <KShape :afterMounted="groupDemo" :width="200" />
 
