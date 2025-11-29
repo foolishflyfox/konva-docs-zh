@@ -45,7 +45,7 @@ tooltip.add(
   })
 );
 
-// label pointing left
+// 左向指示的标签
 const labelLeft = new Konva.Label({
   x: 20,
   y: 130,
@@ -72,7 +72,7 @@ labelLeft.add(
   })
 );
 
-// simple label
+// 简单标签
 const simpleLabel = new Konva.Label({
   x: 180,
   y: 150,
