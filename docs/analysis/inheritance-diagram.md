@@ -25,6 +25,10 @@ class Group {
 }
 link Group "../api/group"
 
+class Label {
+}
+link Label "../api/label"
+
 class Shape {
 }
 link Shape "../api/shape"
@@ -35,10 +39,16 @@ Node <|-- Shape
 Container <|-- Stage
 Container <|-- Layer
 Container <|-- Group
+Group <|-- Label
 ```
 
 继承自 Shape 的类包括：
 
 - `Arc`
+- `Circle`
+- `Ellipse`
+- `Image`
 - `Line`
   - `Arrow`
+- `Tag`
+- `Text`
