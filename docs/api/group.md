@@ -73,11 +73,11 @@ export class Group extends Container<Group | Shape> {
 | `draggable`(可选)     | `Boolean`  | 节点是否可被拖拽                          |
 | `dragDistance`(可选)  | `Number`   | 触发拖拽的距离阈值                        |
 | `dragBoundFunc`(可选) | `function` | 拖拽过程中限制或修改节点的位置的回调函数  |
-| clipX`(可选)          | `Number`   | 裁剪矩形区域的 X 坐标                     |
-| clipY`(可选)          | `Number`   | 裁剪矩形区域的 Y 坐标                     |
-| clipWidth`(可选)      | `Number`   | 裁剪矩形区域宽度                          |
-| clipHeight`(可选)     | `Number`   | 裁剪矩形区域高度                          |
-| clipFunc`(可选)       | `function` | 自定义裁剪函数,用于定义容器的裁剪区域形状 |
+| `clipX`(可选)         | `Number`   | 裁剪矩形区域的 X 坐标                     |
+| `clipY`(可选)         | `Number`   | 裁剪矩形区域的 Y 坐标                     |
+| `clipWidth`(可选)     | `Number`   | 裁剪矩形区域宽度                          |
+| `clipHeight`(可选)    | `Number`   | 裁剪矩形区域高度                          |
+| `clipFunc`(可选)      | `function` | 自定义裁剪函数,用于定义容器的裁剪区域形状 |
 
 ## 成员方法
 
