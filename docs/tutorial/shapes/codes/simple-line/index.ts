@@ -1,0 +1,134 @@
+import { createShapeCodesData } from "@docs/types";
+
+export * from "./demo";
+
+export const simpleLineCodes = createShapeCodesData();
+simpleLineCodes.vanilla.js = `import Konva from 'konva';
+
+const stage = new Konva.Stage({
+  container: 'container',
+  width: window.innerWidth,
+  height: window.innerHeight
+});
+
+const layer = new Konva.Layer();
+stage.add(layer);
+
+const redLine = new Konva.Line({
+  points: [5, 70, 140, 23, 250, 60, 300, 20],
+  stroke: 'red',
+  strokeWidth: 15,
+  lineCap: 'round',
+  lineJoin: 'round'
+});
+
+// 创建虚线，其中线段长度为 33px，间隔 10px
+const greenLine = new Konva.Line({
+  points: [5, 70, 140, 23, 250, 60, 300, 20],
+  stroke: 'green',
+  strokeWidth: 2,
+  lineJoin: 'round',
+  dash: [33, 10]
+});
+
+// 创建虚线，模式为：
+// 线段 29px / 间隔 20px / 一个实心点 / 间隔 20px
+// line segments with a length of 29px with a gap of 20px
+// followed by a dot (0.001px) and another gap of 20px
+const blueLine = new Konva.Line({
+  points: [5, 70, 140, 23, 250, 60, 300, 20],
+  stroke: 'blue',
+  strokeWidth: 10,
+  lineCap: 'round',
+  lineJoin: 'round',
+  dash: [29, 20, 0.001, 20]
+});
+
+redLine.move({ x: 0, y: 5 });
+greenLine.move({ x: 0, y: 55 });
+blueLine.move({ x: 0, y: 105 });
+
+layer.add(redLine, greenLine, blueLine);`;
+
+simpleLineCodes.react = `import { Stage, Layer, Line } from 'react-konva';
+
+const App = () => {
+  return (
+    <Stage width={window.innerWidth} height={window.innerHeight}>
+      <Layer>
+        <Line
+          points={[5, 70, 140, 23, 250, 60, 300, 20]}
+          stroke="red"
+          strokeWidth={15}
+          lineCap="round"
+          lineJoin="round"
+          y={5}
+        />
+        <Line
+          points={[5, 70, 140, 23, 250, 60, 300, 20]}
+          stroke="green"
+          strokeWidth={2}
+          lineJoin="round"
+          dash={[33, 10]}
+          y={55}
+        />
+        <Line
+          points={[5, 70, 140, 23, 250, 60, 300, 20]}
+          stroke="blue"
+          strokeWidth={10}
+          lineCap="round"
+          lineJoin="round"
+          dash={[29, 20, 0.001, 20]}
+          y={105}
+        />
+      </Layer>
+    </Stage>
+  );
+};
+
+export default App;`;
+
+simpleLineCodes.vue.app = `<template>
+  <v-stage :config="stageSize">
+    <v-layer>
+      <v-line :config="redLineConfig" />
+      <v-line :config="greenLineConfig" />
+      <v-line :config="blueLineConfig" />
+    </v-layer>
+  </v-stage>
+</template>
+
+<script setup>
+const stageSize = {
+  width: window.innerWidth,
+  height: window.innerHeight
+};
+
+const redLineConfig = {
+  points: [5, 70, 140, 23, 250, 60, 300, 20],
+  stroke: 'red',
+  strokeWidth: 15,
+  lineCap: 'round',
+  lineJoin: 'round',
+  y: 5
+};
+
+const greenLineConfig = {
+  points: [5, 70, 140, 23, 250, 60, 300, 20],
+  stroke: 'green',
+  strokeWidth: 2,
+  lineJoin: 'round',
+  dash: [33, 10],
+  y: 55
+};
+
+const blueLineConfig = {
+  points: [5, 70, 140, 23, 250, 60, 300, 20],
+  stroke: 'blue',
+  strokeWidth: 10,
+  lineCap: 'round',
+  lineJoin: 'round',
+  dash: [29, 20, 0.001, 20],
+  y: 105
+};
+</script>`;
