@@ -24,7 +24,7 @@ const simpleText = new Konva.Text({
 
 simpleText.offsetX(simpleText.width() / 2);
 
-// Complex text with background
+// 带背景的复杂文本
 const complexText = new Konva.Text({
   x: 20,
   y: 60,

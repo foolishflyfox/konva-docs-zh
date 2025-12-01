@@ -63,3 +63,5 @@ Group <|-- Transformer
 - `Star`: 星形
 - `Tag`: 标签背景
 - `Text`: 文本
+- `TextPath`: 文本路径
+- `Wedge`: 楔形
