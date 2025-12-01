@@ -55,5 +55,9 @@ Group <|-- Transformer
 - `Image`
 - `Line`
   - `Arrow`
+- `Path`
+- `Rect`
+- `RegularPolygon`
+- `Ring`
 - `Tag`
 - `Text`
