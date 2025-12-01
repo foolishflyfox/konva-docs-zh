@@ -129,11 +129,12 @@ tr:has(.ar) {
 
 button.raw-style {
   border: 1px black solid;
-  padding: 2px 4px;
+  padding: 1px 6px;
   margin: 2px;
   font-size: 12px;
   background-color: #eee !important;
   border-radius: 3px;
+  line-height: normal;
 }
 button.raw-style:hover {
   background: #bbb !important;

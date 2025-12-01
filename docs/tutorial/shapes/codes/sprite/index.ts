@@ -13,9 +13,10 @@ const stage = new Konva.Stage({
 const layer = new Konva.Layer();
 stage.add(layer);
 
+// 定义多个动画序列
 const animations = {
   idle: [
-    2, 2, 70, 119,      // 第一帧
+    2, 2, 70, 119,      // 第一帧的 x,y,width,height
     71, 2, 74, 119,     // 第二帧
     146, 2, 81, 119,    // 第三帧
     226, 2, 76, 119,    // 第四帧
@@ -30,13 +31,13 @@ const animations = {
 const imageObj = new Image();
 imageObj.onload = function() {
   const sprite = new Konva.Sprite({
-    x: 50,
-    y: 50,
-    image: imageObj,
-    animation: 'idle',
-    animations: animations,
-    frameRate: 7,
-    frameIndex: 0
+    x: 50, // 精灵图左上角的 x 坐标
+    y: 50, // 精灵图左上角的 y 坐标
+    image: imageObj, // 精灵图对象
+    animation: 'idle', // 动画键名
+    animations: animations, // 动画组(键名与动画帧数组映射)
+    frameRate: 7, // 动画帧率
+    frameIndex: 0, // 初始帧设置
   });
 
   layer.add(sprite);

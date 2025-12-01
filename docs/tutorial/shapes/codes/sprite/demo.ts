@@ -1,5 +1,6 @@
 import { createLayer } from "@docs/utils";
 import Konva from "konva";
+import blobSpritePng from "./blob-sprite.png?url";
 
 export function spriteDemo(stage: Konva.Stage) {
   const layer = createLayer(stage);
@@ -24,22 +25,36 @@ export function spriteDemo(stage: Konva.Stage) {
       y: 50,
       image: imageObj,
       animation: "idle",
-      animations: "animations",
+      animations: animations,
       frameRate: 7,
       frameIndex: 0,
     });
+    // sprite.frameOffsets({
+    //   idle: [0, 0, 10, 10, 20, 20, 30, 30],
+    // });
     layer.add(sprite);
     sprite.start();
+    // 添加一个 击打 功能按钮
+    const button = document.createElement("button");
+    button.style.backgroundColor = "#ddd";
+    button.className = "raw-style";
+    button.textContent = "Punch";
+    button.style.position = "absolute";
+    button.style.top = "0";
+    button.style.left = "0";
+    stage.container().style.position = "relative";
+    stage.container().appendChild(button);
+    button.addEventListener("click", () => {
+      sprite.animation("punch");
+      sprite.on("frameIndexChange.button", function () {
+        if (this.frameIndex() === 2) {
+          setTimeout(() => {
+            sprite.animation("idle");
+            sprite.off(".button");
+          }, 1000 / sprite.frameRate());
+        }
+      });
+    });
   };
-  // 添加一个 击打 功能按钮
-  const button = document.createElement("button");
-
-  button.style.backgroundColor = "#ddd";
-  button.className = "raw-style";
-  button.textContent = "Punch";
-  button.style.position = "absolute";
-  button.style.top = "0";
-  button.style.left = "0";
-  stage.container().style.position = "relative";
-  stage.container().appendChild(button);
+  imageObj.src = blobSpritePng;
 }

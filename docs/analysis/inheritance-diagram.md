@@ -59,5 +59,6 @@ Group <|-- Transformer
 - `Rect`
 - `RegularPolygon`
 - `Ring`
+- `Sprite`
 - `Tag`
 - `Text`

@@ -19,12 +19,12 @@
 | <a class="ar"/>`fillPatternX`(可选)                  | `Number`   | 填充图案(pattern)的 X 轴平移位置                 |
 | <a class="ar"/>`fillPatternY`(可选)                  | `Number`   | 填充图案(pattern)的 Y 轴平移位置                 |
 | <a class="ar"/>`fillPatternOffset`(可选)             | `Object`   | 填充图案(pattern)的 X/Y 轴偏移位置               |
-| <a class="ar"/>`fillPatternOffsetX`(可选)            | `Object`   | 填充图案(pattern)的 X 轴偏移位置                 |
-| <a class="ar"/>`fillPatternOffsetY`(可选)            | `Object`   | 填充图案(pattern)的 Y 轴偏移位置                 |
+| <a class="ar"/>`fillPatternOffsetX`(可选)            | `Number`   | 填充图案(pattern)的 X 轴偏移位置                 |
+| <a class="ar"/>`fillPatternOffsetY`(可选)            | `Number`   | 填充图案(pattern)的 Y 轴偏移位置                 |
 | <a class="ar"/>`fillPatternScale`(可选)              | `Object`   | 填充图案(pattern)的缩放                          |
-| <a class="ar"/>`fillPatternScaleX`(可选)             | `Object`   | 填充图案(pattern)的 X 缩放                       |
-| <a class="ar"/>`fillPatternScaleY`(可选)             | `Object`   | 填充图案(pattern)的 Y 缩放                       |
-| <a class="ar"/>`fillPatternRotation`(可选)           | `Object`   | 填充图案(pattern)的旋转角度                      |
+| <a class="ar"/>`fillPatternScaleX`(可选)             | `Number`   | 填充图案(pattern)的 X 缩放                       |
+| <a class="ar"/>`fillPatternScaleY`(可选)             | `Number`   | 填充图案(pattern)的 Y 缩放                       |
+| <a class="ar"/>`fillPatternRotation`(可选)           | `Number`   | 填充图案(pattern)的旋转角度                      |
 | <a class="ar"/>`fillLinearGradientStartPoint`(可选)  | `Object`   | 线性渐变填充的起始点                             |
 | <a class="ar"/>`fillLinearGradientStartPointX`(可选) | `Number`   | 线性渐变填充的起始点 X 坐标                      |
 | <a class="ar"/>`fillLinearGradientStartPointY`(可选) | `Number`   | 线性渐变填充的起始点 Y 坐标                      |
