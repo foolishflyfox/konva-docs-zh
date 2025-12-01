@@ -126,3 +126,18 @@ svg[id^="mermaid-"] .node path {
 tr:has(.ar) {
   background-color: #10b98124 !important;
 }
+
+button.raw-style {
+  border: 1px black solid;
+  padding: 2px 4px;
+  margin: 2px;
+  font-size: 12px;
+  background-color: #eee !important;
+  border-radius: 3px;
+}
+button.raw-style:hover {
+  background: #bbb !important;
+}
+button.raw-style:active {
+  background: #ddd !important;
+}
