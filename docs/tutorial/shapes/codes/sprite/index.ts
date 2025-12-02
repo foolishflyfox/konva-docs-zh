@@ -43,7 +43,7 @@ imageObj.onload = function() {
   layer.add(sprite);
   sprite.start();
 
-  // Add punch button functionality
+  // 点击后，动画变为 “击打” 的按钮
   const button = document.createElement('button');
   button.textContent = 'Punch';
   button.style.position = 'absolute';
@@ -53,9 +53,12 @@ imageObj.onload = function() {
 
   button.addEventListener('click', () => {
     sprite.animation('punch');
+    // 设置 frameIndex 改变的属性监听，并设置命名空间为 button
     sprite.on('frameIndexChange.button', function() {
+      // 击打动画一共有3帧，当 frameIndex 为 2 时，表示已到达最后一帧
       if (this.frameIndex() === 2) {
         setTimeout(() => {
+          // 切换回常态动画，且不再监听动画帧索引的变化
           sprite.animation('idle');
           sprite.off('.button');
         }, 1000 / sprite.frameRate());
