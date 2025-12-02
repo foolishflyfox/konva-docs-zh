@@ -130,6 +130,21 @@ export default defineConfig({
               ],
             },
             {
+              text: "样式",
+              collapsed: true,
+              prefix: "styling",
+              items: [
+                { text: "填充", link: "fill" },
+                { text: "描边", link: "stroke" },
+                { text: "不透明度", link: "opacity" },
+                { text: "线拐点", link: "line-join" },
+                { text: "隐藏与显示", link: "hide-show" },
+                { text: "鼠标样式", link: "mouse-cursor" },
+                { text: "混合模式", link: "blend-mode" },
+                { text: "填充/描边顺序", link: "fill-stroke-order" },
+              ],
+            },
+            {
               text: "事件",
               collapsed: true,
               prefix: "events",
