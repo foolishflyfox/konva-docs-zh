@@ -15,9 +15,11 @@ function loadImages(sources, callback) {
     images[src] = new Image();
     images[src].onload = function () {
       if (++loadedImages >= numImages) {
+        // 在图片全部加载完成后，调用回调函数
         callback(images);
       }
     };
+    // 设置图片 src 属性，执行图片载入
     images[src].src = sources[src];
   }
 }
@@ -32,6 +34,7 @@ function draw(images) {
   });
   var layer = new Konva.Layer();
 
+  // 使用颜色进行填充
   var colorPentagon = new Konva.RegularPolygon({
     x: 80,
     y: stage.height() / 2,
@@ -43,13 +46,15 @@ function draw(images) {
     draggable: true,
   });
 
+  // 使用图片进行填充
   var patternPentagon = new Konva.RegularPolygon({
     x: 220,
     y: stage.height() / 2,
     sides: 5,
     radius: 70,
-    fillPatternImage: images.darthVader,
-    fillPatternOffset: { x: -220, y: 70 },
+    fillPatternImage: images.darthVader, // 指定填充图片
+    fillPatternOffset: { x: -220, y: 70 }, // 指定从源图片选取填充时的偏移
+    fillPatternX: 0, // 指定将选取后的图片放在容器中的位置
     stroke: 'black',
     strokeWidth: 4,
     draggable: true,
@@ -60,9 +65,9 @@ function draw(images) {
     y: stage.height() / 2,
     sides: 5,
     radius: 70,
-    fillLinearGradientStartPoint: { x: -50, y: -50 },
-    fillLinearGradientEndPoint: { x: 50, y: 50 },
-    fillLinearGradientColorStops: [0, 'red', 1, 'yellow'],
+    fillLinearGradientStartPoint: { x: -50, y: -50 }, // 线性渐变起始点
+    fillLinearGradientEndPoint: { x: 50, y: 50 }, // 线性渐变终止点
+    fillLinearGradientColorStops: [0, 'red', 1, 'yellow'], // 线性渐变的颜色
     stroke: 'black',
     strokeWidth: 4,
     draggable: true,
@@ -73,18 +78,18 @@ function draw(images) {
     y: stage.height() / 2,
     sides: 5,
     radius: 70,
-    fillRadialGradientStartPoint: { x: 0, y: 0 },
-    fillRadialGradientStartRadius: 0,
-    fillRadialGradientEndPoint: { x: 0, y: 0 },
-    fillRadialGradientEndRadius: 70,
-    fillRadialGradientColorStops: [0, 'red', 0.5, 'yellow', 1, 'blue'],
+    fillRadialGradientStartPoint: { x: 0, y: 0 }, // 径向渐变起始圆心位置
+    fillRadialGradientStartRadius: 0, // 径向渐变起始圆半径
+    fillRadialGradientEndPoint: { x: 0, y: 0 }, // 径向渐变终止圆心位置
+    fillRadialGradientEndRadius: 70, // 径向渐变终止圆半径
+    fillRadialGradientColorStops: [0, 'red', 0.5, 'yellow', 1, 'blue'], // 径向渐变颜色
     stroke: 'black',
     strokeWidth: 4,
     draggable: true,
   });
 
   /*
-    * bind listeners
+    * 添加鼠标事件绑定
     */
   colorPentagon.on('mouseover touchstart', function () {
     this.fill('blue');
@@ -111,32 +116,21 @@ function draw(images) {
   });
 
   linearGradPentagon.on("mouseout touchend", function () {
-    // set multiple properties at once with setAttrs
     this.fillLinearGradientStartPoint({ x: -50, y: -50 });
     this.fillLinearGradientEndPoint({ x: 50, y: 50 });
     this.fillLinearGradientColorStops([0, "red", 1, "yellow"]);
   });
 
   radialGradPentagon.on('mouseover touchstart', function () {
-    this.fillRadialGradientColorStops([
-      0,
-      'red',
-      0.5,
-      'yellow',
-      1,
-      'green',
-    ]);
+    this.fillRadialGradientColorStops([0, "red", 0.5, "yellow", 1, "green"]);
   });
 
   radialGradPentagon.on('mouseout touchend', function () {
-    // set multiple properties at once with setAttrs
-    this.setAttrs({
-      fillRadialGradientStartPoint: 0,
-      fillRadialGradientStartRadius: 0,
-      fillRadialGradientEndPoint: 0,
-      fillRadialGradientEndRadius: 70,
-      fillRadialGradientColorStops: [0, 'red', 0.5, 'yellow', 1, 'blue'],
-    });
+    this.fillRadialGradientStartPoint({ x: 0, y: 0 });
+    this.fillRadialGradientStartRadius(0);
+    this.fillRadialGradientEndPoint({ x: 0, y: 0 });
+    this.fillRadialGradientEndRadius(70);
+    this.fillRadialGradientColorStops([0, "red", 0.5, "yellow", 1, "blue"]);
   });
 
   layer.add(colorPentagon);

@@ -70,13 +70,12 @@ function draw(stage: Konva.Stage, images: Record<string, HTMLImageElement>) {
     draggable: true,
   });
   linearGradPentagon.on("mouseover touchstart", function () {
-    this.fillLinearGradientStartPointX(-50);
-    this.fillLinearGradientEndPointX(50);
+    // this.fillLinearGradientStartPointX(-50);
+    // this.fillLinearGradientEndPointX(50);
     this.fillLinearGradientColorStops([0, "green", 1, "yellow"]);
   });
 
   linearGradPentagon.on("mouseout touchend", function () {
-    // set multiple properties at once with setAttrs
     this.fillLinearGradientStartPoint({ x: -50, y: -50 });
     this.fillLinearGradientEndPoint({ x: 50, y: 50 });
     this.fillLinearGradientColorStops([0, "red", 1, "yellow"]);
@@ -102,7 +101,6 @@ function draw(stage: Konva.Stage, images: Record<string, HTMLImageElement>) {
   });
 
   radialGradPentagon.on("mouseout touchend", function () {
-    // set multiple properties at once with setAttrs
     this.fillRadialGradientStartPoint({ x: 0, y: 0 });
     this.fillRadialGradientStartRadius(0);
     this.fillRadialGradientEndPoint({ x: 0, y: 0 });
