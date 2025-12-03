@@ -70,8 +70,6 @@ function draw(stage: Konva.Stage, images: Record<string, HTMLImageElement>) {
     draggable: true,
   });
   linearGradPentagon.on("mouseover touchstart", function () {
-    // this.fillLinearGradientStartPointX(-50);
-    // this.fillLinearGradientEndPointX(50);
     this.fillLinearGradientColorStops([0, "green", 1, "yellow"]);
   });
 
