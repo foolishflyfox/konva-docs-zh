@@ -211,6 +211,12 @@ export default defineConfig({
               ],
             },
             {
+              text: "演示",
+              collapsed: true,
+              prefix: "sandbox",
+              items: [{ text: "透明组", link: "transparent-group" }],
+            },
+            {
               text: "性能",
               collapsed: true,
               prefix: "performance",
