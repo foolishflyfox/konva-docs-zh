@@ -137,6 +137,7 @@ export default defineConfig({
                 { text: "填充", link: "fill" },
                 { text: "描边", link: "stroke" },
                 { text: "不透明度", link: "opacity" },
+                { text: "阴影", link: "shadow" },
                 { text: "线拐点", link: "line-join" },
                 { text: "隐藏与显示", link: "hide-show" },
                 { text: "鼠标样式", link: "mouse-cursor" },
