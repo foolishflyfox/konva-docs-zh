@@ -1,0 +1,208 @@
+import { createShapeCodesData } from "@docs/types";
+
+export * from "./demo";
+
+export const mouseCursorCodes = createShapeCodesData();
+mouseCursorCodes.vanilla.js = `import Konva from 'konva';
+
+const stage = new Konva.Stage({
+  container: 'container',
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
+
+const layer = new Konva.Layer();
+stage.add(layer);
+
+const pentagon1 = new Konva.RegularPolygon({
+  x: 80,
+  y: stage.height() / 2,
+  sides: 5,
+  radius: 30,
+  fill: 'red',
+  stroke: 'black',
+  strokeWidth: 4,
+});
+
+pentagon1.on('mouseover', function (e) {
+  e.target.getStage().container().style.cursor = 'pointer';
+});
+pentagon1.on('mouseout', function (e) {
+  e.target.getStage().container().style.cursor = 'default';
+});
+
+const pentagon2 = new Konva.RegularPolygon({
+  x: 180,
+  y: stage.height() / 2,
+  sides: 5,
+  radius: 30,
+  fill: 'green',
+  stroke: 'black',
+  strokeWidth: 4,
+});
+
+pentagon2.on('mouseover', function (e) {
+  e.target.getStage().container().style.cursor = 'crosshair';
+});
+pentagon2.on('mouseout', function (e) {
+  e.target.getStage().container().style.cursor = 'default';
+});
+
+const pentagon3 = new Konva.RegularPolygon({
+  x: 280,
+  y: stage.height() / 2,
+  sides: 5,
+  radius: 30,
+  fill: 'blue',
+  stroke: 'black',
+  strokeWidth: 4,
+});
+
+pentagon3.on('mouseover', function (e) {
+  e.target.getStage().container().style.cursor = 'move';
+});
+pentagon3.on('mouseout', function (e) {
+  e.target.getStage().container().style.cursor = 'default';
+});
+
+layer.add(pentagon1);
+layer.add(pentagon2);
+layer.add(pentagon3);
+`;
+
+mouseCursorCodes.react = `import { Stage, Layer, RegularPolygon } from 'react-konva';
+import { useState } from 'react';
+
+// Separate component for polygon that changes cursor directly
+const SpecialPolygon = ({ x, y }) => {
+  // We use e.target approach here because this component doesn't have
+  // access to the Stage's cursor state from the parent component
+  const handleMouseOver = (e) => {
+    e.target.getStage().container().style.cursor = 'pointer';
+  };
+
+  const handleMouseOut = (e) => {
+    e.target.getStage().container().style.cursor = 'default';
+  };
+
+  return (
+    <RegularPolygon
+      x={x}
+      y={y}
+      sides={5}
+      radius={30}
+      fill="red"
+      stroke="black"
+      strokeWidth={4}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
+    />
+  );
+};
+
+const App = () => {
+  const [cursor, setCursor] = useState('default');
+
+  return (
+    <Stage 
+      width={window.innerWidth} 
+      height={window.innerHeight}
+      style={{ cursor }}
+    >
+      <Layer>
+        <SpecialPolygon
+          x={80}
+          y={window.innerHeight / 2}
+        />
+        <RegularPolygon
+          x={180}
+          y={window.innerHeight / 2}
+          sides={5}
+          radius={30}
+          fill="green"
+          stroke="black"
+          strokeWidth={4}
+          onMouseOver={() => setCursor('crosshair')}
+          onMouseOut={() => setCursor('default')}
+        />
+        <RegularPolygon
+          x={280}
+          y={window.innerHeight / 2}
+          sides={5}
+          radius={30}
+          fill="blue"
+          stroke="black"
+          strokeWidth={4}
+          onMouseOver={() => setCursor('move')}
+          onMouseOut={() => setCursor('default')}
+        />
+      </Layer>
+    </Stage>
+  );
+};
+
+export default App;
+`;
+
+mouseCursorCodes.vue.app = `<template>
+  <v-stage :config="stageSize">
+    <v-layer>
+      <v-regular-polygon
+        v-for="(pentagon, i) in pentagons"
+        :key="i"
+        :config="pentagon"
+        @mouseover="handleMouseOver($event, pentagon.cursor)"
+        @mouseout="handleMouseOut"
+      />
+    </v-layer>
+  </v-stage>
+</template>
+
+<script setup>
+const stageSize = {
+  width: window.innerWidth,
+  height: window.innerHeight
+};
+
+const pentagons = [
+  {
+    x: 80,
+    y: window.innerHeight / 2,
+    sides: 5,
+    radius: 30,
+    fill: 'red',
+    stroke: 'black',
+    strokeWidth: 4,
+    cursor: 'pointer'
+  },
+  {
+    x: 180,
+    y: window.innerHeight / 2,
+    sides: 5,
+    radius: 30,
+    fill: 'green',
+    stroke: 'black',
+    strokeWidth: 4,
+    cursor: 'crosshair'
+  },
+  {
+    x: 280,
+    y: window.innerHeight / 2,
+    sides: 5,
+    radius: 30,
+    fill: 'blue',
+    stroke: 'black',
+    strokeWidth: 4,
+    cursor: 'move'
+  }
+];
+
+const handleMouseOver = (e, cursor) => {
+  e.target.getStage().container().style.cursor = cursor;
+};
+
+const handleMouseOut = (e) => {
+  e.target.getStage().container().style.cursor = 'default';
+};
+</script>
+`;
