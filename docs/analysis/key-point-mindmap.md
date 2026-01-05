@@ -68,6 +68,10 @@
 - 获取绝对不透明度 `getAbsoluteOpacity`
 - 读写不透明度 `opacity`
 ##### 宽高 `size`/`width`/`height`
+##### 样式
+- 描边样式 `stroke`
+- 填充样式 `fill`
+- 描边填充样式 `fillAfterStrokeEnabled`
 #### 层级
 - 获取绝对层级 `getAbsoluteZIndex`
 - 获取/设置层级 `zindex`
