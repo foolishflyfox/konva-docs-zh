@@ -14,11 +14,21 @@ export function lineJoinDemo(stage: Konva.Stage) {
     strokeWidth: 20,
     lineJoin: "miter",
   });
+  const text = new Konva.Text({
+    text: "miter",
+    fontSize: 28,
+    fontFamily: "cursive",
+    x: 10,
+    y: stage.height() - 30,
+    stroke: "black",
+  });
   layer.add(triangle);
+  layer.add(text);
   let index = 2;
   triangle.on("mouseenter", () => {
     const lineJoins: LineJoin[] = ["round", "bevel", "miter"];
     index = (index + 1) % lineJoins.length;
     triangle.lineJoin(lineJoins[index]);
+    text.text(lineJoins[index]);
   });
 }
