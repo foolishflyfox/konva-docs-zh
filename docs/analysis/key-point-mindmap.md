@@ -43,7 +43,6 @@
 - 是否处于监听状态 `isListening`
 - 读写本节点监听 `listening`
 - 阻止默认行为 `preventDefault`
-##### 事件触发 `fire`
 ##### 拖拽
 - 开始拖拽 `startDrag`
 - 结束拖拽 `stopDrag`
