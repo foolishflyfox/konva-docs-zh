@@ -6,6 +6,10 @@
 ### [Node](../api/node)
 #### 元信息
 ##### 获取类型 `getType`
+###### Stage
+###### Layer
+###### Group
+###### Shape
 ##### 获取类名 `getClassName`
 ##### 读写名称 `name`
 ##### 添加名称 `addName`
