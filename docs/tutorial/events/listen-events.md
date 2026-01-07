@@ -1,5 +1,5 @@
 <script setup>
-import { listenEventsDemo } from './codes/listen-events';
+import { listenEventsDemo, listenEventsCodes } from './codes/listen-events';
 </script>
 
 # 事件监听
@@ -9,3 +9,5 @@ import { listenEventsDemo } from './codes/listen-events';
 操作说明：将鼠标悬停在椭圆上，观察事件处理程序未执行。点击"Listen"开始监听事件，观察事件处理程序现在已执行。
 
 <KShape :afterMounted="listenEventsDemo" :width="500" :height="300" />
+
+<ShapeCode v-bind="listenEventsCodes" />
