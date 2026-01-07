@@ -20,6 +20,9 @@
 ##### 创建缓存 `cache`
 ##### 清理缓存 `clearCache`
 ##### 是否有缓存 `isCached`
+#### 图形区域
+##### 定义点击区 `hitFunc`
+##### 图片点击区 `drawHitFromCache`
 #### 绘图
 ##### 重绘 `draw`
 ##### 读/写混合操作 `globalCompositeOperation`
@@ -136,6 +139,7 @@
 ### 事件
 #### 事件绑定 `on`
 #### 事件解绑 `off`
+#### 触发事件 `fire`
 #### 事件类型
 ##### 鼠标事件
 ###### mouseover
