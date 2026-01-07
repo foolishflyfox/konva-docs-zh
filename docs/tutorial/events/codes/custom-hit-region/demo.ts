@@ -39,25 +39,6 @@ export function customHitRegion(stage: Konva.Stage) {
     hitStrokeWidth: 20,
   });
 
-  const button = document.createElement("button");
-  button.innerHTML = "Toggle hit canvas";
-  stage.container().appendChild(button);
-  let showHit = false;
-
-  button.addEventListener("click", () => {
-    showHit = !showHit;
-    if (showHit) {
-      stage.container().style.border = "2px solid black";
-      stage.container().style.height = stage.height() + "px";
-      stage.container().appendChild(layer.hitCanvas._canvas);
-      layer.hitCanvas._canvas.style.position = "absolute";
-      layer.hitCanvas._canvas.style.top = "0";
-      layer.hitCanvas._canvas.style.left = "0";
-    } else {
-      layer.hitCanvas._canvas.remove();
-    }
-  });
-
   function writeMessage(message: string) {
     text.text(message);
   }

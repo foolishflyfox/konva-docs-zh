@@ -1,3 +1,7 @@
+<script setup>
+import { customHitRegion, customHitRegionCodes } from './codes/custom-hit-region';
+</script>
+
 # 自定义命中区域
 
 有两种方法可以改变图形的点击检测区域：hitFunc 和 hitStrokeWidth 属性。
@@ -17,3 +21,7 @@
 对于某些图形，如 `Konva.Line`，重写 `hitFunc` 过于困难。在某些情况下，您可能只想让事件的检测区域更宽。在这种情况下，最好使用 `hitStrokeWidth` 属性并设置较大的值。
 
 操作说明：将鼠标悬停、移出、按下和释放在星形上，观察点击区域是一个包围图形的超大圆形。对线条也尝试相同的操作。您还可以切换点击画布的显示以查看其外观，这对调试可能很有用。
+
+<KShape :afterMounted="customHitRegion" :width="500" :height="400" />
+
+<ShapeCode v-bind="customHitRegionCodes" />
