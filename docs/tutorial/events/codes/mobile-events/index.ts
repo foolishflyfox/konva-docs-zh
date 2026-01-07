@@ -5,274 +5,108 @@ export * from "./demo";
 export const mobileEventsCodes = createShapeCodesData();
 mobileEventsCodes.vanilla.js = `import Konva from 'konva';
 
-// by default Konva prevent some events when node is dragging
-// it improve the performance and work well for 95% of cases
-// we need to enable all events on Konva, even when we are dragging a node
-// so it triggers touchmove correctly
-Konva.hitOnDragEnabled = true;
-
-const width = window.innerWidth;
-const height = window.innerHeight;
-
 const stage = new Konva.Stage({
   container: 'container',
-  width: width,
-  height: height,
-  draggable: true,
+  width: window.innerWidth,
+  height: window.innerHeight,
 });
 
 const layer = new Konva.Layer();
 
+const text = new Konva.Text({
+  x: 10,
+  y: 10,
+  fontFamily: 'Calibri',
+  fontSize: 24,
+  text: '',
+  fill: 'black',
+});
+
 const triangle = new Konva.RegularPolygon({
-  x: 190,
-  y: stage.height() / 2,
+  x: 80,
+  y: 120,
   sides: 3,
   radius: 80,
-  fill: 'green',
+  fill: '#00D2FF',
   stroke: 'black',
   strokeWidth: 4,
 });
 
 const circle = new Konva.Circle({
-  x: 380,
-  y: stage.height() / 2,
-  radius: 70,
+  x: 230,
+  y: 100,
+  radius: 60,
   fill: 'red',
   stroke: 'black',
   strokeWidth: 4,
 });
 
-function getDistance(p1, p2) {
-  return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+function writeMessage(message) {
+  text.text(message);
 }
 
-function getCenter(p1, p2) {
-  return {
-    x: (p1.x + p2.x) / 2,
-    y: (p1.y + p2.y) / 2,
-  };
-}
-
-let lastCenter = null;
-let lastDist = 0;
-let dragStopped = false;
-
-stage.on('touchmove', function (e) {
-  e.evt.preventDefault();
-  const touch1 = e.evt.touches[0];
-  const touch2 = e.evt.touches[1];
-
-  // we need to restore dragging, if it was cancelled by multi-touch
-  if (touch1 && !touch2 && !stage.isDragging() && dragStopped) {
-    stage.startDrag();
-    dragStopped = false;
-  }
-
-  if (touch1 && touch2) {
-    // if the stage was under Konva's drag&drop
-    // we need to stop it, and implement our own pan logic with two pointers
-    if (stage.isDragging()) {
-      dragStopped = true;
-      stage.stopDrag();
-    }
-
-    const rect = stage.container().getBoundingClientRect();
-
-    const p1 = {
-      x: touch1.clientX - rect.left,
-      y: touch1.clientY - rect.top,
-    };
-    const p2 = {
-      x: touch2.clientX - rect.left,
-      y: touch2.clientY - rect.top,
-    };
-
-    if (!lastCenter) {
-      lastCenter = getCenter(p1, p2);
-      return;
-    }
-    const newCenter = getCenter(p1, p2);
-
-    const dist = getDistance(p1, p2);
-
-    if (!lastDist) {
-      lastDist = dist;
-    }
-
-    // local coordinates of center point
-    const pointTo = {
-      x: (newCenter.x - stage.x()) / stage.scaleX(),
-      y: (newCenter.y - stage.y()) / stage.scaleX(),
-    };
-
-    const scale = stage.scaleX() * (dist / lastDist);
-
-    stage.scaleX(scale);
-    stage.scaleY(scale);
-
-    // calculate new position of the stage
-    const dx = newCenter.x - lastCenter.x;
-    const dy = newCenter.y - lastCenter.y;
-
-    const newPos = {
-      x: newCenter.x - pointTo.x * scale + dx,
-      y: newCenter.y - pointTo.y * scale + dy,
-    };
-
-    stage.position(newPos);
-
-    lastDist = dist;
-    lastCenter = newCenter;
-  }
+triangle.on('touchmove', function () {
+  const touchPos = stage.getPointerPosition();
+  const x = touchPos.x;
+  const y = touchPos.y;
+  writeMessage('x: ' + x + ', y: ' + y);
 });
 
-stage.on('touchend', function () {
-  lastDist = 0;
-  lastCenter = null;
+circle.on('touchstart', function () {
+  writeMessage('touchstart circle');
+});
+circle.on('touchend', function () {
+  writeMessage('touchend circle');
 });
 
 layer.add(triangle);
 layer.add(circle);
+layer.add(text);
 stage.add(layer);
 `;
 
-mobileEventsCodes.react = `import { Stage, Layer, RegularPolygon, Circle } from 'react-konva';
-import { useState, useEffect, useCallback } from 'react';
-
-// by default Konva prevent some events when node is dragging
-// it improve the performance and work well for 95% of cases
-// we need to enable all events on Konva, even when we are dragging a node
-// so it triggers touchmove correctly
-window.Konva.hitOnDragEnabled = true;
+mobileEventsCodes.react = `import { Stage, Layer, RegularPolygon, Circle, Text } from 'react-konva';
+import { useState, useRef } from 'react';
 
 const App = () => {
-  const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
-  const [stageScale, setStageScale] = useState({ x: 1, y: 1 });
-  const [lastCenter, setLastCenter] = useState(null);
-  const [lastDist, setLastDist] = useState(0);
-  const [dragStopped, setDragStopped] = useState(false);
+  const [message, setMessage] = useState('');
+  const stageRef = useRef();
 
-  const getDistance = (p1, p2) => {
-    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-  };
-
-  const getCenter = (p1, p2) => {
-    return {
-      x: (p1.x + p2.x) / 2,
-      y: (p1.y + p2.y) / 2,
-    };
-  };
-
-  const handleTouchMove = useCallback((e) => {
-    e.evt.preventDefault();
-    const touch1 = e.evt.touches[0];
-    const touch2 = e.evt.touches[1];
-    const stage = e.target.getStage();
-
-    // we need to restore dragging, if it was cancelled by multi-touch
-    if (touch1 && !touch2 && !stage.isDragging() && dragStopped) {
-      stage.startDrag();
-      setDragStopped(false);
-    }
-
-    if (touch1 && touch2) {
-      // if the stage was under Konva's drag&drop
-      // we need to stop it, and implement our own pan logic with two pointers
-      if (stage.isDragging()) {
-        stage.stopDrag();
-        setDragStopped(true);
-      }
-
-      const rect = stage.container().getBoundingClientRect();
-
-      const p1 = {
-        x: touch1.clientX - rect.left,
-        y: touch1.clientY - rect.top,
-      };
-      const p2 = {
-        x: touch2.clientX - rect.left,
-        y: touch2.clientY - rect.top,
-      };
-
-      if (!lastCenter) {
-        setLastCenter(getCenter(p1, p2));
-        return;
-      }
-      const newCenter = getCenter(p1, p2);
-
-      const dist = getDistance(p1, p2);
-
-      if (!lastDist) {
-        setLastDist(dist);
-        return;
-      }
-
-      // local coordinates of center point
-      const pointTo = {
-        x: (newCenter.x - stagePos.x) / stageScale.x,
-        y: (newCenter.y - stagePos.y) / stageScale.x,
-      };
-
-      const scale = stageScale.x * (dist / lastDist);
-
-      setStageScale({ x: scale, y: scale });
-
-      // calculate new position of the stage
-      const dx = newCenter.x - lastCenter.x;
-      const dy = newCenter.y - lastCenter.y;
-
-      setStagePos({
-        x: newCenter.x - pointTo.x * scale + dx,
-        y: newCenter.y - pointTo.y * scale + dy,
-      });
-
-      setLastDist(dist);
-      setLastCenter(newCenter);
-    }
-  }, [dragStopped, lastCenter, lastDist, stagePos, stageScale]);
-
-  const handleTouchEnd = () => {
-    setLastDist(0);
-    setLastCenter(null);
-  };
-
-  const handleDragEnd = (e) => {
-    setDragStopped(false);
-    // Ensure stage position is synchronized with our reactive state
-    const stage = e.target.getStage();
-    setStagePos({ x: stage.x(), y: stage.y() });
+  const handleTriangleTouch = () => {
+    const touchPos = stageRef.current.getPointerPosition();
+    setMessage(\`x: \${touchPos.x}, y: \${touchPos.y}\`);
   };
 
   return (
-    <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
-      draggable
-      x={stagePos.x}
-      y={stagePos.y}
-      scaleX={stageScale.x}
-      scaleY={stageScale.y}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onDragEnd={handleDragEnd}
-    >
+    <Stage width={window.innerWidth} height={window.innerHeight} ref={stageRef}>
       <Layer>
+        <Text
+          x={10}
+          y={10}
+          fontFamily="Calibri"
+          fontSize={24}
+          text={message}
+          fill="black"
+        />
         <RegularPolygon
-          x={190}
-          y={window.innerHeight / 2}
+          x={80}
+          y={120}
           sides={3}
           radius={80}
-          fill="green"
+          fill="#00D2FF"
           stroke="black"
           strokeWidth={4}
+          onTouchmove={handleTriangleTouch}
         />
         <Circle
-          x={380}
-          y={window.innerHeight / 2}
-          radius={70}
+          x={230}
+          y={100}
+          radius={60}
           fill="red"
           stroke="black"
           strokeWidth={4}
+          onTouchstart={() => setMessage('touchstart circle')}
+          onTouchend={() => setMessage('touchend circle')}
         />
       </Layer>
     </Stage>
@@ -283,33 +117,17 @@ export default App;
 `;
 
 mobileEventsCodes.vue.app = `<template>
-  <v-stage
-    :config="stageConfig"
-    @touchmove="handleTouchMove"
-    @touchend="handleTouchEnd"
-    @dragend="handleDragEnd"
-  >
+  <v-stage :config="stageSize" ref="stageRef">
     <v-layer>
+      <v-text :config="textConfig" />
       <v-regular-polygon
-        :config="{
-          x: 190,
-          y: stageConfig.height / 2,
-          sides: 3,
-          radius: 80,
-          fill: 'green',
-          stroke: 'black',
-          strokeWidth: 4
-        }"
+        :config="triangleConfig"
+        @touchmove="handleTriangleTouch"
       />
       <v-circle
-        :config="{
-          x: 380,
-          y: stageConfig.height / 2,
-          radius: 70,
-          fill: 'red',
-          stroke: 'black',
-          strokeWidth: 4
-        }"
+        :config="circleConfig"
+        @touchstart="handleTouchStart"
+        @touchend="handleTouchEnd"
       />
     </v-layer>
   </v-stage>
@@ -318,117 +136,53 @@ mobileEventsCodes.vue.app = `<template>
 <script setup>
 import { ref, computed } from 'vue';
 
-// by default Konva prevent some events when node is dragging
-// it improve the performance and work well for 95% of cases
-// we need to enable all events on Konva, even when we are dragging a node
-// so it triggers touchmove correctly
-window.Konva.hitOnDragEnabled = true;
+const stageRef = ref(null);
+const message = ref('');
 
-const stagePos = ref({ x: 0, y: 0 });
-const stageScale = ref({ x: 1, y: 1 });
-const lastCenter = ref(null);
-const lastDist = ref(0);
-const dragStopped = ref(false);
-
-const stageConfig = computed(() => ({
+const stageSize = {
   width: window.innerWidth,
-  height: window.innerHeight,
-  draggable: true,
-  x: stagePos.value.x,
-  y: stagePos.value.y,
-  scaleX: stageScale.value.x,
-  scaleY: stageScale.value.y
+  height: window.innerHeight
+};
+
+const textConfig = computed(() => ({
+  x: 10,
+  y: 10,
+  fontFamily: 'Calibri',
+  fontSize: 24,
+  text: message.value,
+  fill: 'black'
 }));
 
-const getDistance = (p1, p2) => {
-  return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+const triangleConfig = {
+  x: 80,
+  y: 120,
+  sides: 3,
+  radius: 80,
+  fill: '#00D2FF',
+  stroke: 'black',
+  strokeWidth: 4
 };
 
-const getCenter = (p1, p2) => {
-  return {
-    x: (p1.x + p2.x) / 2,
-    y: (p1.y + p2.y) / 2,
-  };
+const circleConfig = {
+  x: 230,
+  y: 100,
+  radius: 60,
+  fill: 'red',
+  stroke: 'black',
+  strokeWidth: 4
 };
 
-const handleTouchMove = (e) => {
-  e.evt.preventDefault();
-  const touch1 = e.evt.touches[0];
-  const touch2 = e.evt.touches[1];
-  const stage = e.target.getStage();
+const handleTriangleTouch = () => {
+  const touchPos = stageRef.value.getNode().getPointerPosition();
+  message.value = \`x: \${touchPos.x}, y: \${touchPos.y}\`;
+};
 
-  // we need to restore dragging, if it was cancelled by multi-touch
-  if (touch1 && !touch2 && !stage.isDragging() && dragStopped.value) {
-    stage.startDrag();
-    dragStopped.value = false;
-  }
-
-  if (touch1 && touch2) {
-    // if the stage was under Konva's drag&drop
-    // we need to stop it, and implement our own pan logic with two pointers
-    if (stage.isDragging()) {
-      stage.stopDrag();
-      dragStopped.value = true;
-    }
-
-    const rect = stage.container().getBoundingClientRect();
-
-    const p1 = {
-      x: touch1.clientX - rect.left,
-      y: touch1.clientY - rect.top,
-    };
-    const p2 = {
-      x: touch2.clientX - rect.left,
-      y: touch2.clientY - rect.top,
-    };
-
-    if (!lastCenter.value) {
-      lastCenter.value = getCenter(p1, p2);
-      return;
-    }
-    const newCenter = getCenter(p1, p2);
-
-    const dist = getDistance(p1, p2);
-
-    if (!lastDist.value) {
-      lastDist.value = dist;
-      return;
-    }
-
-    // local coordinates of center point
-    const pointTo = {
-      x: (newCenter.x - stagePos.value.x) / stageScale.value.x,
-      y: (newCenter.y - stagePos.value.y) / stageScale.value.x,
-    };
-
-    const scale = stageScale.value.x * (dist / lastDist.value);
-
-    stageScale.value = { x: scale, y: scale };
-
-    // calculate new position of the stage
-    const dx = newCenter.x - lastCenter.value.x;
-    const dy = newCenter.y - lastCenter.value.y;
-
-    stagePos.value = {
-      x: newCenter.x - pointTo.x * scale + dx,
-      y: newCenter.y - pointTo.y * scale + dy,
-    };
-
-    lastDist.value = dist;
-    lastCenter.value = newCenter;
-  }
+const handleTouchStart = () => {
+  message.value = 'touchstart circle';
 };
 
 const handleTouchEnd = () => {
-  lastDist.value = 0;
-  lastCenter.value = null;
-};
-
-const handleDragEnd = (e) => {
-  dragStopped.value = false;
-  // Ensure stage position is synchronized with our reactive state
-  const stage = e.target.getStage();
-  stagePos.value = { x: stage.x(), y: stage.y() };
+  message.value = 'touchend circle';
 };
 </script>
 `;
