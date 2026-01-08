@@ -1,5 +1,5 @@
 <template>
-  <ShapeCodeTab>
+  <ShapeCodeTab :hideReact :hideVue>
     <template #vanilla$html>
       <HighLighterCode
         :height="tabCodeBlockHeight"

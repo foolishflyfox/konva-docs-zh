@@ -8,6 +8,8 @@ export interface ShapeCodesData {
     app?: string;
     main?: string;
   };
+  hideReact?: boolean;
+  hideVue?: boolean;
 }
 
 export function createShapeCodesData(): ShapeCodesData {

@@ -1,13 +1,19 @@
 <template>
   <div class="shape-code-tab">
-    <div class="langbar">
-      <button
-        v-for="v of ['vanilla', 'react', 'vue']"
-        @click="switchTab(v)"
-        :class="getLangbarCssClass(v)"
-      >
-        {{ getLangbarTitle(v) }}
-      </button>
+    <div class="langbar" v-if="!hideReact || !hideVue">
+      <template v-for="v of ['vanilla', 'react', 'vue']">
+        <button
+          @click="switchTab(v)"
+          :class="getLangbarCssClass(v)"
+          v-if="
+            v === 'vanilla' ||
+            (v === 'react' && !hideReact) ||
+            (v === 'vue' && !hideVue)
+          "
+        >
+          {{ getLangbarTitle(v) }}
+        </button>
+      </template>
     </div>
 
     <div class="code-container">
@@ -28,8 +34,8 @@
           <slot v-else name="vanilla$js" />
         </div>
       </template>
-      <slot v-else-if="tabName === 'react'" name="react" />
-      <template v-else-if="tabName === 'vue'">
+      <slot v-else-if="tabName === 'react' && !hideReact" name="react" />
+      <template v-else-if="tabName === 'vue' && !hideVue">
         <div>
           <div class="filebar">
             <button
@@ -56,6 +62,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { capitalize, useBorderColor } from "@docs/utils";
+
+defineProps<{
+  hideReact?: boolean;
+  hideVue?: boolean;
+}>();
+
 const tabName = ref("vanilla");
 const file = ref("js");
 
