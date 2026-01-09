@@ -140,6 +140,7 @@
 ##### baseline
 ### Transformer
 #### 中心缩放 centeredScaling
+#### 等比缩放 keepRatio
 ### 事件
 #### 事件绑定 `on`
 #### 事件解绑 `off`
