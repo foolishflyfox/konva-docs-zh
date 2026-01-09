@@ -6,6 +6,7 @@ import { githubSvg } from "./icon-svgs";
 // pnpm add -D @braintree/sanitize-url dayjs debug cytoscape-cose-bilkent cytoscape
 import { Transformer } from "markmap-lib";
 import { renderMermaidGraphsPlugin } from "./mermaid";
+import { existsSync, writeFileSync } from "fs";
 
 type SidebarItemX = DefaultTheme.SidebarItem & {
   prefix?: string;
@@ -389,7 +390,13 @@ const config = defineConfig({
 
 function createMdFile(path: string, title: string) {
   const mdPath = dirname(__dirname) + path + ".md";
-  console.log("创建文件:", mdPath);
+  if (!existsSync(mdPath)) {
+    try {
+      writeFileSync(mdPath, "# " + title, "utf8");
+    } catch (error) {
+      console.error(`创建文件 ${mdPath} 失败`);
+    }
+  }
 }
 
 function startAutoCreateMdFile() {
