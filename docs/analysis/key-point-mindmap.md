@@ -125,6 +125,7 @@
 ##### 与指定点相交的节点 `getAllIntersections`
 ##### 裁剪区 `clip/clipX/clipY/clipWidth/clipHeight`
 ##### 裁剪函数 `clipFunc`
+##### 获取触碰图形 `getIntersection`
 ### Text
 #### 字体大小 fontSize
 #### 水平对齐 align
