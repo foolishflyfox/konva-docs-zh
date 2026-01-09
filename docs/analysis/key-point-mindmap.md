@@ -142,6 +142,7 @@
 #### 中心缩放 centeredScaling
 #### 等比缩放 keepRatio
 #### 锚点自定义 anchorStyleFunc
+#### 形变边界限制 boundBoxFunc
 ### 事件
 #### 事件绑定 `on`
 #### 事件解绑 `off`
