@@ -1,5 +1,5 @@
 import { DefaultTheme, defineConfig } from "vitepress";
-import { posix } from "path";
+import { posix, dirname } from "path";
 import { fileURLToPath } from "url";
 import { githubSvg } from "./icon-svgs";
 // 使用 vitepress-plugin-mermaid，需要安装依赖的几个库，否则不能正常显示
@@ -47,7 +47,7 @@ function addLinkPrefix(
 }
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
+const config = defineConfig({
   // 设置 public 根目录，与站点部署有关
   // 参考 https://vitepress.dev/zh/guide/deploy#setting-a-public-base-path
   base: "/konva-docs-zh/",
@@ -182,6 +182,26 @@ export default defineConfig({
                 { text: "简单拖拽边界", link: "simple-drag-bounds" },
                 { text: "复杂拖放", link: "complex-drag-drop" },
                 { text: "放置事件", link: "drop-events" },
+              ],
+            },
+            {
+              text: "选择与形变",
+              collapsed: true,
+              prefix: "select-transform",
+              items: [
+                { text: "基本演示", link: "basic-demo" },
+                { text: "居中演示", link: "centered-scaling" },
+                { text: "保持比例", link: "keep-ratio" },
+                { text: "样式", link: "styling" },
+                { text: "复杂变换器样式", link: "complex-transformer-styling" },
+                { text: "变换事件", link: "transform-events" },
+                { text: "缩放限制", link: "resize-limits" },
+                { text: "调整吸附", link: "resize-snaps" },
+                { text: "旋转吸附", link: "rotation-snaps" },
+                { text: "停止变换", link: "stop-transform" },
+                { text: "强制更新", link: "force-update" },
+                { text: "调整文本", link: "resize-text" },
+                { text: "忽略描边", link: "ignore-stroke" },
               ],
             },
             {
@@ -366,3 +386,34 @@ export default defineConfig({
     },
   },
 });
+
+function createMdFile(path: string, title: string) {
+  const mdPath = dirname(__dirname) + path + ".md";
+  console.log("创建文件:", mdPath);
+}
+
+function startAutoCreateMdFile() {
+  if (!process.argv.includes("dev")) return;
+  function processItem(item: DefaultTheme.SidebarItem) {
+    if (item.link) {
+      createMdFile(item.link, item.text || "");
+    } else if (item.items?.length) {
+      for (const subItem of item.items) {
+        processItem(subItem);
+      }
+    }
+  }
+  if (config.themeConfig?.sidebar) {
+    const sidebar = config.themeConfig.sidebar as DefaultTheme.SidebarMulti;
+    for (const key of Object.keys(sidebar)) {
+      const items = sidebar[key] as DefaultTheme.SidebarItem[];
+      for (const item of items) {
+        processItem(item);
+      }
+    }
+  }
+}
+
+startAutoCreateMdFile();
+
+export default config;
