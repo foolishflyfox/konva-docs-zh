@@ -144,6 +144,8 @@
 #### 锚点自定义 anchorStyleFunc
 #### 形变边界自定义 boundBoxFunc
 #### 锚点边界自定义 anchorDragBoundFunc
+#### 旋转吸附角度 rotationSnaps
+#### 旋转吸附阈值 rotationSnapTolerance
 ### 事件
 #### 事件绑定 `on`
 #### 事件解绑 `off`
