@@ -1,0 +1,255 @@
+import { createShapeCodesData } from "@docs/types";
+
+export * from "./demo";
+
+export const complexDragDropCodes = createShapeCodesData();
+complexDragDropCodes.vanilla.js = `import Konva from 'konva';
+
+const stage = new Konva.Stage({
+  container: 'container',
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
+
+const layer = new Konva.Layer();
+
+const blueGroup = new Konva.Group({
+x: 30,
+y: 70,
+draggable: true,
+});
+
+// bound below y=50
+blueGroup.on('dragmove', () => {
+blueGroup.y(Math.max(blueGroup.y(), 50));
+});
+
+// bound inside a circle
+const yellowGroup = new Konva.Group({
+x: stage.width() / 2,
+y: 70,
+draggable: true,
+});
+
+yellowGroup.on('dragmove', () => {
+const x = stage.width() / 2;
+const y = 70;
+const radius = 50;
+const pos = yellowGroup.absolutePosition();
+const scale = radius / Math.sqrt(Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2));
+
+if (scale < 1) {
+yellowGroup.x(Math.round((pos.x - x) * scale + x));
+yellowGroup.y(Math.round((pos.y - y) * scale + y));
+}
+});
+
+const blueText = new Konva.Text({
+fontSize: 26,
+fontFamily: 'Calibri',
+text: 'bound below',
+fill: 'black',
+padding: 10,
+width: 150,
+align: 'center',
+});
+
+const blueRect = new Konva.Rect({
+width: 150,
+height: 72,
+fill: '#aaf',
+stroke: 'black',
+strokeWidth: 4,
+});
+
+const yellowText = new Konva.Text({
+fontSize: 26,
+fontFamily: 'Calibri',
+text: 'bound in circle',
+fill: 'black',
+padding: 10,
+width: 150,
+align: 'center',
+});
+
+const yellowRect = new Konva.Rect({
+width: 150,
+height:72,
+fill: 'yellow',
+stroke: 'black',
+strokeWidth: 4,
+});
+
+blueGroup.add(blueRect).add(blueText);
+yellowGroup.add(yellowRect).add(yellowText);
+
+layer.add(blueGroup);
+layer.add(yellowGroup);
+stage.add(layer);
+`;
+
+complexDragDropCodes.react = `import { Stage, Layer, Group, Rect, Text } from 'react-konva';
+
+const App = () => {
+  const handleBlueDragMove = (e) => {
+    e.target.y(Math.max(e.target.y(), 50));
+  };
+
+  const handleYellowDragMove = (e) => {
+    const x = window.innerWidth / 2;
+    const y = 70;
+    const radius = 50;
+    const pos = e.target.absolutePosition();
+    const scale = radius / Math.sqrt(Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2));
+
+    if (scale < 1) {
+      e.target.x(Math.round((pos.x - x) * scale + x));
+      e.target.y(Math.round((pos.y - y) * scale + y));
+    }
+  };
+
+  return (
+    <Stage width={window.innerWidth} height={window.innerHeight}>
+      <Layer>
+        <Group x={30} y={70} draggable onDragMove={handleBlueDragMove}>
+          <Rect
+            width={150}
+            height={72}
+            fill="#aaf"
+            stroke="black"
+            strokeWidth={4}
+          />
+          <Text
+            text="bound below"
+            fontSize={26}
+            fontFamily="Calibri"
+            fill="black"
+            padding={10}
+            width={150}
+            align="center"
+          />
+        </Group>
+        <Group
+          x={window.innerWidth / 2}
+          y={70}
+          draggable
+          onDragMove={handleYellowDragMove}
+        >
+          <Rect
+            width={150}
+            height={72}
+            fill="yellow"
+            stroke="black"
+            strokeWidth={4}
+          />
+          <Text
+            text="bound in circle"
+            fontSize={26}
+            fontFamily="Calibri"
+            fill="black"
+            padding={10}
+            width={150}
+            align="center"
+          />
+        </Group>
+      </Layer>
+    </Stage>
+  );
+};
+
+export default App;
+`;
+
+complexDragDropCodes.vue.app = `<template>
+  <v-stage :config="stageSize">
+    <v-layer>
+      <v-group
+        :config="blueGroupConfig"
+        @dragmove="handleBlueDragMove"
+      >
+        <v-rect :config="blueRectConfig" />
+        <v-text :config="blueTextConfig" />
+      </v-group>
+      <v-group
+        :config="yellowGroupConfig"
+        @dragmove="handleYellowDragMove"
+      >
+        <v-rect :config="yellowRectConfig" />
+        <v-text :config="yellowTextConfig" />
+      </v-group>
+    </v-layer>
+  </v-stage>
+</template>
+
+<script setup>
+const stageSize = {
+  width: window.innerWidth,
+  height: window.innerHeight
+};
+
+const blueGroupConfig = {
+  x: 30,
+  y: 70,
+  draggable: true
+};
+
+const yellowGroupConfig = {
+  x: window.innerWidth / 2,
+  y: 70,
+  draggable: true
+};
+
+const blueRectConfig = {
+  width: 150,
+  height: 72,
+  fill: '#aaf',
+  stroke: 'black',
+  strokeWidth: 4
+};
+
+const yellowRectConfig = {
+  width: 150,
+  height: 72,
+  fill: 'yellow',
+  stroke: 'black',
+  strokeWidth: 4
+};
+
+const blueTextConfig = {
+  text: 'bound below',
+  fontSize: 26,
+  fontFamily: 'Calibri',
+  fill: 'black',
+  padding: 10,
+  width: 150,
+  align: 'center'
+};
+
+const yellowTextConfig = {
+  text: 'bound in circle',
+  fontSize: 26,
+  fontFamily: 'Calibri',
+  fill: 'black',
+  padding: 10,
+  width: 150,
+  align: 'center'
+};
+
+const handleBlueDragMove = (e) => {
+  e.target.y(Math.max(e.target.y(), 50));
+};
+
+const handleYellowDragMove = (e) => {
+  const x = window.innerWidth / 2;
+  const y = 70;
+  const radius = 50;
+  const pos = e.target.absolutePosition();
+  const scale = radius / Math.sqrt(Math.pow(pos.x - x, 2) + Math.pow(pos.y - y, 2));
+
+  if (scale < 1) {
+    e.target.x(Math.round((pos.x - x) * scale + x));
+    e.target.y(Math.round((pos.y - y) * scale + y));
+  }
+};
+</script>
+`;
