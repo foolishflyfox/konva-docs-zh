@@ -33,14 +33,14 @@
 ##### 在现有基础上旋转的角度 `rotate`
 ##### 设置旋转角度 `roation`
 ##### 获取绝对旋转 `getAbsoluteRotation`
-##### 获取节点绝对位置 `getAbsolutePosition`
-##### 节点绝对位置 `absolutePosition`
 ##### 获取绝对变换 `getAbsoluteTransform`
 ##### 获取变换 `getTransform`
 ##### 获取绝对缩放 `getAbsoluteScale`
 ##### 读写缩放 `scale`/`scaleX`/`scaleY`
 ##### 读写倾斜值 `skew`/`skewX`/`skewY`
 ##### 相对父元素位置 `position` / `x` / `y`
+##### 获取节点绝对位置 `getAbsolutePosition`
+##### 节点绝对位置 `absolutePosition`
 ##### 偏移 `offset`/`offsetX`/`offsetY`
 ##### 补间节点属性 `to`
 #### 节点操作
@@ -82,6 +82,7 @@
 ##### 移动节点到父节点最底层 `moveToBottom`
 #### 鼠标相关
 ##### 获取鼠标相对节点位置 `getRelativePointerPosition`
+##### 获取鼠标相对容器位置 `getPointerPosition`
 #### 节点转换
 ##### 转换成对象 `toObject`
 ##### 转换成 JSON 字符串 `toJSON`
@@ -137,6 +138,8 @@
 ##### middle
 ##### bottom
 ##### baseline
+### Transformer
+#### 中心缩放 centeredScaling
 ### 事件
 #### 事件绑定 `on`
 #### 事件解绑 `off`
@@ -189,6 +192,8 @@
 ##### 读写拖拽阈值 `dragDistance`
 ##### 读写拖拽边界函数 `dragBoundFunc`
 ##### 读写允许拖拽标志 `draggable`
+## 工具 Konva.Util
+### haveIntersection 区域是否相交
 ## 选择器
 ### ID 选择器: 以 `#` 开头
 ### Name 选择器: 以 `.` 开头
