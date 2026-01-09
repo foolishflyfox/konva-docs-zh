@@ -178,7 +178,7 @@ export default defineConfig({
                 { text: "组拖拽", link: "drag-group" },
                 { text: "线拖拽", link: "drag-line" },
                 { text: "stage 拖拽", link: "drag-stage" },
-                { text: "拖拽事件", link: "drag-event" },
+                { text: "拖拽事件", link: "drag-events" },
                 { text: "简单拖拽边界", link: "simple-drag-bounds" },
                 { text: "复杂拖放", link: "complex-drag-drop" },
                 { text: "放置事件", link: "drop-events" },
