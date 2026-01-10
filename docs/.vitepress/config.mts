@@ -215,6 +215,17 @@ const config = defineConfig({
               ],
             },
             {
+              text: "分组与图层",
+              collapsed: true,
+              prefix: "groups-layers",
+              items: [
+                { text: "更改容器", link: "change-containers" },
+                { text: "组", link: "groups" },
+                { text: "分层", link: "layering" },
+                { text: "zIndex", link: "zindex" },
+              ],
+            },
+            {
               text: "补间",
               collapsed: true,
               prefix: "tweens",
