@@ -206,6 +206,15 @@ const config = defineConfig({
               ],
             },
             {
+              text: "裁剪",
+              collapsed: true,
+              prefix: "clipping",
+              items: [
+                { text: "裁剪函数", link: "clipping-functions" },
+                { text: "简单裁剪", link: "simple-clipping" },
+              ],
+            },
+            {
               text: "补间",
               collapsed: true,
               prefix: "tweens",

@@ -127,6 +127,8 @@
 ##### 裁剪区 `clip/clipX/clipY/clipWidth/clipHeight`
 ##### 裁剪函数 `clipFunc`
 ##### 获取触碰图形 `getIntersection`
+#### 绘图
+##### 裁剪 clipFunc
 ### Text
 #### 字体大小 fontSize
 #### 水平对齐 align
