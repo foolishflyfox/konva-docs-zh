@@ -146,6 +146,7 @@
 #### 锚点边界自定义 anchorDragBoundFunc
 #### 旋转吸附角度 rotationSnaps
 #### 旋转吸附阈值 rotationSnapTolerance
+#### 停止形变 stopTransform
 ### 事件
 #### 事件绑定 `on`
 #### 事件解绑 `off`
