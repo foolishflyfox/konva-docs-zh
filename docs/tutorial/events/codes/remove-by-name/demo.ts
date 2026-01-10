@@ -24,6 +24,8 @@ export function removeByNameDemo(stage: Konva.Stage) {
   layer.add(circle);
 
   // add buttons to remove listeners
+  const btnContainer = document.createElement("div");
+  btnContainer.classList.add("absolute-lt");
   const button1 = document.createElement("button");
   button1.classList.add("raw-style");
   button1.innerHTML = "移除第一个监听";
@@ -37,6 +39,8 @@ export function removeByNameDemo(stage: Konva.Stage) {
   button2.onclick = function () {
     circle.off("click.event2");
   };
-  stage.container().prepend(button2);
-  stage.container().prepend(button1);
+  btnContainer.append(button1);
+  btnContainer.append(button2);
+  stage.container().append(btnContainer);
+  stage.container().classList.add("relative");
 }

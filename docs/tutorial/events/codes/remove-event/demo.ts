@@ -21,11 +21,11 @@ export function removeEventDemo(stage: Konva.Stage) {
 
   // add button to remove listener
   const button = document.createElement("button");
-  button.classList.add("raw-style");
-  button.style.top = "10px";
-  button.style.left = "10px";
+  button.classList.add("raw-style", "absolute-lt");
+
   button.innerHTML = "移除对 click 事件监听";
-  stage.container().prepend(button);
+  stage.container().classList.add("relative");
+  stage.container().append(button);
   button.addEventListener("click", () => {
     // remove click listener
     circle.off("click");

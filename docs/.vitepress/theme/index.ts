@@ -10,6 +10,7 @@ import { Markmap } from "markmap-view";
 import { ShapeCode } from "../../components/utils";
 import { KShape } from "../../components/kshapes";
 import "./custom.css";
+import "./help.css";
 
 // 思维导图支持步骤三: 渲染函数定义
 function renderMindmap() {

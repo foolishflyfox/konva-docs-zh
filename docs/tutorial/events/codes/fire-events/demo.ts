@@ -19,12 +19,13 @@ export function fireEventsDemo(stage: Konva.Stage) {
 
   // add button to trigger custom event
   const button = document.createElement("button");
-  button.classList.add("raw-style");
+  button.classList.add("raw-style", "absolute-lt");
   button.innerHTML = "Fire Custom Event";
   button.style.top = "10px";
   button.style.left = "10px";
   button.style.zIndex = "1";
-  stage.container().prepend(button);
+  stage.container().classList.add("relative");
+  stage.container().append(button);
   button.addEventListener("click", () => {
     // fire custom event
     circle.fire("customEvent", {

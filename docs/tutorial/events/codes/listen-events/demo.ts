@@ -39,7 +39,7 @@ export function listenEventsDemo(stage: Konva.Stage) {
 
   // add button to toggle listening
   const button = document.createElement("button");
-  button.classList.add("raw-style");
+  button.classList.add("raw-style", "absolute-lt");
   button.innerHTML = "开始监听";
   // stag
   button.addEventListener("click", () => {
@@ -48,5 +48,6 @@ export function listenEventsDemo(stage: Konva.Stage) {
     button.innerHTML = listening ? "停止监听" : "开始监听";
     layer.drawHit();
   });
-  stage.container().prepend(button);
+  stage.container().classList.add("relative");
+  stage.container().append(button);
 }

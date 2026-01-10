@@ -1,0 +1,37 @@
+/* 类似 unocss，提供 class 简写 */
+.m-1em {
+  margin: 1em;
+}
+.mr-1em {
+  margin-right: 1em;
+}
+
+.relative {
+  position: relative;
+}
+.absolute {
+  position: absolute;
+}
+.left-0 {
+  left: 0;
+}
+.top-0 {
+  top: 0;
+}
+.absolute-lt {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.flex {
+  display: flex;
+}
+.flex-y-center {
+  display: flex;
+  align-items: center;
+}
+
+.font-bold {
+  font-weight: 700;
+}
