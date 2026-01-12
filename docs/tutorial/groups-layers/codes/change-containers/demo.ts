@@ -1,4 +1,4 @@
-import { createLayer } from "@docs/utils";
+import { addButtons, createLayer } from "@docs/utils";
 import Konva from "konva";
 
 export function changeContainersDemo(stage: Konva.Stage) {
@@ -48,25 +48,13 @@ export function changeContainersDemo(stage: Konva.Stage) {
   layer.add(group1);
   layer.add(group2);
 
-  // create buttons
-  const btnContainer = document.createElement("div") as HTMLDivElement;
-  btnContainer.classList.add("absolute-lt");
-  stage.container().classList.add("relative");
-  stage.container().append(btnContainer);
-  const moveToGroup1Btn = document.createElement("button");
-  moveToGroup1Btn.textContent = "Move to yellow group";
-  moveToGroup1Btn.classList.add("raw-style");
+  const [moveToGroup1Btn, moveToGroup2Btn] = addButtons(stage, {
+    buttonTitles: ["移至黄色组", "移至蓝色组"],
+  });
   moveToGroup1Btn.addEventListener("click", () => {
     redBox.moveTo(group1);
   });
-  btnContainer.append(moveToGroup1Btn);
-
-  const moveToGroup2Btn = document.createElement("button");
-  moveToGroup2Btn.textContent = "Move to blue group";
-  moveToGroup2Btn.style.setProperty("margin-left", "1em");
-  moveToGroup2Btn.classList.add("raw-style");
   moveToGroup2Btn.addEventListener("click", () => {
     redBox.moveTo(group2);
   });
-  btnContainer.append(moveToGroup2Btn);
 }

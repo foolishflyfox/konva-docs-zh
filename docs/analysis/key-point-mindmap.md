@@ -67,6 +67,10 @@
 #### 层级
 ##### 获取绝对层级 `getAbsoluteZIndex`
 ##### 获取/设置层级 `zindex`
+##### 移至顶层 `moveToTop`
+##### 移至底层 `moveToBottom`
+##### 向上移一层 `moveUp`
+##### 向下移一层 `moveDown`
 #### 节点关系
 ##### 查询祖先节点 `getAncestors`
 ##### 查询父节点 `getParent`

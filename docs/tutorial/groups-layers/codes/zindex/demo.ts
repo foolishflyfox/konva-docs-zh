@@ -1,4 +1,4 @@
-import { createLayer } from "@docs/utils";
+import { addButtons, createLayer } from "@docs/utils";
 import Konva from "konva";
 
 export function zindexDemo(stage: Konva.Stage) {
@@ -37,26 +37,15 @@ export function zindexDemo(stage: Konva.Stage) {
   });
   group2.add(greenRect);
 
-  const btnContainer = document.createElement("div");
-  btnContainer.classList.add("absolute-lt");
-  btnContainer.style.setProperty("display", "flex");
-  btnContainer.style.setProperty("justify-content", "flex-end");
-  btnContainer.style.setProperty("width", "100%");
-  stage.container().classList.add("relative");
-  stage.container().append(btnContainer);
-  // create buttons
-  const btn1 = document.createElement("button");
-  btn1.classList.add("raw-style");
-  btn1.textContent = "Move red circle to group2";
+  const [btn1, btn2] = addButtons(stage, {
+    buttonTitles: ["红色圆移至组2", "红色圆移至组1"],
+    align: "right",
+  });
   btn1.addEventListener("click", () => {
     redCircle.moveTo(group2);
   });
 
-  const btn2 = document.createElement("button");
-  btn2.classList.add("raw-style");
-  btn2.textContent = "Move red circle to group1";
   btn2.addEventListener("click", () => {
     redCircle.moveTo(group1);
   });
-  btnContainer.append(btn1, btn2);
 }

@@ -32,6 +32,14 @@
   align-items: center;
 }
 
+.justify-end {
+  justify-content: flex-end;
+}
+
 .font-bold {
   font-weight: 700;
+}
+
+.w-full {
+  width: 100%;
 }
