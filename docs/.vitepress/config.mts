@@ -6,7 +6,7 @@ import { githubSvg } from "./icon-svgs";
 // pnpm add -D @braintree/sanitize-url dayjs debug cytoscape-cose-bilkent cytoscape
 import { Transformer } from "markmap-lib";
 import { renderMermaidGraphsPlugin } from "./mermaid";
-import { existsSync, writeFileSync } from "fs";
+import { existsSync, link, writeFileSync } from "fs";
 
 type SidebarItemX = DefaultTheme.SidebarItem & {
   prefix?: string;
@@ -223,6 +223,32 @@ const config = defineConfig({
                 { text: "组", link: "groups" },
                 { text: "分层", link: "layering" },
                 { text: "zIndex", link: "zindex" },
+              ],
+            },
+            {
+              text: "滤镜",
+              collapsed: true,
+              prefix: "filters",
+              items: [
+                { text: "模糊", link: "blur" },
+                { text: "亮度", link: "brightness" },
+                { text: "对比度", link: "contrast" },
+                { text: "自定义滤镜", link: "custom-filter" },
+                { text: "浮雕", link: "emboss" },
+                { text: "增强", link: "enhance" },
+                { text: "弧度", link: "grayscale" },
+                { text: "HSL", link: "hsl" },
+                { text: "HSV", link: "hsv" },
+                { text: "反转", link: "invert" },
+                { text: "万花筒", link: "kaleidoscope" },
+                { text: "蒙版", link: "mask" },
+                { text: "多重滤镜", link: "multiple-filters" },
+                { text: "噪声", link: "noise" },
+                { text: "像素化", link: "pixelate" },
+                { text: "RGB", link: "rgb" },
+                { text: "怀旧", link: "sepia" },
+                { text: "太阳化", link: "solarize" },
+                { text: "阈值", link: "threshold" },
               ],
             },
             {
