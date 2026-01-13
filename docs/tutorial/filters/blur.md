@@ -2,7 +2,7 @@
 import { blurDemo, blurCodes } from './codes/blur';
 </script>
 
-# 模糊
+# 模糊滤镜
 
 要对 `Konva.Image` 应用滤镜，我们首先需要使用 `cache()` 函数进行缓存，随后通过 `filters()` 函数添加滤镜效果。
 
