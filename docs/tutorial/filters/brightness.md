@@ -19,7 +19,7 @@ import { brightnessDemo, brightnessCodes } from './codes/brightness';
 
 操作说明：滑动控制条调整亮度值
 
-完整滤镜列表请参阅：[滤镜官方文档](<(../../api/filters)>) 。
+完整滤镜列表请参阅：[滤镜官方文档](../../api/filters)。
 
 <KShape :afterMounted="brightnessDemo" :width="600" :height="400" />
 
