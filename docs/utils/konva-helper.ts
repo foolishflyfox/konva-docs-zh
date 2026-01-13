@@ -1,4 +1,5 @@
 import Konva from "konva";
+import { ref, Ref } from "vue";
 
 export function createLayer(stage: Konva.Stage, config?: Konva.LayerConfig) {
   const layer = new Konva.Layer(config);
@@ -32,4 +33,38 @@ export function addButtons(stage: Konva.Stage, buttonsInfo: ButtonsInfo) {
     buttons.push(button);
   }
   return buttons;
+}
+
+interface RangeInfo {
+  label?: string;
+  min: number;
+  max: number;
+  defaultValue?: number;
+  step?: number;
+  precision?: number;
+}
+
+export function addRanges(stage: Konva.Stage, rangeInfos: RangeInfo[]) {
+  const rangeValues: Ref<number>[] = [];
+  if (!stage || !rangeInfos.length) return rangeValues;
+  const rangeContainer = document.createElement("div") as HTMLDivElement;
+  rangeContainer.classList.add("absolute-lt", "w-full", "flex");
+  stage.container().classList.add("relative");
+  stage.container().append(rangeContainer);
+  for (const rangeInfo of rangeInfos) {
+    const range = document.createElement("input") as HTMLInputElement;
+    range.type = "range";
+    range.min = `${rangeInfo.min}`;
+    range.max = `${rangeInfo.max}`;
+    range.step = `${rangeInfo.step || 1}`;
+    range.value = `${rangeInfo.defaultValue ?? 0}`;
+    const rangeValue = ref(rangeInfo.defaultValue ?? 0);
+    rangeValues.push(rangeValue);
+    range.addEventListener("input", (e) => {
+      const v = parseFloat((e.target as HTMLInputElement).value);
+      rangeValue.value = v;
+    });
+    rangeContainer.append(range);
+  }
+  return rangeValues;
 }
