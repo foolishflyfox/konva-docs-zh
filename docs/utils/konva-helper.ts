@@ -48,10 +48,12 @@ export function addRanges(stage: Konva.Stage, rangeInfos: RangeInfo[]) {
   const rangeValues: Ref<number>[] = [];
   if (!stage || !rangeInfos.length) return rangeValues;
   const rangeContainer = document.createElement("div") as HTMLDivElement;
-  rangeContainer.classList.add("absolute-lt", "w-full", "flex");
+  rangeContainer.classList.add("absolute-lt", "w-full");
   stage.container().classList.add("relative");
   stage.container().append(rangeContainer);
   for (const rangeInfo of rangeInfos) {
+    const subContainer = document.createElement("div") as HTMLDivElement;
+    rangeContainer.append(subContainer);
     const range = document.createElement("input") as HTMLInputElement;
     range.type = "range";
     range.min = `${rangeInfo.min}`;
@@ -64,7 +66,12 @@ export function addRanges(stage: Konva.Stage, rangeInfos: RangeInfo[]) {
       const v = parseFloat((e.target as HTMLInputElement).value);
       rangeValue.value = v;
     });
-    rangeContainer.append(range);
+    subContainer.append(range);
+    if (rangeInfo.label) {
+      const label = document.createElement("span");
+      label.innerText = rangeInfo.label;
+      subContainer.append(label);
+    }
   }
   return rangeValues;
 }
