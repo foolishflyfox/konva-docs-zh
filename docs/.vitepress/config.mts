@@ -234,6 +234,7 @@ const config = defineConfig({
                 { text: "亮度", link: "brightness" },
                 { text: "对比度", link: "contrast" },
                 { text: "自定义滤镜", link: "custom-filter" },
+                { text: "自定义灰度化", link: "custom-grayer" },
                 { text: "浮雕", link: "emboss" },
                 { text: "增强", link: "enhance" },
                 { text: "弧度", link: "grayscale" },
