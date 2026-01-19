@@ -237,7 +237,7 @@ const config = defineConfig({
                 { text: "自定义灰度化", link: "custom-grayer" },
                 { text: "浮雕", link: "emboss" },
                 { text: "增强", link: "enhance" },
-                { text: "弧度", link: "grayscale" },
+                { text: "灰度", link: "grayscale" },
                 { text: "HSL", link: "hsl" },
                 { text: "HSV", link: "hsv" },
                 { text: "反转", link: "invert" },
