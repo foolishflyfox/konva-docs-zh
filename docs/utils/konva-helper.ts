@@ -1,5 +1,5 @@
 import Konva from "konva";
-import { ref, Ref } from "vue";
+import { reactive, Reactive, ref, Ref } from "vue";
 
 export function createLayer(stage: Konva.Stage, config?: Konva.LayerConfig) {
   const layer = new Konva.Layer(config);
@@ -66,6 +66,55 @@ export function addRanges(stage: Konva.Stage, rangeInfos: RangeInfo[]) {
       const v = parseFloat((e.target as HTMLInputElement).value);
       rangeValue.value = v;
     });
+    subContainer.append(range);
+    if (rangeInfo.label) {
+      const label = document.createElement("span");
+      label.innerText = rangeInfo.label;
+      subContainer.append(label);
+    }
+  }
+  return rangeValues;
+}
+
+export interface SelectableRangeInfo extends RangeInfo {
+  selected: boolean;
+}
+
+export function addSelectableRanges(
+  stage: Konva.Stage,
+  rangeInfos: SelectableRangeInfo[],
+) {
+  const rangeValues: Reactive<{ selected: boolean; value: number }>[] = [];
+  if (!stage || !rangeInfos.length) return rangeValues;
+  const rangeContainer = document.createElement("div") as HTMLDivElement;
+  rangeContainer.classList.add("absolute-lt", "w-full");
+  stage.container().classList.add("relative");
+  stage.container().append(rangeContainer);
+  for (const rangeInfo of rangeInfos) {
+    const subContainer = document.createElement("div") as HTMLDivElement;
+    rangeContainer.append(subContainer);
+    const checkbox = document.createElement("input") as HTMLInputElement;
+    checkbox.type = "checkbox";
+    checkbox.checked = rangeInfo.selected;
+    const range = document.createElement("input") as HTMLInputElement;
+    range.type = "range";
+    range.min = `${rangeInfo.min}`;
+    range.max = `${rangeInfo.max}`;
+    range.step = `${rangeInfo.step || 1}`;
+    range.value = `${rangeInfo.defaultValue ?? 0}`;
+    const rangeData = reactive({
+      selected: rangeInfo.selected,
+      value: rangeInfo.defaultValue ?? 0,
+    });
+    rangeValues.push(rangeData);
+    checkbox.addEventListener("change", (e) => {
+      rangeData.selected = (e.target as HTMLInputElement).checked;
+    });
+    range.addEventListener("input", (e) => {
+      const v = parseFloat((e.target as HTMLInputElement).value);
+      rangeData.value = v;
+    });
+    subContainer.append(checkbox);
     subContainer.append(range);
     if (rangeInfo.label) {
       const label = document.createElement("span");
