@@ -1,0 +1,227 @@
+import { createShapeCodesData } from "@docs/types";
+
+export * from "./demo";
+export const hsvCodes = createShapeCodesData();
+hsvCodes.vanilla.js = `import Konva from 'konva';
+
+const stage = new Konva.Stage({
+  container: 'container',
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
+
+const layer = new Konva.Layer();
+stage.add(layer);
+
+const imageObj = new Image();
+imageObj.onload = () => {
+  const image = new Konva.Image({
+    x: 50,
+    y: 50,
+    image: imageObj,
+    draggable: true,
+  });
+
+  layer.add(image);
+
+  image.cache();
+  image.filters([Konva.Filters.HSV]);
+  
+  // create sliders
+  const createSlider = (label, min, max, defaultValue, property) => {
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.left = '20px';
+    
+    const text = document.createElement('span');
+    text.textContent = \`\${label}: \`;
+    container.appendChild(text);
+    
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.min = min;
+    slider.max = max;
+    slider.step = '0.1';
+    slider.value = defaultValue;
+    slider.style.width = '200px';
+    
+    slider.addEventListener('input', (e) => {
+      const value = parseFloat(e.target.value);
+      image[property](value);
+    });
+    
+    container.appendChild(slider);
+    return container;
+  };
+
+  const hueSlider = createSlider('Hue', -180, 180, 0, 'hue');
+  hueSlider.style.top = '20px';
+  document.body.appendChild(hueSlider);
+
+  const saturationSlider = createSlider('Saturation', -2, 10, 0, 'saturation');
+  saturationSlider.style.top = '45px';
+  document.body.appendChild(saturationSlider);
+
+  const value = createSlider('Value', -2, 2, 0, 'value');
+  value.style.top = '70px';
+  document.body.appendChild(value);
+};
+imageObj.src = 'https://konvajs.org/assets/darth-vader.jpg';
+imageObj.crossOrigin = 'anonymous';
+`;
+
+hsvCodes.react = `import { Stage, Layer, Image } from 'react-konva';
+import { useState, useEffect, useRef } from 'react';
+import useImage from 'use-image';
+
+const App = () => {
+  const [hue, setHue] = useState(0);
+  const [saturation, setSaturation] = useState(0);
+  const [value, setValue] = useState(0);
+  const [image] = useImage('https://konvajs.org/assets/darth-vader.jpg', 'anonymous');
+  const imageRef = useRef(null);
+
+  useEffect(() => {
+    if (image && imageRef.current) {
+      imageRef.current.cache();
+    }
+  }, [image]);
+
+  return (
+    <>
+      <Stage width={window.innerWidth} height={window.innerHeight}>
+        <Layer>
+          <Image
+            ref={imageRef}
+            x={50}
+            y={50}
+            image={image}
+            draggable
+            filters={[Konva.Filters.HSV]}
+            hue={hue}
+            saturation={saturation}
+            value={value}
+          />
+        </Layer>
+      </Stage>
+      <div style={{ position: 'absolute', top: '20px', left: '20px' }}>
+        <div>
+          Hue
+          <input
+            type="range"
+            min="-259"
+            max="259"
+            value={hue}
+            onChange={(e) => setHue(parseInt(e.target.value))}
+          />
+        </div>
+        <div>
+          Saturation
+          <input
+            type="range"
+            min="-2"
+            max="10"
+            step="0.1"
+            value={saturation}
+            onChange={(e) => setSaturation(parseFloat(e.target.value))}
+          />
+        </div>
+        <div>
+          Value
+          <input
+            type="range"
+            min="-2"
+            max="2"
+            step="0.1"
+            value={value}
+            onChange={(e) => setValue(parseFloat(e.target.value))}
+          />
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default App;
+`;
+
+hsvCodes.vue.app = `<template>
+  <div>
+    <v-stage :config="stageSize">
+      <v-layer>
+        <v-image
+          ref="imageNode"
+          :config="{
+            x: 50,
+            y: 50,
+            image: image,
+            draggable: true,
+            filters: [Konva.Filters.HSV],
+            hue: hue,
+            saturation: saturation,
+            value: value,
+          }"
+        />
+      </v-layer>
+    </v-stage>
+    <div style="position: absolute; top: 20px; left: 20px">
+      <div>
+        Hue
+        <input
+          type="range"
+          min="-259"
+          max="259"
+          :value="hue"
+          @input="(e) => hue = parseInt(e.target.value)"
+        />
+      </div>
+      <div>
+        Saturation
+        <input
+          type="range"
+          min="-2"
+          max="10"
+          step="0.1"
+          :value="saturation"
+          @input="(e) => saturation = parseFloat(e.target.value)"
+        />
+      </div>
+      <div>
+        Value
+        <input
+          type="range"
+          min="-2"
+          max="2"
+          step="0.1"
+          :value="value"
+          @input="(e) => value = parseFloat(e.target.value)"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, watch, nextTick } from 'vue';
+import { useImage } from 'vue-konva';
+import Konva from 'konva';
+
+const stageSize = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
+
+const hue = ref(0);
+const saturation = ref(0);
+const value = ref(0);
+const imageNode = ref(null);
+const [image] = useImage('https://konvajs.org/assets/darth-vader.jpg', 'anonymous');
+
+watch(image, async (newImage) => {
+  if (newImage) {
+    await nextTick();
+    imageNode.value.getNode().cache();
+  }
+});
+</script>
+`;
