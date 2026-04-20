@@ -1,5 +1,5 @@
 <script setup>
-import { simpleCustomDemo, hitFuncDemo, ringDemo } from "./codes/simple";
+import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo } from "./codes/simple";
 </script>
 
 # 自定义元素（简单示例）
@@ -31,6 +31,49 @@ const shape = new Konva.Shape({
 
 - `context`：`Konva.Context` 实例，透明代理了原生 canvas 2D 上下文的全部方法（`beginPath`、`moveTo`、`lineTo`、`arc` 等），并额外提供了 `fillStrokeShape(shape)` 方法，用于根据 Shape 属性自动应用样式。
 - `shape`：当前 `Konva.Shape` 实例，可通过 `shape.getAttr(key)` 读取自定义属性。
+
+## fillStrokeShape 的本质
+
+`fillStrokeShape` **不负责定义路径**，只负责"用正确的颜色把路径画出来"。`beginPath()` 到 `closePath()` 之间的路径定义完全由 `sceneFunc` 负责，`fillStrokeShape` 在此基础上完成填充和描边。
+
+其内部调用链如下：
+
+```
+fillStrokeShape(shape)
+  │  （根据 fillAfterStrokeEnabled 决定顺序，默认先 fill 后 stroke）
+  ├─ fillShape(shape)
+  │    └─ shape.fillEnabled() 检查 → _fill(shape)
+  │         ├─ SceneContext._fill：
+  │         │    根据 fillPriority 依次判断 color / pattern /
+  │         │    linear-gradient / radial-gradient
+  │         │    → setAttr('fillStyle', <对应值>)
+  │         │    → shape._fillFunc(this)    // ctx.fill()
+  │         └─ HitContext._fill：
+  │              save()
+  │              → setAttr('fillStyle', shape.colorKey)
+  │              → shape._fillFuncHit(this) // ctx.fill()
+  │              restore()
+  │
+  └─ strokeShape(shape)
+       └─ shape.hasStroke() 检查 → _stroke(shape)
+            ├─ SceneContext._stroke：
+            │    setAttr('lineWidth', strokeWidth)
+            │    setAttr('strokeStyle', stroke 或线性渐变)
+            │    处理 dash / lineCap / shadow 等
+            │    → shape._strokeFunc(this)  // ctx.stroke()
+            └─ HitContext._stroke：
+                 setAttr('lineWidth', hitStrokeWidth)
+                 setAttr('strokeStyle', shape.colorKey)
+                 → shape._strokeFuncHit(this) // ctx.stroke()
+```
+
+本质上做了三件事：
+
+1. **读 shape 属性**：`fill`、`stroke`、`strokeWidth`、`dash`、`lineCap` 等
+2. **写 context 状态**：将这些属性翻译成 `fillStyle`、`strokeStyle`、`lineWidth` 等写入 canvas context；在 hit canvas 上统一替换为 `shape.colorKey`
+3. **触发绘制**：调用 `ctx.fill()` 和 `ctx.stroke()` 对当前路径执行填充和描边
+
+正因为 `fillStrokeShape` 在 hit canvas 上自动替换为 `colorKey`，所以**使用 `fillStrokeShape` 的 shape 无需单独定义 `hitFunc`**——颜色切换已被封装在内部。
 
 ## 坐标系说明
 
@@ -203,3 +246,67 @@ ring.on('mouseleave', () => {
 将鼠标移入圆环区域，颜色变为橘黄色；移入中心空洞，事件不触发，颜色保持不变：
 
 <KShape :afterMounted="ringDemo" :width="320" :height="220" />
+
+## 示例：按像素命中的文字
+
+`Konva.Text` 的默认 `hitFunc` 使用整个文字包围矩形，字母镂空处（如"o"、"a"内部）同样可触发事件。
+
+要实现像素级命中，需要自定义 shape，在 `hitFunc` 中用 `fillText` / `strokeText` 将文字笔画直接绘制到 hit canvas 上。关键点在于：Konva **不会**在调用 `hitFunc` 前预设命中色，需要手动将 `fillStyle` / `strokeStyle` 设置为 `shape.colorKey`——这是 Konva 为每个 shape 分配的唯一标识色，用于 hit canvas 的像素识别。
+
+```js
+const shape = new Konva.Shape({
+  x: 200,
+  y: 75,
+  fill: '#4CAF50',
+  stroke: '#4CAF50',
+  strokeWidth: 8,
+  sceneFunc(context, shape) {
+    context.setAttr('font', 'bold 72px Arial');
+    context.setAttr('textAlign', 'center');
+    context.setAttr('textBaseline', 'middle');
+    context.setAttr('lineWidth', shape.getAttr('strokeWidth'));
+    context.setAttr('strokeStyle', shape.getAttr('stroke'));
+    context.strokeText('Konva', 0, 0);
+    context.setAttr('fillStyle', shape.getAttr('fill'));
+    context.fillText('Konva', 0, 0);
+  },
+  hitFunc(context, shape) {
+    const hitColor = shape.colorKey; // Konva 分配给该 shape 的唯一命中色
+    context.setAttr('font', 'bold 72px Arial');
+    context.setAttr('textAlign', 'center');
+    context.setAttr('textBaseline', 'middle');
+    context.setAttr('lineWidth', shape.getAttr('strokeWidth'));
+    context.setAttr('fillStyle', hitColor);
+    context.setAttr('strokeStyle', hitColor);
+    context.fillText('Konva', 0, 0);
+    context.strokeText('Konva', 0, 0);
+  },
+});
+```
+
+将鼠标移到文字笔画上，颜色变为橘黄色；移到字母镂空处，不触发任何事件：
+
+<KShape :afterMounted="pixelTextDemo" :width="420" :height="150" />
+
+## 为什么此处必须定义 hitFunc
+
+此示例中 `hitFunc` 不可省略，原因在于 `sceneFunc` 与 `fillStrokeShape` 的工作方式不同。
+
+**使用 `fillStrokeShape` 的 shape 不需要单独定义 `hitFunc`**，因为该方法内部会判断当前绘制的是 scene canvas 还是 hit canvas，并自动切换填色策略：
+
+```
+fillStrokeShape(shape)
+  ├─ scene canvas → 使用 shape.fill()、shape.stroke()（视觉色）
+  └─ hit canvas   → 使用 shape.colorKey（唯一命中色）
+```
+
+**而 `fillText` / `strokeText` 是原生 canvas 调用**，完全绕过了这套机制。在 `sceneFunc` 中手动写下：
+
+```js
+context.setAttr('fillStyle', shape.getAttr('fill')); // 始终是视觉色 #4CAF50
+context.fillText('Konva', 0, 0);
+```
+
+若不定义 `hitFunc`，Konva 会在 hit canvas 上执行同一个 `sceneFunc`，文字被画成绿色 `#4CAF50`。Konva 读取鼠标位置的像素颜色后，在全局 `shapes` map 里查找 `#4CAF50`——查不到对应 shape，事件完全失效。
+
+因此，凡是在 `sceneFunc` 中使用了**手动设置颜色的原生绘制调用**（`fillText`、`strokeText`、`context.fill()` 配合 `setAttr('fillStyle', ...)` 等），都必须显式定义 `hitFunc`，在其中用 `shape.colorKey` 替换颜色，确保 hit canvas 上的像素能被正确识别。

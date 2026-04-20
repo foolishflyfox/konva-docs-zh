@@ -132,7 +132,7 @@ export function ringDemo(stage: Konva.Stage) {
       context.beginPath();
       context.arc(0, 0, innerRadius, 0, Math.PI * 2);
       context.closePath();
-      context.setAttr("fillStyle", "#87CEEB");
+      context.setAttr("fillStyle", "rgb(135, 206, 235)");
       context.fill();
       // 再绘制圆环，应用 shape 的 fill/stroke
       context.beginPath();
@@ -142,14 +142,14 @@ export function ringDemo(stage: Konva.Stage) {
       context.closePath();
       context.fillStrokeShape(shape);
     },
-    hitFunc: function (context, shape) {
-      context.beginPath();
-      context.arc(0, 0, outerRadius, 0, Math.PI * 2, false);
-      context.moveTo(innerRadius, 0);
-      context.arc(0, 0, innerRadius, 0, Math.PI * 2, true);
-      context.closePath();
-      context.fillStrokeShape(shape);
-    },
+    // hitFunc: function (context, shape) {
+    //   context.beginPath();
+    //   context.arc(0, 0, outerRadius, 0, Math.PI * 2, false);
+    //   context.moveTo(innerRadius, 0);
+    //   context.arc(0, 0, innerRadius, 0, Math.PI * 2, true);
+    //   context.closePath();
+    //   context.fillStrokeShape(shape);
+    // },
   });
 
   ring.on("mouseenter", () => {
@@ -164,4 +164,56 @@ export function ringDemo(stage: Konva.Stage) {
   });
 
   layer.add(statusText, ring);
+}
+
+export function pixelTextDemo(stage: Konva.Stage) {
+  const layer = createLayer(stage);
+
+  const fontSize = 72;
+  const strokeWidth = 8;
+  const text = "Konva";
+
+  const shape = new Konva.Shape({
+    x: stage.width() / 2,
+    y: stage.height() / 2,
+    fill: "#4CAF50",
+    stroke: "#4CAF50",
+    strokeWidth,
+    sceneFunc(context, shape) {
+      context.setAttr("font", `bold ${fontSize}px Arial`);
+      context.setAttr("textAlign", "center");
+      context.setAttr("textBaseline", "middle");
+      context.setAttr("lineWidth", shape.getAttr("strokeWidth"));
+      context.setAttr("fillStyle", shape.getAttr("fill"));
+      context.setAttr("strokeStyle", shape.getAttr("stroke"));
+      context.fillText(text, 0, 0);
+      context.strokeText(text, 0, 0);
+    },
+    hitFunc(context, shape) {
+      // 使用 shape.colorKey 作为命中色，仅文字像素会被涂上该颜色
+      const hitColor = shape.colorKey;
+      context.setAttr("font", `bold ${fontSize}px Arial`);
+      context.setAttr("textAlign", "center");
+      context.setAttr("textBaseline", "middle");
+      context.setAttr("lineWidth", shape.getAttr("strokeWidth"));
+      console.log("@@@", hitColor);
+      context.setAttr("fillStyle", hitColor);
+      context.setAttr("strokeStyle", hitColor);
+      context.fillText(text, 0, 0);
+      context.strokeText(text, 0, 0);
+    },
+  });
+
+  shape.on("mouseenter", () => {
+    shape.fill("#FF9800");
+    shape.stroke("#FF9800");
+    layer.batchDraw();
+  });
+  shape.on("mouseleave", () => {
+    shape.fill("#4CAF50");
+    shape.stroke("#4CAF50");
+    layer.batchDraw();
+  });
+
+  layer.add(shape);
 }
