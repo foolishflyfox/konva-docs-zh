@@ -217,3 +217,122 @@ export function pixelTextDemo(stage: Konva.Stage) {
 
   layer.add(shape);
 }
+
+export function rainbowDemo(stage: Konva.Stage) {
+  const layer = createLayer(stage);
+
+  const cx = stage.width() / 2;
+  const cy = stage.height();
+  const bandWidth = 25;
+  const baseRadius = 35;
+
+  // 从外到内：红橙黄绿蓝靛紫
+  const colors = [
+    "#FF0000",
+    "#FF7F00",
+    "#FFFF00",
+    "#00AA00",
+    "#0000FF",
+    "#4B0082",
+    "#9400D3",
+  ];
+
+  colors.forEach((color, i) => {
+    const outerRadius = baseRadius + (colors.length - i) * bandWidth;
+    const innerRadius = baseRadius + (colors.length - i - 1) * bandWidth;
+
+    const band = new Konva.Shape({
+      x: cx,
+      y: cy,
+      fill: color,
+      opacity: 0.75,
+      sceneFunc(context, shape) {
+        context.beginPath();
+        context.arc(0, 0, outerRadius, Math.PI, 0, false);
+        context.arc(0, 0, innerRadius, 0, Math.PI, true);
+        context.closePath();
+        context.fillStrokeShape(shape);
+      },
+    });
+
+    band.on("mouseenter", () => {
+      band.opacity(1);
+      layer.batchDraw();
+    });
+    band.on("mouseleave", () => {
+      band.opacity(0.75);
+      layer.batchDraw();
+    });
+
+    layer.add(band);
+  });
+}
+
+export function rainbowSingleDemo(stage: Konva.Stage) {
+  const layer = createLayer(stage);
+
+  const cx = stage.width() / 2;
+  const cy = stage.height();
+  const bandWidth = 25;
+  const baseRadius = 35;
+  const colors = [
+    "#FF0000",
+    "#FF7F00",
+    "#FFFF00",
+    "#00AA00",
+    "#0000FF",
+    "#4B0082",
+    "#9400D3",
+  ];
+  let activeIndex = -1;
+
+  const rainbow = new Konva.Shape({
+    x: cx,
+    y: cy,
+    sceneFunc(context, _shape) {
+      colors.forEach((color, i) => {
+        const outerRadius = baseRadius + (colors.length - i) * bandWidth;
+        const innerRadius = baseRadius + (colors.length - i - 1) * bandWidth;
+        context.beginPath();
+        context.arc(0, 0, outerRadius, Math.PI, 0, false);
+        context.arc(0, 0, innerRadius, 0, Math.PI, true);
+        context.closePath();
+        context.setAttr("globalAlpha", i === activeIndex ? 1 : 0.75);
+        context.setAttr("fillStyle", color);
+        context.fill();
+      });
+      context.setAttr("globalAlpha", 1);
+    },
+    hitFunc(context, shape) {
+      const outerRadius = baseRadius + colors.length * bandWidth;
+      context.beginPath();
+      context.arc(0, 0, outerRadius, Math.PI, 0, false);
+      context.moveTo(baseRadius, 0);
+      context.arc(0, 0, baseRadius, 0, Math.PI, true);
+      context.closePath();
+      context.fillStrokeShape(shape);
+    },
+  });
+
+  rainbow.on("mousemove", () => {
+    const pos = stage.getPointerPosition()!;
+    const dx = pos.x - cx;
+    const dy = pos.y - cy;
+    const r = Math.sqrt(dx * dx + dy * dy);
+    const bandFromInner = Math.floor((r - baseRadius) / bandWidth);
+    const colorIdx = colors.length - 1 - bandFromInner;
+    const newIndex =
+      colorIdx >= 0 && colorIdx < colors.length ? colorIdx : -1;
+    if (newIndex !== activeIndex) {
+      activeIndex = newIndex;
+      layer.batchDraw();
+    }
+  });
+
+  rainbow.on("mouseleave", () => {
+    activeIndex = -1;
+    layer.batchDraw();
+  });
+
+  layer.add(rainbow);
+}

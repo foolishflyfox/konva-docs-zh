@@ -1,5 +1,5 @@
 <script setup>
-import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo } from "./codes/simple";
+import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo } from "./codes/simple";
 </script>
 
 # 自定义元素（简单示例）
@@ -310,3 +310,113 @@ context.fillText('Konva', 0, 0);
 若不定义 `hitFunc`，Konva 会在 hit canvas 上执行同一个 `sceneFunc`，文字被画成绿色 `#4CAF50`。Konva 读取鼠标位置的像素颜色后，在全局 `shapes` map 里查找 `#4CAF50`——查不到对应 shape，事件完全失效。
 
 因此，凡是在 `sceneFunc` 中使用了**手动设置颜色的原生绘制调用**（`fillText`、`strokeText`、`context.fill()` 配合 `setAttr('fillStyle', ...)` 等），都必须显式定义 `hitFunc`，在其中用 `shape.colorKey` 替换颜色，确保 hit canvas 上的像素能被正确识别。
+
+## 示例：彩虹图案
+
+将 7 种颜色各自定义为一个独立的 `Konva.Shape`，每个 shape 都是一段半圆弧形区域。默认 `opacity` 为 0.75，鼠标进入时提升至 1，离开时恢复，各颜色互不干扰。
+
+关键实现：
+
+- **每个色带是一个独立 shape**：这样 `mouseenter` / `mouseleave` 可以精确对应到单个色带
+- **`opacity` 属性**：作用于整个 shape，不影响其他 shape
+- **无需 `hitFunc`**：`sceneFunc` 中使用了 `fillStrokeShape`，hit canvas 颜色由 Konva 自动处理
+
+```js
+const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00AA00', '#0000FF', '#4B0082', '#9400D3'];
+const bandWidth = 25;
+const baseRadius = 35;
+
+colors.forEach((color, i) => {
+  const outerRadius = baseRadius + (colors.length - i) * bandWidth;
+  const innerRadius = baseRadius + (colors.length - i - 1) * bandWidth;
+
+  const band = new Konva.Shape({
+    x: cx,
+    y: cy,   // 圆心置于 stage 底部，半圆弧向上展开
+    fill: color,
+    opacity: 0.75,
+    sceneFunc(context, shape) {
+      context.beginPath();
+      context.arc(0, 0, outerRadius, Math.PI, 0, false); // 外弧：从左到右经过顶部
+      context.arc(0, 0, innerRadius, 0, Math.PI, true);  // 内弧：从右到左经过顶部
+      context.closePath();
+      context.fillStrokeShape(shape);
+    },
+  });
+
+  band.on('mouseenter', () => { band.opacity(1);    layer.batchDraw(); });
+  band.on('mouseleave', () => { band.opacity(0.75); layer.batchDraw(); });
+
+  layer.add(band);
+});
+```
+
+<KShape :afterMounted="rainbowDemo" :width="420" :height="210" bgColor="white" />
+
+## 单 Shape 实现彩虹
+
+上面的方案用 7 个独立 shape，每个色带自己响应事件、自己管理 opacity，思路直观，但也可以用**一个 shape** 实现相同效果。
+
+两种方案的核心差异：
+
+| | 7 个 shape | 单个 shape |
+|--|--|--|
+| 事件绑定 | 每个色带独立 `mouseenter`/`mouseleave` | 整体 `mousemove` + 手动计算色带 |
+| opacity 控制 | Konva `opacity` 属性 | `sceneFunc` 内手动设 `globalAlpha` |
+| `hitFunc` | 不需要（`fillStrokeShape` 自动处理） | **必须定义**（`sceneFunc` 使用原生 `fill()`） |
+| 重绘粒度 | 仅目标 shape 属性变化 | `layer.batchDraw()` 重绘整个 shape |
+
+**难点一：识别当前色带。** 单个 shape 只有一个命中区域，无法通过事件直接区分色带。解法是在 `mousemove` 中计算鼠标到圆心的距离 `r`，按色带宽度换算索引：
+
+```js
+const bandFromInner = Math.floor((r - baseRadius) / bandWidth); // 0=最内 ~ 6=最外
+const colorIdx = colors.length - 1 - bandFromInner;            // 对应 colors 下标
+```
+
+**难点二：必须定义 `hitFunc`。** `sceneFunc` 里对每个色带手动调用 `context.fill()`，绕过了 `fillStrokeShape` 的 `colorKey` 机制。若不定义 `hitFunc`，hit canvas 上画的是视觉色而非 `colorKey`，`mousemove` 完全失效。`hitFunc` 将整个彩虹区域（排除中心空洞）作为一个整体命中区域，配合 `fillStrokeShape` 确保正确识别。
+
+```js
+const rainbow = new Konva.Shape({
+  x: cx,
+  y: cy,
+  sceneFunc(context, _shape) {
+    colors.forEach((color, i) => {
+      const outerRadius = baseRadius + (colors.length - i) * bandWidth;
+      const innerRadius = baseRadius + (colors.length - i - 1) * bandWidth;
+      context.beginPath();
+      context.arc(0, 0, outerRadius, Math.PI, 0, false);
+      context.arc(0, 0, innerRadius, 0, Math.PI, true);
+      context.closePath();
+      context.setAttr('globalAlpha', i === activeIndex ? 1 : 0.75);
+      context.setAttr('fillStyle', color);
+      context.fill();
+    });
+    context.setAttr('globalAlpha', 1);
+  },
+  hitFunc(context, shape) {
+    const outerRadius = baseRadius + colors.length * bandWidth;
+    context.beginPath();
+    context.arc(0, 0, outerRadius, Math.PI, 0, false);
+    context.moveTo(baseRadius, 0);
+    context.arc(0, 0, baseRadius, 0, Math.PI, true);
+    context.closePath();
+    context.fillStrokeShape(shape);
+  },
+});
+
+rainbow.on('mousemove', () => {
+  const pos = stage.getPointerPosition();
+  const r = Math.sqrt((pos.x - cx) ** 2 + (pos.y - cy) ** 2);
+  const bandFromInner = Math.floor((r - baseRadius) / bandWidth);
+  const newIndex = colors.length - 1 - bandFromInner;
+  const clamped = newIndex >= 0 && newIndex < colors.length ? newIndex : -1;
+  if (clamped !== activeIndex) {
+    activeIndex = clamped;
+    layer.batchDraw();
+  }
+});
+
+rainbow.on('mouseleave', () => { activeIndex = -1; layer.batchDraw(); });
+```
+
+<KShape :afterMounted="rainbowSingleDemo" :width="420" :height="210" bgColor="white" />
