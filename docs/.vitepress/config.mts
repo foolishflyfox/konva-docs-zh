@@ -370,6 +370,14 @@ const config = defineConfig({
                 { text: "addGetterSetter 解析", link: "add-getter-setter" },
               ],
             },
+            {
+              text: "自定义元素",
+              collapsed: true,
+              prefix: "custom-element",
+              items: [
+                { text: "简单示例", link: "simple" },
+              ],
+            },
             { text: "示例", link: "demo" },
           ],
         },
