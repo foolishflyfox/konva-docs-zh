@@ -1,5 +1,5 @@
 <script setup>
-import { simpleCustomDemo } from "./codes/simple";
+import { simpleCustomDemo, hitFuncDemo, ringDemo } from "./codes/simple";
 </script>
 
 # 自定义元素（简单示例）
@@ -109,3 +109,97 @@ layer.add(hex);
 ```
 
 通过类继承的方式，可以将自定义属性（如 `radius`）与绘制逻辑封装在一起，使用方式与内置图形完全一致。
+
+## hitFunc：自定义命中区域
+
+`sceneFunc` 决定图形的视觉外观，而 `hitFunc` 决定图形的**事件命中区域**（鼠标点击、悬停等事件的检测范围）。两者相互独立，不设置 `hitFunc` 时，Konva 默认用 `sceneFunc` 绘制的路径作为命中区域。
+
+自定义 `hitFunc` 的典型场景：
+
+- **扩大命中区域**：图形较小时，让用户更容易点击
+- **简化命中检测**：图形视觉上很复杂（如星形、路径），但用一个简单的矩形或圆形代替，提升性能
+- **排除部分区域**：例如环形图，使中间空洞不可点击
+
+`hitFunc` 的签名与 `sceneFunc` 完全相同，接收 `context` 和 `shape` 两个参数：
+
+```js
+const shape = new Konva.Shape({
+  x: 150,
+  y: 100,
+  fill: '#FF6B6B',
+  stroke: '#2C3E50',
+  strokeWidth: 2,
+  sceneFunc: function (context, shape) {
+    // 绘制六边形（视觉）
+    drawHexPath(context, 50);
+    context.fillStrokeShape(shape);
+  },
+  hitFunc: function (context, shape) {
+    // 用更大的圆形作为命中区域
+    context.beginPath();
+    context.arc(0, 0, 75, 0, Math.PI * 2);
+    context.closePath();
+    context.fillStrokeShape(shape);
+  },
+});
+```
+
+下面的示例中，左侧六边形使用默认命中区域（形状本身），右侧六边形使用半径 75px 的圆形命中区域。将鼠标悬停在右侧图形周围（六边形之外、圆形之内），可以看到事件依然被触发：
+
+<KShape :afterMounted="hitFuncDemo" :width="340" :height="200" />
+
+## 示例：圆环的命中区域
+
+圆环（Donut）是 `hitFunc` 的典型应用场景——视觉上是一个镂空的圆环，命中区域也应该排除中心空洞，否则鼠标移到空洞上也会错误触发事件。
+
+绘制镂空路径的关键在于：**外圆顺时针、内圆逆时针**。在 canvas 的非零绕数（nonzero）填充规则下，两段路径绕数相消，中心区域不被填充，命中检测也自然排除该区域：
+
+```js
+context.beginPath();
+context.arc(0, 0, outerRadius, 0, Math.PI * 2, false); // 外圆，顺时针
+context.moveTo(innerRadius, 0);                         // 抬笔，避免外圆到内圆的连线
+context.arc(0, 0, innerRadius, 0, Math.PI * 2, true);  // 内圆，逆时针，形成镂空
+context.closePath();
+context.fillStrokeShape(shape);
+```
+
+`sceneFunc` 和 `hitFunc` 使用相同的路径，保证视觉与命中区域完全一致：
+
+```js
+const ring = new Konva.Shape({
+  x: 150,
+  y: 120,
+  fill: '#4CAF50',
+  stroke: '#2C3E50',
+  strokeWidth: 2,
+  sceneFunc: function (context, shape) {
+    context.beginPath();
+    context.arc(0, 0, 75, 0, Math.PI * 2, false);
+    context.moveTo(35, 0);
+    context.arc(0, 0, 35, 0, Math.PI * 2, true);
+    context.closePath();
+    context.fillStrokeShape(shape);
+  },
+  hitFunc: function (context, shape) {
+    context.beginPath();
+    context.arc(0, 0, 75, 0, Math.PI * 2, false);
+    context.moveTo(35, 0);
+    context.arc(0, 0, 35, 0, Math.PI * 2, true);
+    context.closePath();
+    context.fillStrokeShape(shape);
+  },
+});
+
+ring.on('mouseenter', () => {
+  ring.fill('#FF9800');
+  layer.batchDraw();
+});
+ring.on('mouseleave', () => {
+  ring.fill('#4CAF50');
+  layer.batchDraw();
+});
+```
+
+将鼠标移入圆环区域，颜色变为橘黄色；移入中心空洞，事件不触发，颜色保持不变：
+
+<KShape :afterMounted="ringDemo" :width="320" :height="220" />
