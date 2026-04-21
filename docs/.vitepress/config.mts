@@ -376,6 +376,7 @@ const config = defineConfig({
               prefix: "custom-element",
               items: [
                 { text: "简单示例", link: "simple" },
+                { text: "形变的实现", link: "transform" },
               ],
             },
             { text: "示例", link: "demo" },
