@@ -1,5 +1,5 @@
 <script setup>
-import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo } from "./codes/simple";
+import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo, multiBeginPathDemo } from "./codes/simple";
 </script>
 
 # 自定义元素（简单示例）
@@ -30,7 +30,7 @@ const shape = new Konva.Shape({
 `sceneFunc` 接收两个参数：
 
 - `context`：`Konva.Context` 实例，透明代理了原生 canvas 2D 上下文的全部方法（`beginPath`、`moveTo`、`lineTo`、`arc` 等），并额外提供了 `fillStrokeShape(shape)` 方法，用于根据 Shape 属性自动应用样式。
-- `shape`：当前 `Konva.Shape` 实例，可通过 `shape.getAttr(key)` 读取自定义属性。
+- `shape`：当前 `Konva.Shape` 实例，可通过 `shape.getAttr(key)` 读取自定义属性。Konva 内部以 `drawFunc.call(this, context, this)` 的形式调用 `sceneFunc`，因此在**普通函数**中 `this` 与 `shape` 指向同一个实例，两者等价；但在**箭头函数**中 `this` 指向外层作用域而非 Shape，此时只能依赖 `shape` 参数。提供显式的 `shape` 参数正是为了让箭头函数也能正常工作。
 
 ## fillStrokeShape 的本质
 
@@ -190,6 +190,182 @@ const shape = new Konva.Shape({
 下面的示例中，左侧六边形使用默认命中区域（形状本身），右侧六边形使用半径 75px 的圆形命中区域。将鼠标悬停在右侧图形周围（六边形之外、圆形之内），可以看到事件依然被触发：
 
 <KShape :afterMounted="hitFuncDemo" :width="340" :height="200" />
+
+## colorKey 与离屏颜色拾取
+
+前面多次提到 `colorKey` 和 hit canvas，这里系统说明 Konva 事件命中检测的底层原理——**离屏颜色拾取（offscreen color picking）**。
+
+### 第一步：为每个 shape 分配唯一颜色
+
+`Shape` 构造函数里随机生成一个 6 位 hex 颜色，保证全局唯一，并存入全局 `shapes` map：
+
+```js
+// Shape.js 构造函数
+while (true) {
+  key = Util.getRandomColor(); // 随机 #rrggbb，如 "#3a7fc1"
+  if (key && !(key in shapes)) break;
+}
+this.colorKey = key;
+shapes[key] = this; // 全局 map：颜色 → shape 实例
+```
+
+shape 销毁时从 map 中删除，确保 `colorKey` 始终与活跃 shape 一一对应。
+
+### 第二步：在隐藏的 hit canvas 上用 colorKey 绘制
+
+每个 `Layer` 除了用户可见的 scene canvas 外，还维护一张对用户不可见的 `hitCanvas`。每次重绘时，所有 shape 都在 hit canvas 上用各自的 `colorKey` 画一遍（即 `HitContext` 替换颜色的过程）。最终 hit canvas 上每个像素的颜色代表"哪个 shape 覆盖了这里"：
+
+```
+可见 canvas（scene）     隐藏 canvas（hit）
+┌──────────────────┐    ┌──────────────────┐
+│  绿色六边形       │    │  #3a7fc1 六边形   │  ← shape A 的 colorKey
+│  红色圆形         │    │  #e2109f 圆形     │  ← shape B 的 colorKey
+└──────────────────┘    └──────────────────┘
+```
+
+### 第三步：鼠标事件时读像素，反查 shape
+
+鼠标移动时，`Layer._getIntersection` 用 `getImageData` 读取鼠标位置那 **1×1 像素**的颜色，再从全局 map 里反查对应的 shape：
+
+```js
+// Layer.js — _getIntersection()
+const p = this.hitCanvas.context.getImageData(
+  Math.round(pos.x * ratio),
+  Math.round(pos.y * ratio),
+  1, 1
+).data; // [r, g, b, a]
+
+if (p[3] === 255) { // alpha=255 说明有图形覆盖此点
+  const colorKey = Util._rgbToHex(p[0], p[1], p[2]); // rgb → hex
+  const shape = shapes[HASH + colorKey];              // 反查 map
+  if (shape) return { shape };
+}
+```
+
+找到 shape 后，Konva 就知道鼠标当前在哪个 shape 上，从而触发 `mouseenter`、`mousemove`、`click` 等事件。
+
+本质上是把**"鼠标在哪个形状上"这个几何问题，转换成"这个像素是什么颜色"这个像素读取问题**，完全依赖 `getImageData` API，不涉及任何几何计算。
+
+### 抗锯齿边缘的螺旋搜索
+
+图形边缘因抗锯齿产生半透明混合像素（alpha < 255），颜色已不是纯 `colorKey`，直接读会查不到 shape。Konva 的解法是向外做螺旋扩展搜索，直到找到 alpha = 255 的像素为止：
+
+```js
+// Layer.js — getIntersection()
+let spiralSearchDistance = 1;
+while (true) {
+  for (let i = 0; i < INTERSECTION_OFFSETS_LEN; i++) {
+    const obj = this._getIntersection({
+      x: pos.x + intersectionOffset.x * spiralSearchDistance,
+      y: pos.y + intersectionOffset.y * spiralSearchDistance,
+    });
+    if (obj.antialiased) { spiralSearchDistance += 1; } // 向外扩一圈再查
+    else break;
+  }
+}
+```
+
+## hitFunc 的默认实现原理
+
+"不设置 `hitFunc` 时，Konva 默认用 `sceneFunc` 绘制的路径作为命中区域"——这一行为的实现藏在 `Shape.drawHit()` 的一行代码里：
+
+```js
+// Shape.js — drawHit() 内部
+const drawFunc = this.hitFunc() || this.sceneFunc();
+```
+
+`hitFunc()` 读取 `attrs.hitFunc` 或子类的 `_hitFunc`，若两者均未定义则返回 `undefined`，于是 `drawFunc` 回退到 `sceneFunc`，**直接把 sceneFunc 当 hitFunc 在 hit canvas 上执行**：
+
+```js
+drawFunc.call(this, context, this); // context 此时是 HitContext 实例
+```
+
+### HitContext 的多态替换
+
+传入 `sceneFunc` 的 `context` 是 `HitContext` 实例，而非普通的 `SceneContext`。`HitContext` 覆写了基类的 `_fill` 和 `_stroke`：
+
+```js
+// HitContext._fill
+_fill(shape) {
+  this.save();
+  this.setAttr('fillStyle', shape.colorKey); // 强制替换为唯一命中色
+  shape._fillFuncHit(this);                  // ctx.fill()
+  this.restore();
+}
+
+// HitContext._stroke
+_stroke(shape) {
+  // ...
+  this.setAttr('strokeStyle', shape.colorKey); // 强制替换为唯一命中色
+  shape._strokeFuncHit(this);                  // ctx.stroke()
+}
+```
+
+`fillStrokeShape` 定义在基类 `Context` 上，只是调用 `this.fillShape()` → `this._fill()`。由于多态，在 hit canvas 上 `this._fill()` 解析为 `HitContext._fill`，颜色被自动替换为 `colorKey`。
+
+### 完整调用链（无 hitFunc 时）
+
+```
+layer.batchDraw()
+  └─ shape.drawHit(hitCanvas)
+       │  drawFunc = hitFunc() || sceneFunc()
+       │  → hitFunc() 返回 undefined，取 sceneFunc
+       │
+       └─ sceneFunc.call(shape, hitContext, shape)
+            │  用户写的路径逻辑（beginPath / arc / lineTo ...）
+            └─ context.fillStrokeShape(shape)
+                 │  context 是 HitContext 实例
+                 ├─ fillShape(shape) → HitContext._fill(shape)
+                 │    setAttr('fillStyle', shape.colorKey)  ← 颜色被替换
+                 │    ctx.fill()
+                 └─ strokeShape(shape) → HitContext._stroke(shape)
+                      setAttr('strokeStyle', shape.colorKey) ← 颜色被替换
+                      ctx.stroke()
+```
+
+也就是说，"默认实现"并不是一个单独的函数，而是 `drawHit` 中的回退逻辑配合 `HitContext` 的多态覆写共同完成的。正因如此，`fillStrokeShape` 可以无感地在 scene/hit 两种 context 下切换颜色；而手动调用 `fillText` / `context.fill()` 时绕过了这条多态路径，`HitContext` 没有机会介入，所以必须显式定义 `hitFunc`。
+
+## 多次 beginPath 对命中区域的影响
+
+`sceneFunc` 中可以多次调用 `beginPath`，但命中区域取决于**哪些路径调用了 `fillStrokeShape`**，而非最后一次 `beginPath`。
+
+### 情况一：多次 beginPath，末尾一次 fillStrokeShape
+
+```js
+sceneFunc(context, shape) {
+  context.beginPath();
+  context.rect(0, 0, 50, 60);   // 路径 A
+
+  context.beginPath();           // ← 清除路径 A
+  context.arc(103, 30, 28, 0, Math.PI * 2);
+  context.closePath();
+  context.fillStrokeShape(shape); // 只有路径 B（圆形）被绘制和命中
+}
+```
+
+`beginPath()` 是原生 canvas API，**会清空当前路径**。路径 A 在被 `fillStrokeShape` 提交之前就被第二个 `beginPath` 丢弃，scene canvas 和 hit canvas 上都不存在路径 A。
+
+### 情况二：每段路径各自 fillStrokeShape
+
+```js
+sceneFunc(context, shape) {
+  context.beginPath();
+  context.rect(0, 0, 50, 60);
+  context.closePath();
+  context.fillStrokeShape(shape); // 矩形提交到 scene + hit canvas
+
+  context.beginPath();
+  context.arc(103, 30, 28, 0, Math.PI * 2);
+  context.closePath();
+  context.fillStrokeShape(shape); // 圆形也提交到 scene + hit canvas
+}
+```
+
+两段路径都被 `fillStrokeShape` 提交，hit canvas 上矩形和圆形都涂上了 `colorKey`，命中区域是两者的**并集**。
+
+下面的示例中，左侧图形使用情况一（虚线矩形标示被丢弃的路径，悬停该区域不触发事件），右侧图形使用情况二（矩形和圆形区域均可命中）：
+
+<KShape :afterMounted="multiBeginPathDemo" :width="420" :height="160" />
 
 ## 示例：圆环的命中区域
 
