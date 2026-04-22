@@ -348,6 +348,143 @@ export function rainbowDemo(stage: Konva.Stage) {
   });
 }
 
+export function numericInputDemo(stage: Konva.Stage) {
+  const layer = createLayer(stage);
+
+  let value = 0;
+  const btnW = 26;
+  const totalH = 26;
+  const displayW = 72;
+  const totalW = btnW + displayW;
+  const r = 5;
+  const shapeX = Math.round((stage.width() - totalW) / 2);
+  const shapeY = Math.round((stage.height() - totalH) / 2);
+
+  const hint = new Konva.Text({
+    x: 0,
+    y: 10,
+    width: stage.width(),
+    text: "点击左侧按钮调整数值",
+    fontSize: 13,
+    fill: "#666",
+    align: "center",
+  });
+
+  const numInput = new Konva.Shape({
+    x: shapeX,
+    y: shapeY,
+    sceneFunc(context, _shape) {
+      // ── 按钮区（圆角左矩形 + 3D 斜面效果）──
+      context.beginPath();
+      context.moveTo(r, 0);
+      context.lineTo(btnW, 0);
+      context.lineTo(btnW, totalH);
+      context.lineTo(r, totalH);
+      context.arc(r, totalH - r, r, Math.PI / 2, Math.PI, false); // 左下圆角
+      context.lineTo(0, r);
+      context.arc(r, r, r, Math.PI, (Math.PI * 3) / 2, false); // 左上圆角
+      context.closePath();
+      context.setAttr("fillStyle", "#b8b8b8");
+      context.fill();
+
+      // 顶部高亮（斜面亮边）
+      context.setAttr("strokeStyle", "#e0e0e0");
+      context.setAttr("lineWidth", 1.5);
+      context.beginPath();
+      context.moveTo(r, 1.5);
+      context.lineTo(btnW - 1, 1.5);
+      context.stroke();
+      // 左侧高亮
+      context.beginPath();
+      context.moveTo(1.5, r);
+      context.lineTo(1.5, totalH - r);
+      context.stroke();
+
+      // 底部阴影（斜面暗边）
+      context.setAttr("strokeStyle", "#707070");
+      context.setAttr("lineWidth", 1);
+      context.beginPath();
+      context.moveTo(r, totalH - 1.5);
+      context.lineTo(btnW - 1, totalH - 1.5);
+      context.stroke();
+
+      // 上下按钮分割线
+      context.setAttr("strokeStyle", "#909090");
+      context.setAttr("lineWidth", 0.5);
+      context.beginPath();
+      context.moveTo(4, totalH / 2);
+      context.lineTo(btnW - 4, totalH / 2);
+      context.stroke();
+
+      // 上箭头（▲）
+      const acx = btnW / 2;
+      const aw = 5;
+      const ah = 4;
+      context.setAttr("fillStyle", "#1a1a1a");
+      context.beginPath();
+      context.moveTo(acx, totalH / 4 - ah / 2);
+      context.lineTo(acx + aw, totalH / 4 + ah / 2);
+      context.lineTo(acx - aw, totalH / 4 + ah / 2);
+      context.closePath();
+      context.fill();
+
+      // 下箭头（▼）
+      context.beginPath();
+      context.moveTo(acx, (totalH * 3) / 4 + ah / 2);
+      context.lineTo(acx + aw, (totalH * 3) / 4 - ah / 2);
+      context.lineTo(acx - aw, (totalH * 3) / 4 - ah / 2);
+      context.closePath();
+      context.fill();
+
+      // ── 显示区（白色矩形 + 数字文本）──
+      context.beginPath();
+      context.rect(btnW, 0, displayW, totalH);
+      context.setAttr("fillStyle", "white");
+      context.fill();
+      context.setAttr("strokeStyle", "#888");
+      context.setAttr("lineWidth", 1);
+      context.stroke();
+
+      context.setAttr("font", "14px sans-serif");
+      context.setAttr("textAlign", "right");
+      context.setAttr("textBaseline", "middle");
+      context.setAttr("fillStyle", "#000");
+      context.fillText(String(value), btnW + displayW - 6, totalH / 2);
+    },
+    hitFunc(context, shape) {
+      // sceneFunc 全程使用原生 fill()/stroke()，绕过了 colorKey 替换机制，
+      // 必须显式定义 hitFunc，否则点击事件完全失效
+      context.beginPath();
+      context.rect(0, 0, totalW, totalH);
+      context.closePath();
+      context.fillStrokeShape(shape);
+    },
+  });
+
+  numInput.on("click", () => {
+    const pos = stage.getPointerPosition()!;
+    const relX = pos.x - shapeX;
+    const relY = pos.y - shapeY;
+    if (relX >= 0 && relX < btnW) {
+      if (relY < totalH / 2) value++;
+      else value--;
+      layer.batchDraw();
+    }
+  });
+
+  numInput.on("mousemove", () => {
+    const pos = stage.getPointerPosition()!;
+    stage.container().style.cursor =
+      pos.x - shapeX < btnW ? "pointer" : "default";
+  });
+
+  numInput.on("mouseleave", () => {
+    stage.container().style.cursor = "default";
+  });
+
+  layer.add(hint, numInput);
+}
+
 export function rainbowSingleDemo(stage: Konva.Stage) {
   const layer = createLayer(stage);
 

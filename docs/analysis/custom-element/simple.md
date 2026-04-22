@@ -1,5 +1,5 @@
 <script setup>
-import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo, multiBeginPathDemo } from "./codes/simple";
+import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo, multiBeginPathDemo, numericInputDemo } from "./codes/simple";
 </script>
 
 # 自定义元素（简单示例）
@@ -596,3 +596,69 @@ rainbow.on('mouseleave', () => { activeIndex = -1; layer.batchDraw(); });
 ```
 
 <KShape :afterMounted="rainbowSingleDemo" :width="420" :height="210" bgColor="white" />
+
+## 示例：数字输入控件
+
+将 LabVIEW 风格的数字输入控件实现为**单一 `Konva.Shape`**：左侧为带圆角的按钮区（点击上半 +1、点击下半 -1），右侧为显示当前数值的文本区。
+
+关键实现：
+
+- **`sceneFunc` 绘制整个控件**：按钮区（圆角矩形 + 斜面效果 + 箭头）和显示区（白色矩形 + 数字文本）全部在同一个 `sceneFunc` 中完成
+- **必须定义 `hitFunc`**：`sceneFunc` 中全程使用原生 `fill()`、`stroke()`、`fillText()` 调用，绕过了 `fillStrokeShape` 的 `colorKey` 替换机制，若不定义 `hitFunc`，hit canvas 上写的是视觉色而非 `colorKey`，点击事件完全失效
+- **点击区域判断**：单 shape 只有一个事件对象，在 `click` 回调中手动计算鼠标相对坐标，区分上半按钮（+1）和下半按钮（-1）
+
+```js
+let value = 0;
+const btnW = 26, totalH = 26, displayW = 72, r = 5;
+
+const numInput = new Konva.Shape({
+  x: shapeX, y: shapeY,
+  sceneFunc(context, _shape) {
+    // ── 按钮区（圆角左矩形 + 3D 斜面）──
+    context.beginPath();
+    context.moveTo(r, 0);
+    context.lineTo(btnW, 0);
+    context.lineTo(btnW, totalH);
+    context.lineTo(r, totalH);
+    context.arc(r, totalH - r, r, Math.PI / 2, Math.PI, false); // 左下圆角
+    context.lineTo(0, r);
+    context.arc(r, r, r, Math.PI, Math.PI * 3 / 2, false);      // 左上圆角
+    context.closePath();
+    context.setAttr('fillStyle', '#b8b8b8');
+    context.fill();
+    // ... 斜面高亮、分割线、上下箭头三角形 ...
+
+    // ── 显示区 ──
+    context.beginPath();
+    context.rect(btnW, 0, displayW, totalH);
+    context.setAttr('fillStyle', 'white');
+    context.fill();
+    context.setAttr('strokeStyle', '#888');
+    context.stroke();
+    context.setAttr('font', '14px sans-serif');
+    context.setAttr('textAlign', 'right');
+    context.setAttr('textBaseline', 'middle');
+    context.setAttr('fillStyle', '#000');
+    context.fillText(String(value), btnW + displayW - 6, totalH / 2);
+  },
+  hitFunc(context, shape) {
+    // sceneFunc 全程使用原生 fill()，必须手动定义 hitFunc
+    context.beginPath();
+    context.rect(0, 0, btnW + displayW, totalH);
+    context.closePath();
+    context.fillStrokeShape(shape); // 以 colorKey 填充，确保点击可被识别
+  },
+});
+
+numInput.on('click', () => {
+  const pos = stage.getPointerPosition();
+  const relX = pos.x - shapeX;
+  const relY = pos.y - shapeY;
+  if (relX < btnW) {
+    relY < totalH / 2 ? value++ : value--;
+    layer.batchDraw(); // 触发重绘，sceneFunc 读取新 value
+  }
+});
+```
+
+<KShape :afterMounted="numericInputDemo" :width="300" :height="100" />
