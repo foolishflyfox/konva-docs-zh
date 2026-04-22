@@ -220,58 +220,81 @@ export function pixelTextDemo(stage: Konva.Stage) {
 export function multiBeginPathDemo(stage: Konva.Stage) {
   const layer = createLayer(stage);
 
-  const rectW = 50, rectH = 60, gap = 25, circleR = 28;
+  const rectW = 50,
+    rectH = 60,
+    gap = 25,
+    circleR = 28;
   const shapeY = 75;
   const circleRelX = rectW + gap + circleR; // 103，相对于 shape 原点
 
   const statusText = new Konva.Text({
-    x: 10, y: 10, fontSize: 13, fill: '#333',
-    text: '将鼠标悬停到图形上',
+    x: 10,
+    y: 10,
+    fontSize: 13,
+    fill: "#333",
+    text: "将鼠标悬停到图形上",
   });
 
   // ── 情况一：两次 beginPath，末尾一次 fillStrokeShape ──
   const label1 = new Konva.Text({
-    x: 20, y: 48, fontSize: 12, fill: '#888',
-    text: '情况一：末尾一次 fillStrokeShape',
+    x: 20,
+    y: 48,
+    fontSize: 12,
+    fill: "#888",
+    text: "情况一：末尾一次 fillStrokeShape",
   });
   // 虚线矩形：仅作视觉参考，listening:false 不参与命中检测
   const ghostRect = new Konva.Rect({
-    x: 20, y: shapeY, width: rectW, height: rectH,
-    stroke: '#bbb', strokeWidth: 1, dash: [5, 4],
+    x: 20,
+    y: shapeY,
+    width: rectW,
+    height: rectH,
+    stroke: "#bbb",
+    strokeWidth: 1,
+    dash: [5, 4],
     listening: false,
   });
   const shapeA = new Konva.Shape({
-    x: 20, y: shapeY,
-    fill: '#4ECDC4', stroke: '#2C3E50', strokeWidth: 2,
+    x: 20,
+    y: shapeY,
+    fill: "#4ECDC4",
+    stroke: "#2C3E50",
+    strokeWidth: 2,
     sceneFunc(context, shape) {
       context.beginPath();
-      context.rect(0, 0, rectW, rectH);   // 路径 A（矩形）
-      context.beginPath();                 // ← 清除路径 A
+      context.rect(0, 0, rectW, rectH); // 路径 A（矩形）
+      context.beginPath(); // ← 清除路径 A
       context.arc(circleRelX, rectH / 2, circleR, 0, Math.PI * 2);
       context.closePath();
-      context.fillStrokeShape(shape);      // 只有圆形被绘制和命中
+      context.fillStrokeShape(shape); // 只有圆形被绘制和命中
     },
   });
-  shapeA.on('mouseenter', () => {
-    shapeA.fill('#FF9800');
+  shapeA.on("mouseenter", () => {
+    shapeA.fill("#FF9800");
     layer.batchDraw();
-    statusText.text('情况一命中：只有圆形有效（虚线矩形区域悬停不触发）');
+    statusText.text("情况一命中：只有圆形有效（虚线矩形区域悬停不触发）");
   });
-  shapeA.on('mouseleave', () => {
-    shapeA.fill('#4ECDC4');
+  shapeA.on("mouseleave", () => {
+    shapeA.fill("#4ECDC4");
     layer.batchDraw();
-    statusText.text('将鼠标悬停到图形上');
+    statusText.text("将鼠标悬停到图形上");
   });
 
   // ── 情况二：每段路径各自 fillStrokeShape ──
   const col2X = 20 + circleRelX + circleR + 35; // ≈ 206
   const label2 = new Konva.Text({
-    x: col2X, y: 48, fontSize: 12, fill: '#888',
-    text: '情况二：每段路径各自 fillStrokeShape',
+    x: col2X,
+    y: 48,
+    fontSize: 12,
+    fill: "#888",
+    text: "情况二：每段路径各自 fillStrokeShape",
   });
   const shapeB = new Konva.Shape({
-    x: col2X, y: shapeY,
-    fill: '#4ECDC4', stroke: '#2C3E50', strokeWidth: 2,
+    x: col2X,
+    y: shapeY,
+    fill: "#4ECDC4",
+    stroke: "#2C3E50",
+    strokeWidth: 2,
     sceneFunc(context, shape) {
       context.beginPath();
       context.rect(0, 0, rectW, rectH);
@@ -284,15 +307,17 @@ export function multiBeginPathDemo(stage: Konva.Stage) {
       context.fillStrokeShape(shape); // 圆形也提交到 hit canvas
     },
   });
-  shapeB.on('mouseenter', () => {
-    shapeB.fill('#FF9800');
+  shapeB.on("mouseenter", () => {
+    shapeB.fill("#FF9800");
     layer.batchDraw();
-    statusText.text('情况二命中：矩形和圆形区域均有效（两段路径都调用了 fillStrokeShape）');
+    statusText.text(
+      "情况二命中：矩形和圆形区域均有效（两段路径都调用了 fillStrokeShape）",
+    );
   });
-  shapeB.on('mouseleave', () => {
-    shapeB.fill('#4ECDC4');
+  shapeB.on("mouseleave", () => {
+    shapeB.fill("#4ECDC4");
     layer.batchDraw();
-    statusText.text('将鼠标悬停到图形上');
+    statusText.text("将鼠标悬停到图形上");
   });
 
   layer.add(statusText, label1, ghostRect, shapeA, label2, shapeB);
@@ -563,7 +588,10 @@ export function softKeyboardDemo(stage: Konva.Stage) {
     { keys: "ASDFGHJKL".split(""), x0: 32, y: 87 },
     { keys: "ZXCVBNM".split(""), x0: 72, y: 134 },
   ];
-  const KEY_W = 36, KEY_H = 36, KEY_STEP = 40, KEY_R = 4;
+  const KEY_W = 36,
+    KEY_H = 36,
+    KEY_STEP = 40,
+    KEY_R = 4;
 
   class SoftKeyboard extends Konva.Shape {
     private readonly _keyList: KeyInfo[];
@@ -572,7 +600,7 @@ export function softKeyboardDemo(stage: Konva.Stage) {
     private _activeKey = -1;
 
     constructor(
-      config: Konva.ShapeConfig & { stageWidth: number; stageHeight: number }
+      config: Konva.ShapeConfig & { stageWidth: number; stageHeight: number },
     ) {
       super(config);
 
@@ -598,8 +626,8 @@ export function softKeyboardDemo(stage: Konva.Stage) {
         top: row.y - pad,
         bottom: row.y + KEY_H + pad,
       }));
-      const yCuts = ROWS.slice(0, -1).map((row, i) =>
-        (row.y + KEY_H + ROWS[i + 1].y) / 2
+      const yCuts = ROWS.slice(0, -1).map(
+        (row, i) => (row.y + KEY_H + ROWS[i + 1].y) / 2,
       );
       this._bgPts = [
         [rowBounds[0].left, rowBounds[0].top],
@@ -609,8 +637,14 @@ export function softKeyboardDemo(stage: Konva.Stage) {
         this._bgPts.push([rowBounds[i].right, yCuts[i]]);
         this._bgPts.push([rowBounds[i + 1].right, yCuts[i]]);
       }
-      this._bgPts.push([rowBounds[ROWS.length - 1].right, rowBounds[ROWS.length - 1].bottom]);
-      this._bgPts.push([rowBounds[ROWS.length - 1].left, rowBounds[ROWS.length - 1].bottom]);
+      this._bgPts.push([
+        rowBounds[ROWS.length - 1].right,
+        rowBounds[ROWS.length - 1].bottom,
+      ]);
+      this._bgPts.push([
+        rowBounds[ROWS.length - 1].left,
+        rowBounds[ROWS.length - 1].bottom,
+      ]);
       for (let i = ROWS.length - 2; i >= 0; i--) {
         this._bgPts.push([rowBounds[i + 1].left, yCuts[i]]);
         this._bgPts.push([rowBounds[i].left, yCuts[i]]);
@@ -639,7 +673,7 @@ export function softKeyboardDemo(stage: Konva.Stage) {
           Math.round(pos.x),
           Math.round(pos.y),
           1,
-          1
+          1,
         ).data;
         const newKey = px[3] === 255 ? px[0] - 1 : -1;
         if (newKey !== this._activeKey) {
@@ -648,7 +682,7 @@ export function softKeyboardDemo(stage: Konva.Stage) {
           this.fire(
             "keychange",
             { key: newKey >= 0 ? this._keyList[newKey].label : "" },
-            true
+            true,
           );
           this.getLayer()?.batchDraw();
         }
@@ -670,7 +704,7 @@ export function softKeyboardDemo(stage: Konva.Stage) {
       y: number,
       w: number,
       h: number,
-      r: number
+      r: number,
     ) {
       ctx.beginPath();
       ctx.moveTo(x + r, y);
@@ -691,13 +725,15 @@ export function softKeyboardDemo(stage: Konva.Stage) {
       context.beginPath();
       context.moveTo(
         (pts[n - 1][0] + pts[0][0]) / 2,
-        (pts[n - 1][1] + pts[0][1]) / 2
+        (pts[n - 1][1] + pts[0][1]) / 2,
       );
       for (let i = 0; i < n; i++) {
         context.arcTo(
-          pts[i][0], pts[i][1],
-          pts[(i + 1) % n][0], pts[(i + 1) % n][1],
-          6
+          pts[i][0],
+          pts[i][1],
+          pts[(i + 1) % n][0],
+          pts[(i + 1) % n][1],
+          6,
         );
       }
       context.closePath();
