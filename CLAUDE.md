@@ -11,6 +11,16 @@ pnpm docs:build     # production build
 pnpm docs:preview   # preview production build
 ```
 
+## Konva source code
+
+The Konva.js source code is available locally at `~/Code/GitDownload/konva`. When analyzing Konva internals or verifying implementation details, read the source directly from this path rather than relying on memory.
+
+Key source files:
+- `src/Layer.ts` — `getIntersection`, `_getIntersection`, hit canvas logic
+- `src/Shape.ts` — `colorKey`, `drawHit`, `sceneFunc`, `hitFunc`
+- `src/Node.ts` — `_getTransform`, `getAbsoluteTransform`, `getRelativePointerPosition`
+- `src/Stage.ts` — pointer event handling, `_pointerMove` / `_pointerDown`
+
 ## Architecture
 
 This is a VitePress-based Chinese documentation site for Konva.js. `docs/` is the VitePress source root.
