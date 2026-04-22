@@ -1,5 +1,5 @@
 <script setup>
-import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo, multiBeginPathDemo, numericInputDemo } from "./codes/simple";
+import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo, multiBeginPathDemo, numericInputDemo, softKeyboardDemo } from "./codes/simple";
 </script>
 
 # 自定义元素（简单示例）
@@ -662,3 +662,95 @@ numInput.on('click', () => {
 ```
 
 <KShape :afterMounted="numericInputDemo" :width="300" :height="100" />
+
+## 示例：软键盘
+
+将整个 QWERTY 字母键盘实现为**单一 `Konva.Shape`**，鼠标移入任意键时该键高亮为绿色。
+
+由于所有按键都在同一个 `sceneFunc` 中绘制，Konva 的 shape 级事件无法区分具体按键。解决方案是在应用层**复刻 Konva 颜色拾取原理**，构建一张离屏命中画布：
+
+| | Konva 内部（shape 级） | 本示例（应用级） |
+|--|--|--|
+| 颜色分配 | 构造函数里随机生成 `colorKey` | 用 `index + 1` 编码到红色通道 |
+| 命中画布绘制 | `drawHit()` 在 `hitCanvas` 上用 `colorKey` 绘制 | 初始化时手动绘制到离屏 `<canvas>` |
+| 像素读取 | `Layer._getIntersection` 调用 `getImageData` | `mousemove` 中手动调用 `getImageData` |
+| 反查目标 | 全局 `shapes` map | 本地 `keyList` 数组按 `index` 索引 |
+
+整个键盘被封装为继承 `Konva.Shape` 的 `SoftKeyboard` 类，提示文本作为普通 `Konva.Text` 放在类外，通过自定义事件 `keychange` 解耦通信。
+
+**类内部（三个核心步骤）：**
+
+**步骤一：** 构造函数中，为每个按键分配唯一颜色并绘制到离屏画布（红色通道值 = `index + 1`，背景保持透明）：
+
+```js
+class SoftKeyboard extends Konva.Shape {
+  constructor(config) {
+    super(config);
+    // ... 构建 keyList ...
+
+    // 离屏命中画布
+    const hitCanvas = document.createElement('canvas');
+    hitCanvas.width = config.stageWidth;
+    hitCanvas.height = config.stageHeight;
+    this._hitCtx = hitCanvas.getContext('2d');
+    for (const key of this._keyList) {
+      this._hitCtx.fillStyle = `rgb(${key.index + 1}, 0, 0)`;
+      this._hitCtx.beginPath();
+      this._hitCtx.roundRect(key.x, key.y, KEY_W, KEY_H, KEY_R);
+      this._hitCtx.fill();
+    }
+
+    // mousemove：读像素 → 更新状态 → 发出 keychange 事件
+    this.on('mousemove', () => {
+      const pos = this.getStage().getPointerPosition();
+      const px = this._hitCtx.getImageData(Math.round(pos.x), Math.round(pos.y), 1, 1).data;
+      const newKey = px[3] === 255 ? px[0] - 1 : -1;
+      if (newKey !== this._activeKey) {
+        this._activeKey = newKey;
+        this.fire('keychange', { key: newKey >= 0 ? this._keyList[newKey].label : '' }, true);
+        this.getLayer().batchDraw();
+      }
+    });
+  }
+```
+
+**步骤二：** `_sceneFunc` 根据 `_activeKey` 渲染按键；`_hitFunc` 将整个画布作为 Konva 命中区域：
+
+```js
+  _sceneFunc(context) {
+    for (const key of this._keyList) {
+      const active = key.index === this._activeKey;
+      this._roundRect(context, key.x, key.y, KEY_W, KEY_H, KEY_R);
+      context.setAttr('fillStyle', active ? '#4caf50' : '#e8e8e8');
+      context.fill();
+      context.setAttr('fillStyle', active ? '#fff' : '#444');
+      context.fillText(key.label, key.x + KEY_W / 2, key.y + KEY_H / 2);
+    }
+  }
+
+  _hitFunc(context) {
+    const s = this.getStage();
+    context.beginPath();
+    context.rect(0, 0, s.width(), s.height());
+    context.closePath();
+    context.fillStrokeShape(this); // 以 colorKey 填充整体区域
+  }
+}
+```
+
+**类外部（提示文本通过 `keychange` 事件更新）：**
+
+```js
+const statusText = new Konva.Text({ text: '移动鼠标到按键上', ... });
+
+const keyboard = new SoftKeyboard({ x: 0, y: 0, stageWidth: stage.width(), stageHeight: stage.height() });
+
+keyboard.on('keychange', (e) => {
+  statusText.text(e.key ? `当前按键：${e.key}` : '移动鼠标到按键上');
+  layer.batchDraw();
+});
+
+layer.add(statusText, keyboard);
+```
+
+<KShape :afterMounted="softKeyboardDemo" :width="420" :height="180" />

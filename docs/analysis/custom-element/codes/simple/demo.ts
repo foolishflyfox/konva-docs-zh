@@ -552,3 +552,207 @@ export function rainbowSingleDemo(stage: Konva.Stage) {
 
   layer.add(rainbow);
 }
+
+export function softKeyboardDemo(stage: Konva.Stage) {
+  const layer = createLayer(stage);
+
+  type KeyInfo = { label: string; x: number; y: number; index: number };
+
+  const ROWS = [
+    { keys: "QWERTYUIOP".split(""), x0: 12, y: 40 },
+    { keys: "ASDFGHJKL".split(""), x0: 32, y: 87 },
+    { keys: "ZXCVBNM".split(""), x0: 72, y: 134 },
+  ];
+  const KEY_W = 36, KEY_H = 36, KEY_STEP = 40, KEY_R = 4;
+
+  class SoftKeyboard extends Konva.Shape {
+    private readonly _keyList: KeyInfo[];
+    private readonly _hitCtx: CanvasRenderingContext2D;
+    private readonly _bgPts: [number, number][];
+    private _activeKey = -1;
+
+    constructor(
+      config: Konva.ShapeConfig & { stageWidth: number; stageHeight: number }
+    ) {
+      super(config);
+
+      // 构建按键列表
+      this._keyList = [];
+      let idx = 0;
+      for (const row of ROWS) {
+        for (let i = 0; i < row.keys.length; i++) {
+          this._keyList.push({
+            label: row.keys[i],
+            x: row.x0 + i * KEY_STEP,
+            y: row.y,
+            index: idx++,
+          });
+        }
+      }
+
+      // 预计算背景多边形顶点（供 _sceneFunc 和 _hitFunc 共用）
+      const pad = 8;
+      const rowBounds = ROWS.map((row) => ({
+        left: row.x0 - pad,
+        right: row.x0 + (row.keys.length - 1) * KEY_STEP + KEY_W + pad,
+        top: row.y - pad,
+        bottom: row.y + KEY_H + pad,
+      }));
+      const yCuts = ROWS.slice(0, -1).map((row, i) =>
+        (row.y + KEY_H + ROWS[i + 1].y) / 2
+      );
+      this._bgPts = [
+        [rowBounds[0].left, rowBounds[0].top],
+        [rowBounds[0].right, rowBounds[0].top],
+      ];
+      for (let i = 0; i < ROWS.length - 1; i++) {
+        this._bgPts.push([rowBounds[i].right, yCuts[i]]);
+        this._bgPts.push([rowBounds[i + 1].right, yCuts[i]]);
+      }
+      this._bgPts.push([rowBounds[ROWS.length - 1].right, rowBounds[ROWS.length - 1].bottom]);
+      this._bgPts.push([rowBounds[ROWS.length - 1].left, rowBounds[ROWS.length - 1].bottom]);
+      for (let i = ROWS.length - 2; i >= 0; i--) {
+        this._bgPts.push([rowBounds[i + 1].left, yCuts[i]]);
+        this._bgPts.push([rowBounds[i].left, yCuts[i]]);
+      }
+
+      // 离屏命中画布：每个按键用 rgb(index+1, 0, 0) 填充，背景保持透明
+      const hitCanvas = document.createElement("canvas");
+      hitCanvas.width = config.stageWidth;
+      hitCanvas.height = config.stageHeight;
+      this._hitCtx = hitCanvas.getContext("2d")!;
+      for (const key of this._keyList) {
+        this._hitCtx.fillStyle = `rgb(${key.index + 1}, 0, 0)`;
+        this._hitCtx.beginPath();
+        this._hitCtx.roundRect(key.x, key.y, KEY_W, KEY_H, KEY_R);
+        this._hitCtx.fill();
+      }
+
+      // 内部事件：维护 activeKey 状态，对外发出 keychange 事件
+      this.on("mouseenter", () => {
+        this.getStage()!.container().style.cursor = "pointer";
+      });
+
+      this.on("mousemove", () => {
+        const pos = this.getStage()!.getPointerPosition()!;
+        const px = this._hitCtx.getImageData(
+          Math.round(pos.x),
+          Math.round(pos.y),
+          1,
+          1
+        ).data;
+        const newKey = px[3] === 255 ? px[0] - 1 : -1;
+        if (newKey !== this._activeKey) {
+          this._activeKey = newKey;
+          // bubbles=true 让外部可以通过 stage.on('keychange') 监听
+          this.fire(
+            "keychange",
+            { key: newKey >= 0 ? this._keyList[newKey].label : "" },
+            true
+          );
+          this.getLayer()?.batchDraw();
+        }
+      });
+
+      this.on("mouseleave", () => {
+        this.getStage()!.container().style.cursor = "default";
+        if (this._activeKey !== -1) {
+          this._activeKey = -1;
+          this.fire("keychange", { key: "" }, true);
+          this.getLayer()?.batchDraw();
+        }
+      });
+    }
+
+    private _roundRect(
+      ctx: Konva.Context,
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      r: number
+    ) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.arc(x + w - r, y + r, r, -Math.PI / 2, 0, false);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.arc(x + w - r, y + h - r, r, 0, Math.PI / 2, false);
+      ctx.lineTo(x + r, y + h);
+      ctx.arc(x + r, y + h - r, r, Math.PI / 2, Math.PI, false);
+      ctx.lineTo(x, y + r);
+      ctx.arc(x + r, y + r, r, Math.PI, -Math.PI / 2, false);
+      ctx.closePath();
+    }
+
+    private _drawBgPath(context: Konva.Context) {
+      const pts = this._bgPts;
+      const n = pts.length;
+      context.beginPath();
+      context.moveTo(
+        (pts[n - 1][0] + pts[0][0]) / 2,
+        (pts[n - 1][1] + pts[0][1]) / 2
+      );
+      for (let i = 0; i < n; i++) {
+        context.arcTo(
+          pts[i][0], pts[i][1],
+          pts[(i + 1) % n][0], pts[(i + 1) % n][1],
+          6
+        );
+      }
+      context.closePath();
+    }
+
+    _sceneFunc(context: Konva.Context) {
+      // 背景：贴合键盘轮廓的阶梯形圆角多边形
+      this._drawBgPath(context);
+      context.setAttr("fillStyle", "#ddeeff");
+      context.fill();
+
+      context.setAttr("font", "bold 14px sans-serif");
+      context.setAttr("textAlign", "center");
+      context.setAttr("textBaseline", "middle");
+      for (const key of this._keyList) {
+        const active = key.index === this._activeKey;
+        this._roundRect(context, key.x, key.y, KEY_W, KEY_H, KEY_R);
+        context.setAttr("fillStyle", active ? "#4caf50" : "#e8e8e8");
+        context.fill();
+        context.setAttr("strokeStyle", active ? "#2e7d32" : "#aaa");
+        context.setAttr("lineWidth", 1);
+        context.stroke();
+        context.setAttr("fillStyle", active ? "#fff" : "#444");
+        context.fillText(key.label, key.x + KEY_W / 2, key.y + KEY_H / 2 + 1);
+      }
+    }
+
+    _hitFunc(context: Konva.Context) {
+      this._drawBgPath(context);
+      context.fillStrokeShape(this);
+    }
+  }
+
+  // 提示文本在组件外，通过 keychange 事件更新
+  const statusText = new Konva.Text({
+    x: 0,
+    y: 12,
+    width: stage.width(),
+    text: "移动鼠标到按键上",
+    fontSize: 13,
+    fill: "#555",
+    align: "center",
+  });
+
+  const keyboard = new SoftKeyboard({
+    x: 0,
+    y: 0,
+    stageWidth: stage.width(),
+    stageHeight: stage.height(),
+  });
+
+  keyboard.on("keychange", (e: any) => {
+    statusText.text(e.key ? `当前按键：${e.key}` : "移动鼠标到按键上");
+    layer.batchDraw();
+  });
+
+  layer.add(statusText, keyboard);
+}
