@@ -130,7 +130,7 @@ export function ringDemo(stage: Konva.Stage) {
     sceneFunc: function (context, shape) {
       // 先填充内圆（天蓝色）
       context.beginPath();
-      context.arc(0, 0, innerRadius, 0, Math.PI * 2);
+      context.arc(0, 0, innerRadius - 5, 0, Math.PI * 2);
       context.closePath();
       context.setAttr("fillStyle", "rgb(135, 206, 235)");
       context.fill();

@@ -452,59 +452,81 @@ sceneFunc(context: Konva.Context, shape: Konva.Shape) {
 
 ## 示例：圆环的命中区域
 
-圆环（Donut）是 `hitFunc` 的典型应用场景——视觉上是一个镂空的圆环，命中区域也应该排除中心空洞，否则鼠标移到空洞上也会错误触发事件。
-
-绘制镂空路径的关键在于：**外圆顺时针、内圆逆时针**。在 canvas 的非零绕数（nonzero）填充规则下，两段路径绕数相消，中心区域不被填充，命中检测也自然排除该区域：
+圆环（Donut）形状的命中区域需要排除中心空洞——鼠标移到空洞上不应触发事件。这个示例同时展示了另一个视觉需求：在中心空洞里填充一块天蓝色背景，而圆环本身保持绿色（鼠标进入变橘黄色）。
 
 ```ts
-context.beginPath();
-context.arc(0, 0, outerRadius, 0, Math.PI * 2, false); // 外圆，顺时针
-context.moveTo(innerRadius, 0);                         // 抬笔，避免外圆到内圆的连线
-context.arc(0, 0, innerRadius, 0, Math.PI * 2, true);  // 内圆，逆时针，形成镂空
-context.closePath();
-context.fillStrokeShape(shape);
-```
+const outerRadius = 75;
+const innerRadius = 35;
 
-`sceneFunc` 和 `hitFunc` 使用相同的路径，保证视觉与命中区域完全一致：
-
-```ts
 const ring = new Konva.Shape({
-  x: 150,
-  y: 120,
+  x: stage.width() / 2,
+  y: stage.height() / 2,
   fill: '#4CAF50',
   stroke: '#2C3E50',
   strokeWidth: 2,
   sceneFunc: function (context: Konva.Context, shape: Konva.Shape) {
+    // 先用 context.fill() 直接绘制天蓝色内圆（半径比内环小 5px）
     context.beginPath();
-    context.arc(0, 0, 75, 0, Math.PI * 2, false);
-    context.moveTo(35, 0);
-    context.arc(0, 0, 35, 0, Math.PI * 2, true);
+    context.arc(0, 0, innerRadius - 5, 0, Math.PI * 2);
     context.closePath();
-    context.fillStrokeShape(shape);
-  },
-  hitFunc: function (context: Konva.Context, shape: Konva.Shape) {
-    context.beginPath();
-    context.arc(0, 0, 75, 0, Math.PI * 2, false);
-    context.moveTo(35, 0);
-    context.arc(0, 0, 35, 0, Math.PI * 2, true);
-    context.closePath();
-    context.fillStrokeShape(shape);
-  },
-});
+    context.setAttr('fillStyle', 'rgb(135, 206, 235)');
+    context.fill();
 
-ring.on('mouseenter', () => {
-  ring.fill('#FF9800');
-  layer.batchDraw();
-});
-ring.on('mouseleave', () => {
-  ring.fill('#4CAF50');
-  layer.batchDraw();
+    // 再绘制圆环（外圆顺时针、内圆逆时针，形成镂空路径）
+    context.beginPath();
+    context.arc(0, 0, outerRadius, 0, Math.PI * 2, false); // 外圆，顺时针
+    context.moveTo(innerRadius, 0);
+    context.arc(0, 0, innerRadius, 0, Math.PI * 2, true);  // 内圆，逆时针，镂空
+    context.closePath();
+    context.fillStrokeShape(shape);
+  },
 });
 ```
 
-将鼠标移入圆环区域，颜色变为橘黄色；移入中心空洞，事件不触发，颜色保持不变：
+将鼠标移入圆环区域，颜色变为橘黄色；移入中心天蓝色区域，圆环颜色保持不变：
 
 <KShape :afterMounted="ringDemo" :width="320" :height="220" />
+
+### 为什么中心区域不触发事件
+
+这里没有定义 `hitFunc`，Konva 直接把 `sceneFunc` 用于 hit canvas 绘制。两段绘制在 hit canvas 上产生的效果截然不同：
+
+**第一段（内圆，`context.fill()`）**：`HitContext` 只覆写了 `_fill()`（由 `fillStrokeShape` 内部调用），未覆写代理方法 `fill()`。因此 `context.fill()` 直接以 `rgb(135,206,235)` 涂色，hit canvas 上内圆区域是天蓝色，**不是** `colorKey`。
+
+**第二段（圆环，`fillStrokeShape`）**：经过 `HitContext._fill` / `_stroke` 的颜色替换，hit canvas 上圆环区域被正确涂成 `colorKey`。
+
+hit canvas 上各区域的 alpha 分布如下：
+
+```
+r < 30（内圆）      → 天蓝色 rgb(135,206,235)，alpha = 255，无对应 colorKey
+30 < r < ~34（间隙）→ 完全透明，alpha = 0
+35 < r < 75（圆环） → colorKey，alpha = 255
+```
+
+当鼠标位于天蓝色区域时，`_getIntersection` 读到 alpha = 255 但颜色不是任何 shape 的 `colorKey`，返回 `{ antialiased: true }`。螺旋搜索因此持续向外扩展，直到某个采样点落入透明间隙（alpha = 0），此时返回 `{}`，`continueSearch` 置为 `false`，搜索终止，`getIntersection` 返回 `null`——事件不触发。
+
+### 间隙宽度的影响
+
+天蓝色内圆的半径是 `innerRadius - 5`（= 30），比圆环内壁（r = 35）小 **5px**，形成约 4–5 个像素宽的透明间隙。这个宽度足以确保螺旋搜索在向外扩展时命中透明像素，而不会"跳过"间隙直接触及圆环的 `colorKey` 区域。
+
+如果将内圆半径改为 `innerRadius - 2`（= 33），间隙收窄到约 1–2px。螺旋搜索步长以整数像素递增，在很多鼠标位置下，某一步的采样点会直接越过这条细缝落在圆环 `colorKey` 像素上，导致 `mouseenter` 被意外触发，中心区域悬停时圆环同样变为橘黄色。
+
+**结论**：天蓝色内圆与圆环内壁之间保留足够宽的透明间隙，是让这个方案奏效的关键。若不想依赖间隙宽度，更可靠的做法是明确定义 `hitFunc`，只将圆环区域（镂空路径）用 `fillStrokeShape` 绘制到 hit canvas，内圆区域在 `hitFunc` 中完全不绘制，保持透明。
+
+### colorKey 碰撞风险
+
+这个方案还存在一个低概率但真实的隐患：`context.fill()` 将天蓝色 `rgb(135, 206, 235)`（即 `#87ceeb`）写入 hit canvas，而 `colorKey` 是从 `#000000` 到 `#ffffff` 随机生成的。如果场景中恰好有另一个 shape 被分配到 `colorKey = "#87ceeb"`，`_getIntersection` 读到天蓝色像素后就会在 `shapes` map 里命中该 shape，向它派发 `mouseenter`——完全是误触。
+
+```ts
+// _getIntersection 内部
+if (p3 === 255) {
+  const colorKey = Util.getHitColorKey(p[0], p[1], p[2]);
+  const shape = shapes[colorKey]; // "#87ceeb" 若恰好是某个 shape 的 colorKey → 误命中
+  if (shape) return { shape };
+}
+```
+
+单次碰撞概率约为 1/16,777,216，页面 shape 数量越多风险越高。**`hitFunc` 从根本上消除这一风险**：内圆区域在 hit canvas 上保持透明（alpha = 0），不写入任何颜色，无论其他 shape 的 `colorKey` 是什么都不会产生干扰。
 
 ## 示例：按像素命中的文字
 
