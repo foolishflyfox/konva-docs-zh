@@ -588,20 +588,20 @@ export function softKeyboardDemo(stage: Konva.Stage) {
     { keys: "ASDFGHJKL".split(""), x0: 32, y: 87 },
     { keys: "ZXCVBNM".split(""), x0: 72, y: 134 },
   ];
-  const KEY_W = 36,
-    KEY_H = 36,
-    KEY_STEP = 40,
-    KEY_R = 4;
+  const KEY_W = 36, // 键宽度
+    KEY_H = 36, // 键高度
+    KEY_STEP = 40, // 键占据的总宽度（包括间隔）
+    KEY_R = 4; // 键圆角半径
 
   class SoftKeyboard extends Konva.Shape {
     private readonly _keyList: KeyInfo[];
     private readonly _hitCtx: CanvasRenderingContext2D;
     private readonly _bgPts: [number, number][];
+    private readonly _hitLeft: number;
+    private readonly _hitTop: number;
     private _activeKey = -1;
 
-    constructor(
-      config: Konva.ShapeConfig & { stageWidth: number; stageHeight: number },
-    ) {
+    constructor(config: Konva.ShapeConfig) {
       super(config);
 
       // 构建按键列表
@@ -620,15 +620,34 @@ export function softKeyboardDemo(stage: Konva.Stage) {
 
       // 预计算背景多边形顶点（供 _sceneFunc 和 _hitFunc 共用）
       const pad = 8;
+
+      // rowBounds：每行按键的外包围盒（含 pad 内边距）
+      // left/right 由行首 x0 和按键数量决定，各行宽度不同（QWERTY 行最宽，ZXCVBNM 行最窄）
       const rowBounds = ROWS.map((row) => ({
         left: row.x0 - pad,
         right: row.x0 + (row.keys.length - 1) * KEY_STEP + KEY_W + pad,
         top: row.y - pad,
         bottom: row.y + KEY_H + pad,
       }));
+
+      // yCuts：相邻两行之间的 y 切割线，取上行底部与下行顶部的中点
+      // 背景多边形在此 y 坐标处从上行宽度"阶跃"到下行宽度，形成阶梯状轮廓
       const yCuts = ROWS.slice(0, -1).map(
         (row, i) => (row.y + KEY_H + ROWS[i + 1].y) / 2,
       );
+
+      // _bgPts：背景多边形的顶点序列，按顺时针方向绕一圈
+      // 轮廓沿右侧从上到下、沿左侧从下到上，在每个 yCut 处插入两个顶点来描述宽度变化：
+      //   右侧：[上行右边, yCut] → [下行右边, yCut]（内缩或外扩）
+      //   左侧：[下行左边, yCut] → [上行左边, yCut]（反向）
+      // 示意（3 行，右侧视图）：
+      //   ┌──────────────┐  ← row0.top
+      //   │   row 0      │
+      //   │        ┐     │  ← yCuts[0]（row0→row1 切割线）
+      //   │   row 1 │    │
+      //   │      ┐  │    │  ← yCuts[1]（row1→row2 切割线）
+      //   │ row 2│  │    │
+      //   └──────┘  │    │  ← row2.bottom
       this._bgPts = [
         [rowBounds[0].left, rowBounds[0].top],
         [rowBounds[0].right, rowBounds[0].top],
@@ -650,15 +669,23 @@ export function softKeyboardDemo(stage: Konva.Stage) {
         this._bgPts.push([rowBounds[i].left, yCuts[i]]);
       }
 
-      // 离屏命中画布：每个按键用 rgb(index+1, 0, 0) 填充，背景保持透明
+      // 离屏命中画布：尺寸收缩为键盘包围盒，节省内存
+      // 坐标原点平移到包围盒左上角，绘制和读取时统一减去 (hitLeft, hitTop)
+      const hitLeft = Math.min(...rowBounds.map((b) => b.left));
+      const hitTop = Math.min(...rowBounds.map((b) => b.top));
+      const hitRight = Math.max(...rowBounds.map((b) => b.right));
+      const hitBottom = Math.max(...rowBounds.map((b) => b.bottom));
+      this._hitLeft = hitLeft;
+      this._hitTop = hitTop;
+
       const hitCanvas = document.createElement("canvas");
-      hitCanvas.width = config.stageWidth;
-      hitCanvas.height = config.stageHeight;
+      hitCanvas.width = hitRight - hitLeft;
+      hitCanvas.height = hitBottom - hitTop;
       this._hitCtx = hitCanvas.getContext("2d")!;
       for (const key of this._keyList) {
         this._hitCtx.fillStyle = `rgb(${key.index + 1}, 0, 0)`;
         this._hitCtx.beginPath();
-        this._hitCtx.roundRect(key.x, key.y, KEY_W, KEY_H, KEY_R);
+        this._hitCtx.roundRect(key.x - hitLeft, key.y - hitTop, KEY_W, KEY_H, KEY_R);
         this._hitCtx.fill();
       }
 
@@ -668,10 +695,10 @@ export function softKeyboardDemo(stage: Konva.Stage) {
       });
 
       this.on("mousemove", () => {
-        const pos = this.getStage()!.getPointerPosition()!;
+        const pos = this.getRelativePointerPosition()!;
         const px = this._hitCtx.getImageData(
-          Math.round(pos.x),
-          Math.round(pos.y),
+          Math.round(pos.x - this._hitLeft),
+          Math.round(pos.y - this._hitTop),
           1,
           1,
         ).data;
@@ -778,12 +805,7 @@ export function softKeyboardDemo(stage: Konva.Stage) {
     align: "center",
   });
 
-  const keyboard = new SoftKeyboard({
-    x: 0,
-    y: 0,
-    stageWidth: stage.width(),
-    stageHeight: stage.height(),
-  });
+  const keyboard = new SoftKeyboard({ x: 0, y: 0 });
 
   keyboard.on("keychange", (e: any) => {
     statusText.text(e.key ? `当前按键：${e.key}` : "移动鼠标到按键上");
