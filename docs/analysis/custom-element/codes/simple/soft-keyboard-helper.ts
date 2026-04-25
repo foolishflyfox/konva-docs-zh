@@ -1,4 +1,4 @@
-import { ShapeHelper } from "@docs/utils/shape-helper";
+import { DrawAction, DrawArgs, ShapeHelper } from "@docs/utils/shape-helper";
 import Konva from "konva";
 
 type KeyInfo = { label: string; x: number; y: number; index: number };
@@ -59,66 +59,68 @@ for (let i = ROWS.length - 2; i >= 0; i--) {
  * shape 的 (x, y) 对应键盘包围盒左上角在父坐标系中的位置。
  */
 export class SoftKeyboardHelper extends Konva.Shape {
+  private _activeKey: string | null = null;
+
   constructor(config: Konva.ShapeConfig = {}) {
     super(config);
-
-    let activeKey: string | null = null;
 
     const keyList: KeyInfo[] = [];
     let idx = 0;
     for (const row of ROWS) {
       for (let i = 0; i < row.keys.length; i++) {
-        keyList.push({
-          label: row.keys[i],
-          x: row.x0 + i * KEY_STEP,
-          y: row.y,
-          index: idx++,
-        });
+        keyList.push({ label: row.keys[i], x: row.x0 + i * KEY_STEP, y: row.y, index: idx++ });
       }
     }
 
     const helper = new ShapeHelper(this, { width, height });
-
-    // 绘制键盘背景
-    // 所有路径坐标加上 pad，对齐 hitCanvas 局部坐标系（原点在 ROWS 原点左上方 pad 处）
-    const n = bgPts.length;
-    helper.draw(
-      (ctx) => {
-        ctx.beginPath();
-        ctx.moveTo(
-          (bgPts[n - 1][0] + bgPts[0][0]) / 2 + pad,
-          (bgPts[n - 1][1] + bgPts[0][1]) / 2 + pad,
-        );
-        for (let i = 0; i < n; i++) {
-          ctx.arcTo(
-            bgPts[i][0] + pad,
-            bgPts[i][1] + pad,
-            bgPts[(i + 1) % n][0] + pad,
-            bgPts[(i + 1) % n][1] + pad,
-            6,
-          );
-        }
-        ctx.closePath();
-      },
-      { fillStyle: "#ddeeff" },
-    );
+    this._init(helper, keyList);
 
     for (const key of keyList) {
-      helper.draw(
-        (ctx) => {
-          ctx.beginPath();
-          ctx.roundRect(key.x + pad, key.y + pad, KEY_W, KEY_H, KEY_R);
-        },
-        {
-          fillStyle: () => (activeKey === key.label ? "#4caf50" : "#e8e8e8"),
-          strokeStyle: "#aaa",
-          area: { name: key.label, label: key.label },
-        },
-      );
+      this.on(`${key.label}/mouseenter`, () => {
+        this._activeKey = key.label;
+        this.fire("keychange", { key: key.label }, true);
+        this.getLayer()?.batchDraw();
+      });
+      this.on(`${key.label}/mouseleave`, () => {
+        this._activeKey = null;
+        this.fire("keychange", { key: "" }, true);
+        this.getLayer()?.batchDraw();
+      });
     }
 
-    helper.draw(
-      (ctx) => {
+    this.on("mouseenter", () => { this.getStage()!.container().style.cursor = "pointer"; });
+    this.on("mouseleave", () => { this.getStage()!.container().style.cursor = "default"; });
+  }
+
+  // 所有路径坐标加上 pad，对齐 hitCanvas 局部坐标系（原点在 ROWS 原点左上方 pad 处）
+  private _init(helper: ShapeHelper, keyList: KeyInfo[]): void {
+    const n = bgPts.length;
+
+    // 背景绘制 Args
+    const bgArgs: DrawArgs = {
+      draw: [
+        { funcName: "moveTo", args: [(bgPts[n - 1][0] + bgPts[0][0]) / 2 + pad, (bgPts[n - 1][1] + bgPts[0][1]) / 2 + pad] },
+        ...Array.from({ length: n }, (_, i) => ({
+          funcName: "arcTo" as const,
+          args: [bgPts[i][0] + pad, bgPts[i][1] + pad, bgPts[(i + 1) % n][0] + pad, bgPts[(i + 1) % n][1] + pad, 6] as [number, number, number, number, number],
+        })),
+      ],
+      options: { fillStyle: "#ddeeff" },
+    };
+
+    // 键绘制 Args
+    const keyArgsList: DrawArgs[] = keyList.map((key) => ({
+      draw: [{ funcName: "roundRect" as const, args: [key.x + pad, key.y + pad, KEY_W, KEY_H, KEY_R] as [number, number, number, number, number] }],
+      options: {
+        fillStyle: () => (this._activeKey === key.label ? "#4caf50" : "#e8e8e8"),
+        strokeStyle: "#aaa",
+        area: { name: key.label, label: key.label },
+      },
+    }));
+
+    // 键文本绘制 Args（使用 DrawFn，因 fillText 等方法不在 PathContext 内）
+    const labelArgs: DrawArgs = {
+      draw: (ctx) => {
         const c = ctx as unknown as CanvasRenderingContext2D;
         c.font = "bold 14px sans-serif";
         c.textAlign = "center";
@@ -128,27 +130,9 @@ export class SoftKeyboardHelper extends Konva.Shape {
           c.fillText(k.label, k.x + pad + KEY_W / 2, k.y + pad + KEY_H / 2 + 1);
         }
       },
-      { hitTarget: false },
-    );
+      options: { hitTarget: false },
+    };
 
-    for (const key of keyList) {
-      this.on(`${key.label}/mouseenter`, () => {
-        activeKey = key.label;
-        this.fire("keychange", { key: key.label }, true);
-        this.getLayer()?.batchDraw();
-      });
-      this.on(`${key.label}/mouseleave`, () => {
-        activeKey = null;
-        this.fire("keychange", { key: "" }, true);
-        this.getLayer()?.batchDraw();
-      });
-    }
-
-    this.on("mouseenter", () => {
-      this.getStage()!.container().style.cursor = "pointer";
-    });
-    this.on("mouseleave", () => {
-      this.getStage()!.container().style.cursor = "default";
-    });
+    helper.drawShape([bgArgs, ...keyArgsList, labelArgs]);
   }
 }

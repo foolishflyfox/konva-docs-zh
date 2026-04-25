@@ -28,6 +28,11 @@ export interface DrawOptions {
    * 鼠标进入/离开/点击时 fire 形如 "areaName/eventType" 的事件。
    */
   area?: AreaConfig;
+  /**
+   * 仅当 draw 第一个参数为 DrawAction[] 时有效：
+   * 是否在所有指令执行完毕后自动调用 closePath()，默认 true。
+   */
+  closePath?: boolean;
 }
 
 /**
@@ -41,12 +46,30 @@ export interface PathContext {
   lineTo(x: number, y: number): void;
   arc(x: number, y: number, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
   arcTo(x1: number, y1: number, x2: number, y2: number, radius: number): void;
+  quadraticCurveTo(cpx: number, cpy: number, x: number, y: number): void;
+  bezierCurveTo(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void;
   rect(x: number, y: number, w: number, h: number): void;
   roundRect(x: number, y: number, w: number, h: number, radii?: number | DOMPointInit | (number | DOMPointInit)[]): void;
   ellipse(x: number, y: number, rx: number, ry: number, rotation: number, startAngle: number, endAngle: number, ccw?: boolean): void;
 }
 
 export type DrawFn = (ctx: PathContext) => void;
+
+/** PathContext 中可出现在 DrawAction 里的方法名（不含 beginPath / closePath，由 ShapeHelper 自动处理） */
+type PathCommandName = keyof Omit<PathContext, "beginPath" | "closePath">;
+
+/**
+ * 单条路径指令，对应 PathContext 中一个方法调用。
+ * 使用映射类型确保 funcName 与 args 类型严格匹配。
+ */
+export type DrawAction = {
+  [K in PathCommandName]: { funcName: K; args: Parameters<PathContext[K]> };
+}[PathCommandName];
+
+export interface DrawArgs {
+  draw: DrawFn | DrawAction[];
+  options?: DrawOptions;
+}
 
 interface DrawCall {
   fn: DrawFn;
@@ -98,11 +121,24 @@ export class ShapeHelper {
   }
 
   /**
-   * 声明一段路径及其绘制选项。
-   * 可多次调用，每次调用对应 sceneFunc/hitFunc 中的一段独立路径。
+   * 声明一段路径及其绘制选项。可多次调用，每次调用对应 sceneFunc/hitFunc 中的一段独立路径。
+   *
+   * 第一个参数支持两种形式：
+   * - `DrawFn`：手动调用 ctx 方法，完全自主控制路径（需自行调用 beginPath / closePath）。
+   * - `DrawAction[]`：路径指令数组，ShapeHelper 自动调用 beginPath，并根据 `closePath` 选项决定是否调用 closePath（默认 true）。
    */
-  draw(fn: DrawFn, options: DrawOptions = {}): void {
-    const { fillStyle, strokeStyle, hitTarget = true, area } = options;
+  draw(input: DrawFn | DrawAction[], options: DrawOptions = {}): void {
+    const { fillStyle, strokeStyle, hitTarget = true, area, closePath = true } = options;
+
+    const fn: DrawFn = Array.isArray(input)
+      ? (ctx) => {
+          ctx.beginPath();
+          for (const action of input) {
+            (ctx as any)[action.funcName](...action.args);
+          }
+          if (closePath) ctx.closePath();
+        }
+      : input;
     let areaIndex: number | undefined;
 
     if (area) {
@@ -119,6 +155,13 @@ export class ShapeHelper {
     }
 
     this._drawCalls.push({ fn, hitTarget, fillStyle, strokeStyle, areaIndex });
+  }
+
+  /** 批量声明路径，等价于依次调用 draw()。 */
+  drawShape(drawArgsList: DrawArgs[]): void {
+    for (const { draw, options } of drawArgsList) {
+      this.draw(draw, options);
+    }
   }
 
   private _renderScene(ctx: Konva.Context): void {
