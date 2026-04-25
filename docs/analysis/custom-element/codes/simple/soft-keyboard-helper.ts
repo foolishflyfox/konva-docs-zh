@@ -11,11 +11,11 @@ const ROWS = [
   { keys: "ZXCVBNM".split(""), x0: 60, y: 94 },
 ];
 
-const KEY_W = 36;
-const KEY_H = 36;
-const KEY_R = 4;
-const KEY_STEP = 40;
-const pad = 8;
+const KEY_W = 36;    // 键宽
+const KEY_H = 36;    // 键高
+const KEY_R = 4;     // 键圆角半径
+const KEY_STEP = 40; // 相邻键左边缘间距（= KEY_W + 4px 间隙）
+const pad = 8;       // 键盘背景相对按键区域的外边距
 
 const rowBounds = ROWS.map((row) => ({
   left: row.x0 - pad,
@@ -27,6 +27,7 @@ const rowBounds = ROWS.map((row) => ({
 const width = Math.max(...rowBounds.map((b) => b.right)) + pad;
 const height = Math.max(...rowBounds.map((b) => b.bottom)) + pad;
 
+// 相邻两行之间的 y 切割线：取上行底边与下行顶边的中点，用于背景轮廓在行间的水平过渡
 const yCuts = ROWS.slice(0, -1).map(
   (row, i) => (row.y + KEY_H + ROWS[i + 1].y) / 2,
 );

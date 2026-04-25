@@ -38,3 +38,45 @@ class CustomShape extends Konva.Shape {
 ```
 
 该 ShapeHelper 在一个单独的 shape-helper.ts 中定义
+
+优化 ShapeHelper 的 draw 函数，第一个参数除了可以传入 DrawFn 外，还可以传入一个操作数组，例如绘制软键盘的操作：
+
+```ts
+helper.draw(
+  (ctx) => {
+    ctx.beginPath();
+    ctx.moveTo(
+      (bgPts[n - 1][0] + bgPts[0][0]) / 2 + pad,
+      (bgPts[n - 1][1] + bgPts[0][1]) / 2 + pad,
+    );
+    for (let i = 0; i < n; i++) {
+      ctx.arcTo(
+        bgPts[i][0] + pad,
+        bgPts[i][1] + pad,
+        bgPts[(i + 1) % n][0] + pad,
+        bgPts[(i + 1) % n][1] + pad,
+        6,
+      );
+    }
+    ctx.closePath();
+  },
+  { fillStyle: "#ddeeff" },
+);
+```
+
+可以写成：
+
+```ts
+interface DrawAction = {
+    funcName: 'moveTo' | 'arcTo' | ... ; // 其他支持的context操作
+    args: any[];
+}
+const drawActions : DrawAction[] = [];
+drawActions.push({funcName: 'moveTo', [(bgPts[n - 1][0] + bgPts[0][0]) / 2 + pad, [(bgPts[n - 1][1] + bgPts[0][1]) / 2 + pad,]]});
+// ... 向 drawActions 添加背景的其他点
+// 执行 draw 时，ShapeHelper 会先帮忙执行 beginPath
+// DrawOptions 添加一个字段，成为 closePath，如果为 true，在最后调用 closePath，默认为true
+helper.draw(
+    drawActions,
+    { fillStyle: "#ddeeff" },);
+```
