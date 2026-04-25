@@ -1,5 +1,5 @@
 <script setup>
-import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo, multiBeginPathDemo, numericInputDemo, softKeyboardDemo, softKeyboardHelperDemo } from "./codes/simple";
+import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo, multiBeginPathDemo, numericInputDemo, softKeyboardDemo } from "./codes/simple";
 </script>
 
 # 自定义元素（简单示例）
