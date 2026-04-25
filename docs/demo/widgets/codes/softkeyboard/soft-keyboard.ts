@@ -45,6 +45,7 @@ const ALL_KEY_LABELS = KEY_ROWS.flatMap((r) => r.keys);
  */
 export class SoftKeyboard extends Konva.Shape {
   private _activeKey: string | null = null;
+  private _bgColor = "#ddeeff";
   private readonly _helper: ShapeHelper;
 
   constructor({ width = BASE_KB_WIDTH, ...config }: Konva.ShapeConfig = {}) {
@@ -74,6 +75,12 @@ export class SoftKeyboard extends Konva.Shape {
     this.on("mouseleave", () => {
       this.getStage()!.container().style.cursor = "default";
     });
+  }
+
+  /** 修改键盘背景色，立即重绘。 */
+  setBgColor(color: string): void {
+    this._bgColor = color;
+    this.getLayer()?.batchDraw();
   }
 
   /** 等比缩放键盘到新宽度，无需销毁重建。 */
@@ -177,7 +184,7 @@ export class SoftKeyboard extends Konva.Shape {
           ] as [number, number, number, number, number],
         })),
       ],
-      options: { fillStyle: "#ddeeff" },
+      options: { fillStyle: () => this._bgColor },
     };
 
     // 键绘制 Args

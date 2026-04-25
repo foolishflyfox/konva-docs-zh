@@ -53,6 +53,19 @@ export function softKeyboardDemo(stage: Konva.Stage) {
     keyboard.resize(w);
   });
 
-  ctrlDiv.append(lbl, numInput);
+  const colorLbl = document.createElement("span");
+  colorLbl.textContent = "背景色：";
+  colorLbl.style.cssText = "font-size:12px;color:#555;margin-left:10px;";
+
+  const colorInput = document.createElement("input");
+  colorInput.type = "color";
+  colorInput.value = "#ddeeff";
+  colorInput.style.cssText = "width:32px;height:22px;padding:1px 2px;cursor:pointer;";
+
+  colorInput.addEventListener("input", () => {
+    keyboard.setBgColor(colorInput.value);
+  });
+
+  ctrlDiv.append(lbl, numInput, colorLbl, colorInput);
   container.append(ctrlDiv);
 }
