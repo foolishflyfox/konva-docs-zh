@@ -3,12 +3,12 @@ import Konva from "konva";
 
 type KeyInfo = { label: string; x: number; y: number; index: number };
 
-// x0：该行第一个键的左边缘 x 坐标（布局坐标系，绘制时减去 hitLeft 对齐 hitCanvas）
-// y ：该行所有键的上边缘 y 坐标（同上，绘制时减去 hitTop）
+// x0：该行第一个键的左边缘 x 坐标（第一行为 0，绘制时加上 pad 对齐 hitCanvas）
+// y ：该行所有键的上边缘 y 坐标（第一行为 0，同上）
 const ROWS = [
-  { keys: "QWERTYUIOP".split(""), x0: 0,  y: 0  },
-  { keys: "ASDFGHJKL".split(""),  x0: 20, y: 47 },
-  { keys: "ZXCVBNM".split(""),    x0: 60, y: 94 },
+  { keys: "QWERTYUIOP".split(""), x0: 0, y: 0 },
+  { keys: "ASDFGHJKL".split(""), x0: 20, y: 47 },
+  { keys: "ZXCVBNM".split(""), x0: 60, y: 94 },
 ];
 
 const KEY_W = 36;
@@ -24,14 +24,13 @@ const rowBounds = ROWS.map((row) => ({
   bottom: row.y + KEY_H + pad,
 }));
 
-const hitLeft = Math.min(...rowBounds.map((b) => b.left));
-const hitTop = Math.min(...rowBounds.map((b) => b.top));
-const hitRight = Math.max(...rowBounds.map((b) => b.right));
-const hitBottom = Math.max(...rowBounds.map((b) => b.bottom));
+const width = Math.max(...rowBounds.map((b) => b.right)) + pad;
+const height = Math.max(...rowBounds.map((b) => b.bottom)) + pad;
 
 const yCuts = ROWS.slice(0, -1).map(
   (row, i) => (row.y + KEY_H + ROWS[i + 1].y) / 2,
 );
+// 背景色的轮廓
 const bgPts: [number, number][] = [
   [rowBounds[0].left, rowBounds[0].top],
   [rowBounds[0].right, rowBounds[0].top],
@@ -77,26 +76,24 @@ export class SoftKeyboardHelper extends Konva.Shape {
       }
     }
 
-    const helper = new ShapeHelper(this, {
-      width: hitRight - hitLeft,
-      height: hitBottom - hitTop,
-    });
+    const helper = new ShapeHelper(this, { width, height });
 
-    // 所有路径坐标减去 (hitLeft, hitTop)，对齐 hitCanvas 局部坐标系
+    // 绘制键盘背景
+    // 所有路径坐标加上 pad，对齐 hitCanvas 局部坐标系（原点在 ROWS 原点左上方 pad 处）
     const n = bgPts.length;
     helper.draw(
       (ctx) => {
         ctx.beginPath();
         ctx.moveTo(
-          (bgPts[n - 1][0] + bgPts[0][0]) / 2 - hitLeft,
-          (bgPts[n - 1][1] + bgPts[0][1]) / 2 - hitTop,
+          (bgPts[n - 1][0] + bgPts[0][0]) / 2 + pad,
+          (bgPts[n - 1][1] + bgPts[0][1]) / 2 + pad,
         );
         for (let i = 0; i < n; i++) {
           ctx.arcTo(
-            bgPts[i][0] - hitLeft,
-            bgPts[i][1] - hitTop,
-            bgPts[(i + 1) % n][0] - hitLeft,
-            bgPts[(i + 1) % n][1] - hitTop,
+            bgPts[i][0] + pad,
+            bgPts[i][1] + pad,
+            bgPts[(i + 1) % n][0] + pad,
+            bgPts[(i + 1) % n][1] + pad,
             6,
           );
         }
@@ -109,7 +106,7 @@ export class SoftKeyboardHelper extends Konva.Shape {
       helper.draw(
         (ctx) => {
           ctx.beginPath();
-          ctx.roundRect(key.x - hitLeft, key.y - hitTop, KEY_W, KEY_H, KEY_R);
+          ctx.roundRect(key.x + pad, key.y + pad, KEY_W, KEY_H, KEY_R);
         },
         {
           fillStyle: () => (activeKey === key.label ? "#4caf50" : "#e8e8e8"),
@@ -127,11 +124,7 @@ export class SoftKeyboardHelper extends Konva.Shape {
         c.textBaseline = "middle";
         c.fillStyle = "#444";
         for (const k of keyList) {
-          c.fillText(
-            k.label,
-            k.x - hitLeft + KEY_W / 2,
-            k.y - hitTop + KEY_H / 2 + 1,
-          );
+          c.fillText(k.label, k.x + pad + KEY_W / 2, k.y + pad + KEY_H / 2 + 1);
         }
       },
       { hitTarget: false },
