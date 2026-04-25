@@ -15,7 +15,7 @@ export function softKeyboardDemo(stage: Konva.Stage) {
     align: "center",
   });
 
-  const keyboard = new SoftKeyboard({ x: 4, y: 28 });
+  const keyboard = new SoftKeyboard({ x: 4, y: 28, width: 500 });
 
   keyboard.on("keychange", (e: any) => {
     statusText.text(e.key ? `当前按键：${e.key}` : "移动鼠标到按键上");
@@ -23,4 +23,8 @@ export function softKeyboardDemo(stage: Konva.Stage) {
   });
 
   layer.add(statusText, keyboard);
+  console.log("@@@x=", keyboard.x());
+  console.log("@@@y=", keyboard.getAttr("y"));
+  console.log("@@@", keyboard.width());
+  console.log("@@@", keyboard.height());
 }

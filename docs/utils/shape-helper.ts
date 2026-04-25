@@ -108,7 +108,7 @@ export class ShapeHelper {
     this.hitCanvas = document.createElement("canvas");
     this.hitCanvas.width = config.width;
     this.hitCanvas.height = config.height;
-    this._hitCtx = this.hitCanvas.getContext("2d")!;
+    this._hitCtx = this.hitCanvas.getContext("2d", { willReadFrequently: true })!;
 
     // 接管 shape 的 sceneFunc 和 hitFunc
     shape.setAttr("sceneFunc", (ctx: Konva.Context) => this._renderScene(ctx));
