@@ -1,6 +1,5 @@
 import { createLayer } from "@docs/utils";
 import Konva from "konva";
-import { SoftKeyboardHelper } from "./soft-keyboard-helper";
 
 function drawHexPath(context: Konva.Context, radius: number) {
   context.beginPath();

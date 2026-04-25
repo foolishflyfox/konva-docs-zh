@@ -14,8 +14,8 @@ Konva.js 内置了丰富的图形（`Rect`、`Circle`、`Line` 等），但当�
 const shape = new Konva.Shape({
   x: 100,
   y: 100,
-  fill: '#4ECDC4',
-  stroke: '#2C3E50',
+  fill: "#4ECDC4",
+  stroke: "#2C3E50",
   strokeWidth: 3,
   sceneFunc: function (context: Konva.Context, shape: Konva.Shape) {
     context.beginPath();
@@ -97,8 +97,8 @@ fillStrokeShape(shape)
 const hexagon = new Konva.Shape({
   x: 150,
   y: 100,
-  fill: '#4ECDC4',
-  stroke: '#2C3E50',
+  fill: "#4ECDC4",
+  stroke: "#2C3E50",
   strokeWidth: 3,
   sceneFunc: function (context: Konva.Context, shape: Konva.Shape) {
     const radius = 60;
@@ -138,7 +138,7 @@ class Hexagon extends Konva.Shape {
   }
 
   _sceneFunc(context: Konva.Context): void {
-    const radius: number = this.getAttr('radius') ?? 50;
+    const radius: number = this.getAttr("radius") ?? 50;
     context.beginPath();
     for (let i = 0; i < 6; i++) {
       const angle = (Math.PI / 3) * i - Math.PI / 6;
@@ -159,8 +159,8 @@ const hex = new Hexagon({
   x: 150,
   y: 100,
   radius: 60,
-  fill: '#4ECDC4',
-  stroke: '#2C3E50',
+  fill: "#4ECDC4",
+  stroke: "#2C3E50",
   strokeWidth: 3,
 });
 layer.add(hex);
@@ -184,8 +184,8 @@ layer.add(hex);
 const shape = new Konva.Shape({
   x: 150,
   y: 100,
-  fill: '#FF6B6B',
-  stroke: '#2C3E50',
+  fill: "#FF6B6B",
+  stroke: "#2C3E50",
   strokeWidth: 2,
   sceneFunc: function (context: Konva.Context, shape: Konva.Shape) {
     // 绘制六边形（视觉）
@@ -461,22 +461,22 @@ const innerRadius = 35;
 const ring = new Konva.Shape({
   x: stage.width() / 2,
   y: stage.height() / 2,
-  fill: '#4CAF50',
-  stroke: '#2C3E50',
+  fill: "#4CAF50",
+  stroke: "#2C3E50",
   strokeWidth: 2,
   sceneFunc: function (context: Konva.Context, shape: Konva.Shape) {
     // 先用 context.fill() 直接绘制天蓝色内圆（半径比内环小 5px）
     context.beginPath();
     context.arc(0, 0, innerRadius - 5, 0, Math.PI * 2);
     context.closePath();
-    context.setAttr('fillStyle', 'rgb(135, 206, 235)');
+    context.setAttr("fillStyle", "rgb(135, 206, 235)");
     context.fill();
 
     // 再绘制圆环（外圆顺时针、内圆逆时针，形成镂空路径）
     context.beginPath();
     context.arc(0, 0, outerRadius, 0, Math.PI * 2, false); // 外圆，顺时针
     context.moveTo(innerRadius, 0);
-    context.arc(0, 0, innerRadius, 0, Math.PI * 2, true);  // 内圆，逆时针，镂空
+    context.arc(0, 0, innerRadius, 0, Math.PI * 2, true); // 内圆，逆时针，镂空
     context.closePath();
     context.fillStrokeShape(shape);
   },
@@ -538,29 +538,29 @@ if (p3 === 255) {
 const shape = new Konva.Shape({
   x: 200,
   y: 75,
-  fill: '#4CAF50',
-  stroke: '#4CAF50',
+  fill: "#4CAF50",
+  stroke: "#4CAF50",
   strokeWidth: 8,
   sceneFunc(context: Konva.Context, shape: Konva.Shape) {
-    context.setAttr('font', 'bold 72px Arial');
-    context.setAttr('textAlign', 'center');
-    context.setAttr('textBaseline', 'middle');
-    context.setAttr('lineWidth', shape.getAttr('strokeWidth'));
-    context.setAttr('strokeStyle', shape.getAttr('stroke'));
-    context.strokeText('Konva', 0, 0);
-    context.setAttr('fillStyle', shape.getAttr('fill'));
-    context.fillText('Konva', 0, 0);
+    context.setAttr("font", "bold 72px Arial");
+    context.setAttr("textAlign", "center");
+    context.setAttr("textBaseline", "middle");
+    context.setAttr("lineWidth", shape.getAttr("strokeWidth"));
+    context.setAttr("strokeStyle", shape.getAttr("stroke"));
+    context.strokeText("Konva", 0, 0);
+    context.setAttr("fillStyle", shape.getAttr("fill"));
+    context.fillText("Konva", 0, 0);
   },
   hitFunc(context: Konva.Context, shape: Konva.Shape) {
     const hitColor: string = shape.colorKey; // Konva 分配给该 shape 的唯一命中色
-    context.setAttr('font', 'bold 72px Arial');
-    context.setAttr('textAlign', 'center');
-    context.setAttr('textBaseline', 'middle');
-    context.setAttr('lineWidth', shape.getAttr('strokeWidth'));
-    context.setAttr('fillStyle', hitColor);
-    context.setAttr('strokeStyle', hitColor);
-    context.fillText('Konva', 0, 0);
-    context.strokeText('Konva', 0, 0);
+    context.setAttr("font", "bold 72px Arial");
+    context.setAttr("textAlign", "center");
+    context.setAttr("textBaseline", "middle");
+    context.setAttr("lineWidth", shape.getAttr("strokeWidth"));
+    context.setAttr("fillStyle", hitColor);
+    context.setAttr("strokeStyle", hitColor);
+    context.fillText("Konva", 0, 0);
+    context.strokeText("Konva", 0, 0);
   },
 });
 ```
@@ -584,8 +584,8 @@ fillStrokeShape(shape)
 **而 `fillText` / `strokeText` 是原生 canvas 调用**，完全绕过了这套机制。在 `sceneFunc` 中手动写下：
 
 ```ts
-context.setAttr('fillStyle', shape.getAttr('fill')); // 始终是视觉色 #4CAF50
-context.fillText('Konva', 0, 0);
+context.setAttr("fillStyle", shape.getAttr("fill")); // 始终是视觉色 #4CAF50
+context.fillText("Konva", 0, 0);
 ```
 
 若不定义 `hitFunc`，Konva 会在 hit canvas 上执行同一个 `sceneFunc`，文字被画成绿色 `#4CAF50`。Konva 读取鼠标位置的像素颜色后，在全局 `shapes` map 里查找 `#4CAF50`——查不到对应 shape，事件完全失效。
@@ -603,7 +603,15 @@ context.fillText('Konva', 0, 0);
 - **无需 `hitFunc`**：`sceneFunc` 中使用了 `fillStrokeShape`，hit canvas 颜色由 Konva 自动处理
 
 ```ts
-const colors: string[] = ['#FF0000', '#FF7F00', '#FFFF00', '#00AA00', '#0000FF', '#4B0082', '#9400D3'];
+const colors: string[] = [
+  "#FF0000",
+  "#FF7F00",
+  "#FFFF00",
+  "#00AA00",
+  "#0000FF",
+  "#4B0082",
+  "#9400D3",
+];
 const bandWidth = 25;
 const baseRadius = 35;
 
@@ -613,20 +621,26 @@ colors.forEach((color, i) => {
 
   const band = new Konva.Shape({
     x: cx,
-    y: cy,   // 圆心置于 stage 底部，半圆弧向上展开
+    y: cy, // 圆心置于 stage 底部，半圆弧向上展开
     fill: color,
     opacity: 0.75,
     sceneFunc(context: Konva.Context, shape: Konva.Shape) {
       context.beginPath();
       context.arc(0, 0, outerRadius, Math.PI, 0, false); // 外弧：从左到右经过顶部
-      context.arc(0, 0, innerRadius, 0, Math.PI, true);  // 内弧：从右到左经过顶部
+      context.arc(0, 0, innerRadius, 0, Math.PI, true); // 内弧：从右到左经过顶部
       context.closePath();
       context.fillStrokeShape(shape);
     },
   });
 
-  band.on('mouseenter', () => { band.opacity(1);    layer.batchDraw(); });
-  band.on('mouseleave', () => { band.opacity(0.75); layer.batchDraw(); });
+  band.on("mouseenter", () => {
+    band.opacity(1);
+    layer.batchDraw();
+  });
+  band.on("mouseleave", () => {
+    band.opacity(0.75);
+    layer.batchDraw();
+  });
 
   layer.add(band);
 });
@@ -640,18 +654,18 @@ colors.forEach((color, i) => {
 
 两种方案的核心差异：
 
-| | 7 个 shape | 单个 shape |
-|--|--|--|
-| 事件绑定 | 每个色带独立 `mouseenter`/`mouseleave` | 整体 `mousemove` + 手动计算色带 |
-| opacity 控制 | Konva `opacity` 属性 | `sceneFunc` 内手动设 `globalAlpha` |
-| `hitFunc` | 不需要（`fillStrokeShape` 自动处理） | **必须定义**（`sceneFunc` 使用原生 `fill()`） |
-| 重绘粒度 | 仅目标 shape 属性变化 | `layer.batchDraw()` 重绘整个 shape |
+|              | 7 个 shape                             | 单个 shape                                    |
+| ------------ | -------------------------------------- | --------------------------------------------- |
+| 事件绑定     | 每个色带独立 `mouseenter`/`mouseleave` | 整体 `mousemove` + 手动计算色带               |
+| opacity 控制 | Konva `opacity` 属性                   | `sceneFunc` 内手动设 `globalAlpha`            |
+| `hitFunc`    | 不需要（`fillStrokeShape` 自动处理）   | **必须定义**（`sceneFunc` 使用原生 `fill()`） |
+| 重绘粒度     | 仅目标 shape 属性变化                  | `layer.batchDraw()` 重绘整个 shape            |
 
 **难点一：识别当前色带。** 单个 shape 只有一个命中区域，无法通过事件直接区分色带。解法是在 `mousemove` 中计算鼠标到圆心的距离 `r`，按色带宽度换算索引：
 
 ```ts
 const bandFromInner = Math.floor((r - baseRadius) / bandWidth); // 0=最内 ~ 6=最外
-const colorIdx = colors.length - 1 - bandFromInner;            // 对应 colors 下标
+const colorIdx = colors.length - 1 - bandFromInner; // 对应 colors 下标
 ```
 
 **难点二：必须定义 `hitFunc`。** `sceneFunc` 里对每个色带手动调用 `context.fill()`，绕过了 `fillStrokeShape` 的 `colorKey` 机制。若不定义 `hitFunc`，hit canvas 上画的是视觉色而非 `colorKey`，`mousemove` 完全失效。`hitFunc` 将整个彩虹区域（排除中心空洞）作为一个整体命中区域，配合 `fillStrokeShape` 确保正确识别。
@@ -668,11 +682,11 @@ const rainbow = new Konva.Shape({
       context.arc(0, 0, outerRadius, Math.PI, 0, false);
       context.arc(0, 0, innerRadius, 0, Math.PI, true);
       context.closePath();
-      context.setAttr('globalAlpha', i === activeIndex ? 1 : 0.75);
-      context.setAttr('fillStyle', color);
+      context.setAttr("globalAlpha", i === activeIndex ? 1 : 0.75);
+      context.setAttr("fillStyle", color);
       context.fill();
     });
-    context.setAttr('globalAlpha', 1);
+    context.setAttr("globalAlpha", 1);
   },
   hitFunc(context: Konva.Context, shape: Konva.Shape) {
     const outerRadius = baseRadius + colors.length * bandWidth;
@@ -685,7 +699,7 @@ const rainbow = new Konva.Shape({
   },
 });
 
-rainbow.on('mousemove', () => {
+rainbow.on("mousemove", () => {
   const pos = stage.getPointerPosition();
   const r = Math.sqrt((pos.x - cx) ** 2 + (pos.y - cy) ** 2);
   const bandFromInner = Math.floor((r - baseRadius) / bandWidth);
@@ -697,7 +711,10 @@ rainbow.on('mousemove', () => {
   }
 });
 
-rainbow.on('mouseleave', () => { activeIndex = -1; layer.batchDraw(); });
+rainbow.on("mouseleave", () => {
+  activeIndex = -1;
+  layer.batchDraw();
+});
 ```
 
 <KShape :afterMounted="rainbowSingleDemo" :width="420" :height="210" bgColor="white" />
@@ -714,10 +731,14 @@ rainbow.on('mouseleave', () => { activeIndex = -1; layer.batchDraw(); });
 
 ```ts
 let value = 0;
-const btnW = 26, totalH = 26, displayW = 72, r = 5;
+const btnW = 26,
+  totalH = 26,
+  displayW = 72,
+  r = 5;
 
 const numInput = new Konva.Shape({
-  x: shapeX, y: shapeY,
+  x: shapeX,
+  y: shapeY,
   sceneFunc(context: Konva.Context, _shape: Konva.Shape) {
     // ── 按钮区（圆角左矩形 + 3D 斜面）──
     context.beginPath();
@@ -727,23 +748,23 @@ const numInput = new Konva.Shape({
     context.lineTo(r, totalH);
     context.arc(r, totalH - r, r, Math.PI / 2, Math.PI, false); // 左下圆角
     context.lineTo(0, r);
-    context.arc(r, r, r, Math.PI, Math.PI * 3 / 2, false);      // 左上圆角
+    context.arc(r, r, r, Math.PI, (Math.PI * 3) / 2, false); // 左上圆角
     context.closePath();
-    context.setAttr('fillStyle', '#b8b8b8');
+    context.setAttr("fillStyle", "#b8b8b8");
     context.fill();
     // ... 斜面高亮、分割线、上下箭头三角形 ...
 
     // ── 显示区 ──
     context.beginPath();
     context.rect(btnW, 0, displayW, totalH);
-    context.setAttr('fillStyle', 'white');
+    context.setAttr("fillStyle", "white");
     context.fill();
-    context.setAttr('strokeStyle', '#888');
+    context.setAttr("strokeStyle", "#888");
     context.stroke();
-    context.setAttr('font', '14px sans-serif');
-    context.setAttr('textAlign', 'right');
-    context.setAttr('textBaseline', 'middle');
-    context.setAttr('fillStyle', '#000');
+    context.setAttr("font", "14px sans-serif");
+    context.setAttr("textAlign", "right");
+    context.setAttr("textBaseline", "middle");
+    context.setAttr("fillStyle", "#000");
     context.fillText(String(value), btnW + displayW - 6, totalH / 2);
   },
   hitFunc(context: Konva.Context, shape: Konva.Shape) {
@@ -755,7 +776,7 @@ const numInput = new Konva.Shape({
   },
 });
 
-numInput.on('click', () => {
+numInput.on("click", () => {
   const pos = stage.getPointerPosition();
   const relX = pos.x - shapeX;
   const relY = pos.y - shapeY;
@@ -774,12 +795,12 @@ numInput.on('click', () => {
 
 由于所有按键都在同一个 `sceneFunc` 中绘制，Konva 的 shape 级事件无法区分具体按键。解决方案是在应用层**复刻 Konva 颜色拾取原理**，构建一张离屏命中画布：
 
-| | Konva 内部（shape 级） | 本示例（应用级） |
-|--|--|--|
-| 颜色分配 | 构造函数里随机生成 `colorKey` | 用 `index + 1` 编码到红色通道 |
-| 命中画布绘制 | `drawHit()` 在 `hitCanvas` 上用 `colorKey` 绘制 | 初始化时手动绘制到离屏 `<canvas>` |
-| 像素读取 | `Layer._getIntersection` 调用 `getImageData` | `mousemove` 中手动调用 `getImageData` |
-| 反查目标 | 全局 `shapes` map | 本地 `keyList` 数组按 `index` 索引 |
+|              | Konva 内部（shape 级）                          | 本示例（应用级）                      |
+| ------------ | ----------------------------------------------- | ------------------------------------- |
+| 颜色分配     | 构造函数里随机生成 `colorKey`                   | 用 `index + 1` 编码到红色通道         |
+| 命中画布绘制 | `drawHit()` 在 `hitCanvas` 上用 `colorKey` 绘制 | 初始化时手动绘制到离屏 `<canvas>`     |
+| 像素读取     | `Layer._getIntersection` 调用 `getImageData`    | `mousemove` 中手动调用 `getImageData` |
+| 反查目标     | 全局 `shapes` map                               | 本地 `keyList` 数组按 `index` 索引    |
 
 整个键盘被封装为继承 `Konva.Shape` 的 `SoftKeyboard` 类，提示文本作为普通 `Konva.Text` 放在类外，通过自定义事件 `keychange` 解耦通信。
 
@@ -875,91 +896,3 @@ layer.add(statusText, keyboard);
 ```
 
 <KShape :afterMounted="softKeyboardDemo" :width="420" :height="180" />
-
-## 使用 ShapeHelper 重构软键盘
-
-上一节的 `SoftKeyboard` 类有一段模板式代码：创建离屏 `<canvas>`、分配颜色索引、在 `mousemove` 中读像素、手动 `fire` 事件。`ShapeHelper`（`docs/utils/shape-helper.ts`）将这套模式封装成统一接口，让开发者只需声明路径与区域，无需关心像素检测细节。
-
-| | `SoftKeyboard`（手动） | `ShapeHelper` |
-|--|--|--|
-| 离屏 canvas | 手动 `createElement` + 分配尺寸 | 内部自动创建 |
-| 颜色编码 | 手动 `rgb(index+1, 0, 0)` | 内部 `_areaCounter` 自增 |
-| 像素读取 | `mousemove` 中手动 `getImageData` | 内部 `_onMouseMove` 自动处理 |
-| 事件触发 | 手动 `this.fire('keychange', ...)` | 自动触发 `"KEY/mouseenter"` 等 |
-
-与 `SoftKeyboard` 相同，将键盘封装为继承 `Konva.Shape` 的 `SoftKeyboardHelper` 类，提示文本和高亮框放在类外。
-
-**类内部（构造函数完成全部初始化）：**
-
-**步骤一：** 在 `this` 上创建 `ShapeHelper`。`width`/`height` 设为键盘包围盒尺寸，而非 stage 尺寸：
-
-```ts
-// hitLeft/hitTop/hitRight/hitBottom 由外层函数作用域的 rowBounds 预先计算
-const helper = new ShapeHelper(this, {
-  width: hitRight - hitLeft,
-  height: hitBottom - hitTop,
-});
-```
-
-ShapeHelper 的 `_getAreaAtPointer` 用 `getRelativePointerPosition()` 直接索引 hitCanvas，因此 shape 的局部坐标原点必须与 hitCanvas 左上角对齐：**外部实例化时将 shape 定位于 `(hitLeft, hitTop)`**，使局部坐标 `(0, 0)` 对应包围盒左上角，鼠标坐标转换后恰好落在 `[0, width) × [0, height)` 范围内。
-
-**步骤二：** 多次调用 `draw()` 声明路径。所有坐标减去 `(hitLeft, hitTop)` 后传入，与 hitCanvas 局部坐标系对齐；带 `area` 的路径自动触发 `"name/mouseenter"`、`"name/mouseleave"` 等事件：
-
-```ts
-// 背景：坐标整体偏移
-helper.draw(
-  (ctx) => {
-    ctx.beginPath();
-    ctx.moveTo(startX - hitLeft, startY - hitTop);
-    // ... arcTo 同样减去偏移 ...
-  },
-  { fillStyle: '#ddeeff' },
-);
-
-// 按键：area 声明 → 自动触发 "Q/mouseenter" 等事件
-for (const key of keyList) {
-  helper.draw(
-    (ctx) => { ctx.beginPath(); ctx.roundRect(key.x - hitLeft, key.y - hitTop, KEY_W, KEY_H, KEY_R); },
-    { fillStyle: '#e8e8e8', strokeStyle: '#aaa', area: { name: key.label, label: key.label } },
-  );
-}
-
-// 文字：hitTarget: false → 仅视觉装饰，不参与命中
-helper.draw(textFn, { hitTarget: false });
-```
-
-**步骤三：** 将 ShapeHelper 触发的子区域事件转为对外的 `keychange`；`x`/`y` 传原始 layer 绝对坐标，供外部直接定位高亮框：
-
-```ts
-for (const key of keyList) {
-  this.on(`${key.label}/mouseenter`, () => {
-    this.fire('keychange', { key: key.label, x: key.x, y: key.y }, true);
-  });
-  this.on(`${key.label}/mouseleave`, () => {
-    this.fire('keychange', { key: '' }, true);
-  });
-}
-```
-
-**类外部（shape 定位于包围盒左上角，高亮框与提示文本通过 `keychange` 事件更新）：**
-
-```ts
-// x: hitLeft, y: hitTop 使 shape 局部坐标与 hitCanvas 坐标对齐
-const keyboard = new SoftKeyboardHelper({ x: hitLeft, y: hitTop });
-
-keyboard.on('keychange', (e) => {
-  if (e.key) {
-    highlight.position({ x: e.x, y: e.y }); // e.x/e.y 为 layer 绝对坐标
-    highlight.visible(true);
-    statusText.text(`当前按键：${e.key}`);
-  } else {
-    highlight.visible(false);
-    statusText.text('移动鼠标到按键上');
-  }
-  layer.batchDraw();
-});
-```
-
-高亮效果由独立的 `Konva.Rect`（`highlight`）承担：鼠标进入键时移到对应坐标并显示，离开时隐藏，与键盘 shape 本身解耦。
-
-<KShape :afterMounted="softKeyboardHelperDemo" :width="420" :height="180" />

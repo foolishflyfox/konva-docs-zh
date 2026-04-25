@@ -7,8 +7,8 @@ type KeyInfo = { label: string; x: number; y: number; index: number };
 // y ：该行所有键的上边缘 y 坐标（第一行为 0，同上）
 const ROWS = [
   { keys: "QWERTYUIOP".split(""), x0: 0, y: 0 },
-  { keys: "ASDFGHJKL".split(""), x0: 20, y: 47 },
-  { keys: "ZXCVBNM".split(""), x0: 60, y: 94 },
+  { keys: "ASDFGHJKL".split(""),  x0: 20, y: 47 },
+  { keys: "ZXCVBNM".split(""),    x0: 60, y: 94 },
 ];
 
 const KEY_W = 36;    // 键宽
@@ -58,7 +58,7 @@ for (let i = ROWS.length - 2; i >= 0; i--) {
  * 悬停键背景色动态切换为绿色，逻辑封装在类内部，对外只暴露 keychange 事件（{ key: string }）。
  * shape 的 (x, y) 对应键盘包围盒左上角在父坐标系中的位置。
  */
-export class SoftKeyboardHelper extends Konva.Shape {
+export class SoftKeyboard extends Konva.Shape {
   private _activeKey: string | null = null;
 
   constructor(config: Konva.ShapeConfig = {}) {

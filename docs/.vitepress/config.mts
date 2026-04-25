@@ -353,6 +353,14 @@ const config = defineConfig({
             { text: "画布编辑器", link: "canvas-editor" },
           ],
         },
+        {
+          text: "控件",
+          collapsed: false,
+          prefix: "widgets",
+          items: [
+            { text: "软键盘", link: "softkeyboard" },
+          ],
+        },
       ].map((e) => addLinkPrefix(e, "/demo")),
       "/analysis/": [
         {
