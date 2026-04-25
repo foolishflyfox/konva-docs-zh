@@ -157,6 +157,19 @@ export class ShapeHelper {
     this._drawCalls.push({ fn, hitTarget, fillStyle, strokeStyle, areaIndex });
   }
 
+  /**
+   * 清除所有已注册路径及 hitCanvas 内容，并更新画布尺寸。
+   * 调用后可重新调用 draw() / drawShape() 重建布局。
+   */
+  reset(width: number, height: number): void {
+    this._drawCalls.length = 0;
+    this._areas.clear();
+    this._areaCounter = 0;
+    this._currentAreaIndex = -1;
+    this.hitCanvas.width = width;
+    this.hitCanvas.height = height;
+  }
+
   /** 批量声明路径，等价于依次调用 draw()。 */
   drawShape(drawArgsList: DrawArgs[]): void {
     for (const { draw, options } of drawArgsList) {

@@ -127,6 +127,21 @@ tr:has(.ar) {
   background-color: #10b98124 !important;
 }
 
+input.raw-style {
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 12px;
+  line-height: normal;
+  background-color: #fff;
+  color: inherit;
+  outline-offset: 1px;
+}
+input.raw-style:focus {
+  outline: 2px solid var(--vp-c-brand);
+  border-color: transparent;
+}
+
 button.raw-style {
   border: 1px black solid;
   padding: 1px 6px;

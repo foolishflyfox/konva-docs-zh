@@ -36,6 +36,8 @@ const BASE_KB_WIDTH =
 const BASE_KB_HEIGHT =
   KEY_ROWS[KEY_ROWS.length - 1].y + BASE_KEY_H + BASE_PAD * 2; // = 146
 
+const ALL_KEY_LABELS = KEY_ROWS.flatMap((r) => r.keys);
+
 /**
  * 继承 Konva.Shape，通过 ShapeHelper 实现多路径绘制与子区域事件。
  * 悬停键背景色动态切换为绿色，逻辑封装在类内部，对外只暴露 keychange 事件（{ key: string }）。
@@ -43,13 +45,50 @@ const BASE_KB_HEIGHT =
  */
 export class SoftKeyboard extends Konva.Shape {
   private _activeKey: string | null = null;
+  private readonly _helper: ShapeHelper;
 
   constructor({ width = BASE_KB_WIDTH, ...config }: Konva.ShapeConfig = {}) {
     const scale = width / BASE_KB_WIDTH;
     const height = BASE_KB_HEIGHT * scale;
     super({ ...config, width, height });
 
-    // 按目标宽度等比缩放所有尺寸
+    this._helper = new ShapeHelper(this, { width, height });
+    this._buildLayout(width);
+
+    for (const label of ALL_KEY_LABELS) {
+      this.on(`${label}/mouseenter`, () => {
+        this._activeKey = label;
+        this.fire("keychange", { key: label }, true);
+        this.getLayer()?.batchDraw();
+      });
+      this.on(`${label}/mouseleave`, () => {
+        this._activeKey = null;
+        this.fire("keychange", { key: "" }, true);
+        this.getLayer()?.batchDraw();
+      });
+    }
+
+    this.on("mouseenter", () => {
+      this.getStage()!.container().style.cursor = "pointer";
+    });
+    this.on("mouseleave", () => {
+      this.getStage()!.container().style.cursor = "default";
+    });
+  }
+
+  /** 等比缩放键盘到新宽度，无需销毁重建。 */
+  resize(width: number): void {
+    const scale = width / BASE_KB_WIDTH;
+    const height = BASE_KB_HEIGHT * scale;
+    this.setAttrs({ width, height });
+    this._helper.reset(width, height);
+    this._buildLayout(width);
+    this.getLayer()?.batchDraw();
+  }
+
+  // 根据 width 计算全部布局并注册到 helper（constructor 和 resize 共用）
+  private _buildLayout(width: number): void {
+    const scale = width / BASE_KB_WIDTH;
     const KEY_W = BASE_KEY_W * scale;
     const KEY_H = BASE_KEY_H * scale;
     const KEY_R = BASE_KEY_R * scale;
@@ -109,36 +148,11 @@ export class SoftKeyboard extends Konva.Shape {
       }
     }
 
-    const helper = new ShapeHelper(this, { width, height });
-    this._init(helper, keyList, { KEY_W, KEY_H, KEY_R, pad, bgPts });
-
-    for (const key of keyList) {
-      this.on(`${key.label}/mouseenter`, () => {
-        this._activeKey = key.label;
-        this.fire("keychange", { key: key.label }, true);
-        this.getLayer()?.batchDraw();
-      });
-      this.on(`${key.label}/mouseleave`, () => {
-        this._activeKey = null;
-        this.fire("keychange", { key: "" }, true);
-        this.getLayer()?.batchDraw();
-      });
-    }
-
-    this.on("mouseenter", () => {
-      this.getStage()!.container().style.cursor = "pointer";
-    });
-    this.on("mouseleave", () => {
-      this.getStage()!.container().style.cursor = "default";
-    });
+    this._init(keyList, { KEY_W, KEY_H, KEY_R, pad, bgPts });
   }
 
   // 所有路径坐标加上 pad，对齐 hitCanvas 局部坐标系（原点在 ROWS 原点左上方 pad 处）
-  private _init(
-    helper: ShapeHelper,
-    keyList: KeyInfo[],
-    layout: KeyboardLayout,
-  ): void {
+  private _init(keyList: KeyInfo[], layout: KeyboardLayout): void {
     const { KEY_W, KEY_H, KEY_R, pad, bgPts } = layout;
     const n = bgPts.length;
 
@@ -207,6 +221,6 @@ export class SoftKeyboard extends Konva.Shape {
       options: { hitTarget: false },
     };
 
-    helper.drawShape([bgArgs, ...keyArgsList, labelArgs]);
+    this._helper.drawShape([bgArgs, ...keyArgsList, labelArgs]);
   }
 }
