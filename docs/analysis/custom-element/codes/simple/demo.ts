@@ -1,5 +1,6 @@
 import { createLayer } from "@docs/utils";
 import Konva from "konva";
+import { SoftKeyboardHelper } from "./soft-keyboard-helper";
 
 function drawHexPath(context: Konva.Context, radius: number) {
   context.beginPath();
@@ -685,7 +686,13 @@ export function softKeyboardDemo(stage: Konva.Stage) {
       for (const key of this._keyList) {
         this._hitCtx.fillStyle = `rgb(${key.index + 1}, 0, 0)`;
         this._hitCtx.beginPath();
-        this._hitCtx.roundRect(key.x - hitLeft, key.y - hitTop, KEY_W, KEY_H, KEY_R);
+        this._hitCtx.roundRect(
+          key.x - hitLeft,
+          key.y - hitTop,
+          KEY_W,
+          KEY_H,
+          KEY_R,
+        );
         this._hitCtx.fill();
       }
 
@@ -806,6 +813,29 @@ export function softKeyboardDemo(stage: Konva.Stage) {
   });
 
   const keyboard = new SoftKeyboard({ x: 0, y: 0 });
+
+  keyboard.on("keychange", (e: any) => {
+    statusText.text(e.key ? `当前按键：${e.key}` : "移动鼠标到按键上");
+    layer.batchDraw();
+  });
+
+  layer.add(statusText, keyboard);
+}
+
+export function softKeyboardHelperDemo(stage: Konva.Stage) {
+  const layer = createLayer(stage);
+
+  const statusText = new Konva.Text({
+    x: 0,
+    y: 12,
+    width: stage.width(),
+    text: "移动鼠标到按键上",
+    fontSize: 13,
+    fill: "#555",
+    align: "center",
+  });
+
+  const keyboard = new SoftKeyboardHelper({ x: 4, y: 32 });
 
   keyboard.on("keychange", (e: any) => {
     statusText.text(e.key ? `当前按键：${e.key}` : "移动鼠标到按键上");

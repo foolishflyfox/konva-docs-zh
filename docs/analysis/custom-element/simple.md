@@ -1,5 +1,5 @@
 <script setup>
-import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo, multiBeginPathDemo, numericInputDemo, softKeyboardDemo } from "./codes/simple";
+import { simpleCustomDemo, hitFuncDemo, ringDemo, pixelTextDemo, rainbowDemo, rainbowSingleDemo, multiBeginPathDemo, numericInputDemo, softKeyboardDemo, softKeyboardHelperDemo } from "./codes/simple";
 </script>
 
 # 自定义元素（简单示例）
@@ -875,3 +875,91 @@ layer.add(statusText, keyboard);
 ```
 
 <KShape :afterMounted="softKeyboardDemo" :width="420" :height="180" />
+
+## 使用 ShapeHelper 重构软键盘
+
+上一节的 `SoftKeyboard` 类有一段模板式代码：创建离屏 `<canvas>`、分配颜色索引、在 `mousemove` 中读像素、手动 `fire` 事件。`ShapeHelper`（`docs/utils/shape-helper.ts`）将这套模式封装成统一接口，让开发者只需声明路径与区域，无需关心像素检测细节。
+
+| | `SoftKeyboard`（手动） | `ShapeHelper` |
+|--|--|--|
+| 离屏 canvas | 手动 `createElement` + 分配尺寸 | 内部自动创建 |
+| 颜色编码 | 手动 `rgb(index+1, 0, 0)` | 内部 `_areaCounter` 自增 |
+| 像素读取 | `mousemove` 中手动 `getImageData` | 内部 `_onMouseMove` 自动处理 |
+| 事件触发 | 手动 `this.fire('keychange', ...)` | 自动触发 `"KEY/mouseenter"` 等 |
+
+与 `SoftKeyboard` 相同，将键盘封装为继承 `Konva.Shape` 的 `SoftKeyboardHelper` 类，提示文本和高亮框放在类外。
+
+**类内部（构造函数完成全部初始化）：**
+
+**步骤一：** 在 `this` 上创建 `ShapeHelper`。`width`/`height` 设为键盘包围盒尺寸，而非 stage 尺寸：
+
+```ts
+// hitLeft/hitTop/hitRight/hitBottom 由外层函数作用域的 rowBounds 预先计算
+const helper = new ShapeHelper(this, {
+  width: hitRight - hitLeft,
+  height: hitBottom - hitTop,
+});
+```
+
+ShapeHelper 的 `_getAreaAtPointer` 用 `getRelativePointerPosition()` 直接索引 hitCanvas，因此 shape 的局部坐标原点必须与 hitCanvas 左上角对齐：**外部实例化时将 shape 定位于 `(hitLeft, hitTop)`**，使局部坐标 `(0, 0)` 对应包围盒左上角，鼠标坐标转换后恰好落在 `[0, width) × [0, height)` 范围内。
+
+**步骤二：** 多次调用 `draw()` 声明路径。所有坐标减去 `(hitLeft, hitTop)` 后传入，与 hitCanvas 局部坐标系对齐；带 `area` 的路径自动触发 `"name/mouseenter"`、`"name/mouseleave"` 等事件：
+
+```ts
+// 背景：坐标整体偏移
+helper.draw(
+  (ctx) => {
+    ctx.beginPath();
+    ctx.moveTo(startX - hitLeft, startY - hitTop);
+    // ... arcTo 同样减去偏移 ...
+  },
+  { fillStyle: '#ddeeff' },
+);
+
+// 按键：area 声明 → 自动触发 "Q/mouseenter" 等事件
+for (const key of keyList) {
+  helper.draw(
+    (ctx) => { ctx.beginPath(); ctx.roundRect(key.x - hitLeft, key.y - hitTop, KEY_W, KEY_H, KEY_R); },
+    { fillStyle: '#e8e8e8', strokeStyle: '#aaa', area: { name: key.label, label: key.label } },
+  );
+}
+
+// 文字：hitTarget: false → 仅视觉装饰，不参与命中
+helper.draw(textFn, { hitTarget: false });
+```
+
+**步骤三：** 将 ShapeHelper 触发的子区域事件转为对外的 `keychange`；`x`/`y` 传原始 layer 绝对坐标，供外部直接定位高亮框：
+
+```ts
+for (const key of keyList) {
+  this.on(`${key.label}/mouseenter`, () => {
+    this.fire('keychange', { key: key.label, x: key.x, y: key.y }, true);
+  });
+  this.on(`${key.label}/mouseleave`, () => {
+    this.fire('keychange', { key: '' }, true);
+  });
+}
+```
+
+**类外部（shape 定位于包围盒左上角，高亮框与提示文本通过 `keychange` 事件更新）：**
+
+```ts
+// x: hitLeft, y: hitTop 使 shape 局部坐标与 hitCanvas 坐标对齐
+const keyboard = new SoftKeyboardHelper({ x: hitLeft, y: hitTop });
+
+keyboard.on('keychange', (e) => {
+  if (e.key) {
+    highlight.position({ x: e.x, y: e.y }); // e.x/e.y 为 layer 绝对坐标
+    highlight.visible(true);
+    statusText.text(`当前按键：${e.key}`);
+  } else {
+    highlight.visible(false);
+    statusText.text('移动鼠标到按键上');
+  }
+  layer.batchDraw();
+});
+```
+
+高亮效果由独立的 `Konva.Rect`（`highlight`）承担：鼠标进入键时移到对应坐标并显示，离开时隐藏，与键盘 shape 本身解耦。
+
+<KShape :afterMounted="softKeyboardHelperDemo" :width="420" :height="180" />
