@@ -6,9 +6,9 @@ type KeyInfo = { label: string; x: number; y: number; index: number };
 // x0：该行第一个键的左边缘 x 坐标（布局坐标系，绘制时减去 hitLeft 对齐 hitCanvas）
 // y ：该行所有键的上边缘 y 坐标（同上，绘制时减去 hitTop）
 const ROWS = [
-  { keys: "QWERTYUIOP".split(""), x0: 12, y: 40 },
-  { keys: "ASDFGHJKL".split(""), x0: 32, y: 87 },
-  { keys: "ZXCVBNM".split(""), x0: 72, y: 134 },
+  { keys: "QWERTYUIOP".split(""), x0: 0,  y: 0  },
+  { keys: "ASDFGHJKL".split(""),  x0: 20, y: 47 },
+  { keys: "ZXCVBNM".split(""),    x0: 60, y: 94 },
 ];
 
 const KEY_W = 36;
@@ -29,7 +29,9 @@ const hitTop = Math.min(...rowBounds.map((b) => b.top));
 const hitRight = Math.max(...rowBounds.map((b) => b.right));
 const hitBottom = Math.max(...rowBounds.map((b) => b.bottom));
 
-const yCuts = ROWS.slice(0, -1).map((row, i) => (row.y + KEY_H + ROWS[i + 1].y) / 2);
+const yCuts = ROWS.slice(0, -1).map(
+  (row, i) => (row.y + KEY_H + ROWS[i + 1].y) / 2,
+);
 const bgPts: [number, number][] = [
   [rowBounds[0].left, rowBounds[0].top],
   [rowBounds[0].right, rowBounds[0].top],
@@ -38,8 +40,14 @@ for (let i = 0; i < ROWS.length - 1; i++) {
   bgPts.push([rowBounds[i].right, yCuts[i]]);
   bgPts.push([rowBounds[i + 1].right, yCuts[i]]);
 }
-bgPts.push([rowBounds[ROWS.length - 1].right, rowBounds[ROWS.length - 1].bottom]);
-bgPts.push([rowBounds[ROWS.length - 1].left, rowBounds[ROWS.length - 1].bottom]);
+bgPts.push([
+  rowBounds[ROWS.length - 1].right,
+  rowBounds[ROWS.length - 1].bottom,
+]);
+bgPts.push([
+  rowBounds[ROWS.length - 1].left,
+  rowBounds[ROWS.length - 1].bottom,
+]);
 for (let i = ROWS.length - 2; i >= 0; i--) {
   bgPts.push([rowBounds[i + 1].left, yCuts[i]]);
   bgPts.push([rowBounds[i].left, yCuts[i]]);
@@ -60,7 +68,12 @@ export class SoftKeyboardHelper extends Konva.Shape {
     let idx = 0;
     for (const row of ROWS) {
       for (let i = 0; i < row.keys.length; i++) {
-        keyList.push({ label: row.keys[i], x: row.x0 + i * KEY_STEP, y: row.y, index: idx++ });
+        keyList.push({
+          label: row.keys[i],
+          x: row.x0 + i * KEY_STEP,
+          y: row.y,
+          index: idx++,
+        });
       }
     }
 
@@ -114,7 +127,11 @@ export class SoftKeyboardHelper extends Konva.Shape {
         c.textBaseline = "middle";
         c.fillStyle = "#444";
         for (const k of keyList) {
-          c.fillText(k.label, k.x - hitLeft + KEY_W / 2, k.y - hitTop + KEY_H / 2 + 1);
+          c.fillText(
+            k.label,
+            k.x - hitLeft + KEY_W / 2,
+            k.y - hitTop + KEY_H / 2 + 1,
+          );
         }
       },
       { hitTarget: false },

@@ -835,7 +835,8 @@ export function softKeyboardHelperDemo(stage: Konva.Stage) {
     align: "center",
   });
 
-  const keyboard = new SoftKeyboardHelper({ x: 4, y: 32 });
+  const keyboard = new SoftKeyboardHelper({ x: 4, y: 28 });
+  // const keyboard = new SoftKeyboardHelper({ x: 4, y: 32 });
 
   keyboard.on("keychange", (e: any) => {
     statusText.text(e.key ? `当前按键：${e.key}` : "移动鼠标到按键上");
