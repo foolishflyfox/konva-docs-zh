@@ -127,7 +127,8 @@ tr:has(.ar) {
   background-color: #10b98124 !important;
 }
 
-input.raw-style {
+input.raw-style,
+textarea.raw-style {
   border: 1px solid #aaa;
   border-radius: 3px;
   padding: 1px 4px;
@@ -137,7 +138,8 @@ input.raw-style {
   color: inherit;
   outline-offset: 1px;
 }
-input.raw-style:focus {
+input.raw-style:focus,
+textarea.raw-style:focus {
   outline: 2px solid var(--vp-c-brand);
   border-color: transparent;
 }

@@ -3,10 +3,16 @@
 基于 `SoftKeyboardHelper` 实现的软键盘控件演示。鼠标悬停到键上时，对应键背景变绿，同时触发 `keychange` 事件。
 
 <script setup>
-import { softKeyboardDemo } from "./codes/softkeyboard";
+import { softKeyboardDemo, loadWidgetDemo } from "./codes/softkeyboard";
 </script>
 
 <KShape :afterMounted="softKeyboardDemo" :width="600" :height="500" />
+
+## 从配置数据恢复组件
+
+将 `exportConfigData()` 的输出粘贴到输入框，点击"创建组件"在下方 canvas 中恢复对应组件。
+
+<KShape :afterMounted="loadWidgetDemo" :width="600" :height="300" />
 
 ## 使用方式
 

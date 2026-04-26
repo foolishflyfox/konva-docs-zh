@@ -1,4 +1,5 @@
 import { createLayer } from "@docs/utils";
+import { loadWidgetConfigData } from "@docs/utils/register-widget";
 import { SoftKeyboard } from "./soft-keyboard";
 import Konva from "konva";
 
@@ -60,7 +61,8 @@ export function softKeyboardDemo(stage: Konva.Stage) {
   const colorInput = document.createElement("input");
   colorInput.type = "color";
   colorInput.value = "#ddeeff";
-  colorInput.style.cssText = "width:32px;height:22px;padding:1px 2px;cursor:pointer;";
+  colorInput.style.cssText =
+    "width:32px;height:22px;padding:1px 2px;cursor:pointer;";
 
   colorInput.addEventListener("input", () => {
     keyboard.setBgColor(colorInput.value);
@@ -85,4 +87,73 @@ export function softKeyboardDemo(stage: Konva.Stage) {
 
   ctrlDiv.append(lbl, numInput, colorLbl, colorInput, exportBtn);
   container.append(ctrlDiv, outputPre);
+}
+
+const DEFAULT_CONFIG = JSON.stringify({
+  className: "fenghuabin/SoftKeyboard",
+  data: {
+    width: 500,
+    bgColor: "#8bbaea",
+  },
+});
+
+export function loadWidgetDemo(stage: Konva.Stage) {
+  // 引用 SoftKeyboard 确保其装饰器已执行、类已注册
+  void SoftKeyboard;
+
+  const layer = createLayer(stage);
+  const container = stage.container();
+  container.style.position = "relative";
+
+  const ctrlDiv = document.createElement("div");
+  ctrlDiv.style.cssText =
+    "position:absolute;top:6px;left:8px;right:8px;display:flex;gap:6px;align-items:flex-start;";
+
+  const textarea = document.createElement("textarea");
+  textarea.value = DEFAULT_CONFIG;
+  textarea.classList.add("raw-style");
+  textarea.style.cssText =
+    "flex:1;height:80px;font-size:11px;font-family:monospace;resize:vertical;";
+
+  const rightCol = document.createElement("div");
+  rightCol.style.cssText = "display:flex;flex-direction:column;gap:4px;";
+
+  const createBtn = document.createElement("button");
+  createBtn.textContent = "创建组件";
+  createBtn.classList.add("raw-style");
+
+  const errMsg = document.createElement("span");
+  errMsg.style.cssText =
+    "font-size:11px;color:#c00;display:none;max-width:80px;word-break:break-all;";
+
+  rightCol.append(createBtn, errMsg);
+  ctrlDiv.append(textarea, rightCol);
+  container.append(ctrlDiv);
+
+  let currentWidget: Konva.Shape | null = null;
+
+  createBtn.addEventListener("click", () => {
+    let config: { className: string; data: object };
+    try {
+      config = JSON.parse(textarea.value);
+    } catch {
+      errMsg.textContent = "JSON 格式错误";
+      errMsg.style.display = "block";
+      return;
+    }
+
+    const widget = loadWidgetConfigData(config);
+    if (!widget) {
+      errMsg.textContent = `未找到组件：${(config as any).className}`;
+      errMsg.style.display = "block";
+      return;
+    }
+
+    errMsg.style.display = "none";
+    if (currentWidget) currentWidget.destroy();
+    currentWidget = widget;
+    widget.setAttrs({ x: 4, y: 96 });
+    layer.add(widget);
+    layer.batchDraw();
+  });
 }

@@ -51,11 +51,12 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
   private _bgColor = "#ddeeff";
   private readonly _helper: ShapeHelper;
 
-  constructor({ width = BASE_KB_WIDTH, ...config }: Konva.ShapeConfig = {}) {
+  constructor({ width = BASE_KB_WIDTH, bgColor, ...config }: Konva.ShapeConfig & { bgColor?: string } = {}) {
     const scale = width / BASE_KB_WIDTH;
     const height = BASE_KB_HEIGHT * scale;
     super({ ...config, width, height });
 
+    if (bgColor !== undefined) this._bgColor = bgColor;
     this._helper = new ShapeHelper(this, { width, height });
     this._buildLayout(width);
 
