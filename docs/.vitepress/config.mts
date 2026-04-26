@@ -360,6 +360,7 @@ const config = defineConfig({
           items: [
             { text: "软键盘", link: "softkeyboard" },
             { text: "按钮", link: "button" },
+            { text: "输入框", link: "input" },
           ],
         },
       ].map((e) => addLinkPrefix(e, "/demo")),
