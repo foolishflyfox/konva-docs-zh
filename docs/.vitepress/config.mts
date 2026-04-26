@@ -359,6 +359,7 @@ const config = defineConfig({
           prefix: "widgets",
           items: [
             { text: "软键盘", link: "softkeyboard" },
+            { text: "按钮", link: "button" },
           ],
         },
       ].map((e) => addLinkPrefix(e, "/demo")),
