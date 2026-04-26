@@ -152,25 +152,15 @@ export function buttonDemo(stage: Konva.Stage) {
     exportBtn,
   );
 
-  // 行 2：背景色三态
+  // 行 2：基础颜色（悬停/点击色自动计算）
   const row2 = document.createElement("div");
   row2.style.cssText = "display:flex;align-items:center;gap:6px;";
   row2.append(
-    makeColorPicker("背景：", "#4a90d9", (v) => btn.setBgColor(v)),
-    makeColorPicker("悬停：", "#357abd", (v) => btn.setHoverColor(v)),
-    makeColorPicker("点击：", "#2868a7", (v) => btn.setClickColor(v)),
+    makeColorPicker("背景色：", "#4a90d9", (v) => btn.setBgColor(v)),
+    makeColorPicker("标签色：", "#ffffff", (v) => btn.setLabelColor(v)),
   );
 
-  // 行 3：标签色三态
-  const row3 = document.createElement("div");
-  row3.style.cssText = "display:flex;align-items:center;gap:6px;";
-  row3.append(
-    makeColorPicker("标签：", "#ffffff", (v) => btn.setLabelColor(v)),
-    makeColorPicker("标签悬停：", "#ffffff", (v) => btn.setLabelHoverColor(v)),
-    makeColorPicker("标签点击：", "#c8dcf8", (v) => btn.setLabelClickColor(v)),
-  );
-
-  ctrlDiv.append(row1, row2, row3);
+  ctrlDiv.append(row1, row2);
   container.append(ctrlDiv, outputPre);
 }
 
@@ -182,11 +172,7 @@ const DEFAULT_CONFIG = JSON.stringify(
       height: 50,
       label: "按钮",
       bgColor: "#4a90d9",
-      hoverColor: "#357abd",
-      clickColor: "#2868a7",
       labelColor: "#ffffff",
-      labelHoverColor: "#ffffff",
-      labelClickColor: "#c8dcf8",
       borderRadius: 6,
       fontSize: 14,
     },

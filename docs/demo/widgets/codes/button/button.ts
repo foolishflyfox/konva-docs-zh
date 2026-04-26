@@ -6,16 +6,30 @@ import Konva from "konva";
 type ButtonConfig = Konva.ShapeConfig & {
   label?: string;
   bgColor?: string;
-  hoverColor?: string;
-  clickColor?: string;
   labelColor?: string;
-  labelHoverColor?: string;
-  labelClickColor?: string;
   borderRadius?: number;
   fontSize?: number;
 };
 
+/** 将 hex 颜色按比例加深，factor < 1 时变暗。 */
+function darken(hex: string, factor: number): string {
+  let h = hex.slice(1);
+  if (h.length === 3) {
+    h = h
+      .split("")
+      .map((c) => c + c)
+      .join("");
+  }
+  const n = parseInt(h, 16);
+  const r = Math.min(255, Math.round(((n >> 16) & 0xff) * factor));
+  const g = Math.min(255, Math.round(((n >> 8) & 0xff) * factor));
+  const b = Math.min(255, Math.round((n & 0xff) * factor));
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
 const AREA = "button";
+const HOVER_FACTOR = 0.85;
+const CLICK_FACTOR = 0.7;
 
 @RegisterWidget("fenghuabin/Button")
 export class Button extends Konva.Shape implements ICustomShape {
@@ -23,11 +37,7 @@ export class Button extends Konva.Shape implements ICustomShape {
   private _isPressed = false;
   private _label: string;
   private _bgColor: string;
-  private _hoverColor: string;
-  private _clickColor: string;
   private _labelColor: string;
-  private _labelHoverColor: string;
-  private _labelClickColor: string;
   private _borderRadius: number;
   private _fontSize: number;
   private readonly _helper: ShapeHelper;
@@ -37,11 +47,7 @@ export class Button extends Konva.Shape implements ICustomShape {
     height = 40,
     label = "按钮",
     bgColor = "#4a90d9",
-    hoverColor = "#357abd",
-    clickColor = "#2868a7",
     labelColor = "#ffffff",
-    labelHoverColor = "#ffffff",
-    labelClickColor = "#c8dcf8",
     borderRadius = 6,
     fontSize = 14,
     ...config
@@ -50,11 +56,7 @@ export class Button extends Konva.Shape implements ICustomShape {
 
     this._label = label;
     this._bgColor = bgColor;
-    this._hoverColor = hoverColor;
-    this._clickColor = clickColor;
     this._labelColor = labelColor;
-    this._labelHoverColor = labelHoverColor;
-    this._labelClickColor = labelClickColor;
     this._borderRadius = borderRadius;
     this._fontSize = fontSize;
 
@@ -107,11 +109,7 @@ export class Button extends Konva.Shape implements ICustomShape {
       height: number;
       label: string;
       bgColor: string;
-      hoverColor: string;
-      clickColor: string;
       labelColor: string;
-      labelHoverColor: string;
-      labelClickColor: string;
       borderRadius: number;
       fontSize: number;
     };
@@ -123,18 +121,13 @@ export class Button extends Konva.Shape implements ICustomShape {
         height: this.height(),
         label: this._label,
         bgColor: this._bgColor,
-        hoverColor: this._hoverColor,
-        clickColor: this._clickColor,
         labelColor: this._labelColor,
-        labelHoverColor: this._labelHoverColor,
-        labelClickColor: this._labelClickColor,
         borderRadius: this._borderRadius,
         fontSize: this._fontSize,
       },
     };
   }
 
-  /** 修改按钮尺寸，重建绘制路径。 */
   resize(width: number, height: number): void {
     this.setAttrs({ width, height });
     this._helper.reset(width, height);
@@ -157,39 +150,17 @@ export class Button extends Konva.Shape implements ICustomShape {
     this.getLayer()?.batchDraw();
   }
 
-  setHoverColor(color: string): void {
-    this._hoverColor = color;
-    this.getLayer()?.batchDraw();
-  }
-
-  setClickColor(color: string): void {
-    this._clickColor = color;
-    this.getLayer()?.batchDraw();
-  }
-
   setLabelColor(color: string): void {
     this._labelColor = color;
     this.getLayer()?.batchDraw();
   }
 
-  setLabelHoverColor(color: string): void {
-    this._labelHoverColor = color;
-    this.getLayer()?.batchDraw();
-  }
-
-  setLabelClickColor(color: string): void {
-    this._labelClickColor = color;
-    this.getLayer()?.batchDraw();
-  }
-
   private _buildShape(width: number, height: number): void {
-    const r = this._borderRadius;
-
     const bgArgs: DrawArgs = {
       draw: [
         {
           funcName: "roundRect" as const,
-          args: [0, 0, width, height, r] as [
+          args: [0, 0, width, height, this._borderRadius] as [
             number,
             number,
             number,
@@ -200,8 +171,8 @@ export class Button extends Konva.Shape implements ICustomShape {
       ],
       options: {
         fillStyle: () => {
-          if (this._isPressed) return this._clickColor;
-          if (this._isHover) return this._hoverColor;
+          if (this._isPressed) return darken(this._bgColor, CLICK_FACTOR);
+          if (this._isHover) return darken(this._bgColor, HOVER_FACTOR);
           return this._bgColor;
         },
         area: { name: AREA, label: AREA },
@@ -214,9 +185,7 @@ export class Button extends Konva.Shape implements ICustomShape {
         c.font = `${this._fontSize}px sans-serif`;
         c.textAlign = "center";
         c.textBaseline = "middle";
-        if (this._isPressed) c.fillStyle = this._labelClickColor;
-        else if (this._isHover) c.fillStyle = this._labelHoverColor;
-        else c.fillStyle = this._labelColor;
+        c.fillStyle = this._labelColor;
         c.fillText(this._label, width / 2, height / 2);
       },
       options: { hitTarget: false },
