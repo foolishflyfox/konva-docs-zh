@@ -40,7 +40,13 @@ const BASE_KB_HEIGHT =
 
 const ALL_KEY_LABELS = KEY_ROWS.flatMap((r) => r.keys);
 
-type SoftKeyboardConfig = Konva.ShapeConfig & { bgColor?: string };
+type SoftKeyboardConfig = Konva.ShapeConfig & {
+  bgColor?: string;
+  keyColor?: string;
+  keyHoverColor?: string;
+  keyLabelColor?: string;
+  keyLabelHoverColor?: string;
+};
 
 /**
  * 继承 Konva.Shape，通过 ShapeHelper 实现多路径绘制与子区域事件。
@@ -51,14 +57,30 @@ type SoftKeyboardConfig = Konva.ShapeConfig & { bgColor?: string };
 export class SoftKeyboard extends Konva.Shape implements ICustomShape {
   private _activeKey: string | null = null;
   private _bgColor = "#ddeeff";
+  private _keyColor = "#e8e8e8";
+  private _keyHoverColor = "#4caf50";
+  private _keyLabelColor = "#444";
+  private _keyLabelHoverColor = "#444";
   private readonly _helper: ShapeHelper;
 
-  constructor({ width = BASE_KB_WIDTH, bgColor, ...config }: SoftKeyboardConfig = {}) {
+  constructor({
+    width = BASE_KB_WIDTH,
+    bgColor,
+    keyColor,
+    keyHoverColor,
+    keyLabelColor,
+    keyLabelHoverColor,
+    ...config
+  }: SoftKeyboardConfig = {}) {
     const scale = width / BASE_KB_WIDTH;
     const height = BASE_KB_HEIGHT * scale;
     super({ ...config, width, height });
 
     if (bgColor !== undefined) this._bgColor = bgColor;
+    if (keyColor !== undefined) this._keyColor = keyColor;
+    if (keyHoverColor !== undefined) this._keyHoverColor = keyHoverColor;
+    if (keyLabelColor !== undefined) this._keyLabelColor = keyLabelColor;
+    if (keyLabelHoverColor !== undefined) this._keyLabelHoverColor = keyLabelHoverColor;
     this._helper = new ShapeHelper(this, { width, height });
     this._buildLayout(width);
 
@@ -85,17 +107,51 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
 
   exportConfigData(): {
     className: string;
-    data: { width: number; bgColor: string };
+    data: {
+      width: number;
+      bgColor: string;
+      keyColor: string;
+      keyHoverColor: string;
+      keyLabelColor: string;
+      keyLabelHoverColor: string;
+    };
   } {
     return {
       className: this.getClassName(),
-      data: { width: this.width(), bgColor: this._bgColor },
+      data: {
+        width: this.width(),
+        bgColor: this._bgColor,
+        keyColor: this._keyColor,
+        keyHoverColor: this._keyHoverColor,
+        keyLabelColor: this._keyLabelColor,
+        keyLabelHoverColor: this._keyLabelHoverColor,
+      },
     };
   }
 
   /** 修改键盘背景色，立即重绘。 */
   setBgColor(color: string): void {
     this._bgColor = color;
+    this.getLayer()?.batchDraw();
+  }
+
+  setKeyColor(color: string): void {
+    this._keyColor = color;
+    this.getLayer()?.batchDraw();
+  }
+
+  setKeyHoverColor(color: string): void {
+    this._keyHoverColor = color;
+    this.getLayer()?.batchDraw();
+  }
+
+  setKeyLabelColor(color: string): void {
+    this._keyLabelColor = color;
+    this.getLayer()?.batchDraw();
+  }
+
+  setKeyLabelHoverColor(color: string): void {
+    this._keyLabelHoverColor = color;
     this.getLayer()?.batchDraw();
   }
 
@@ -219,7 +275,7 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
       ],
       options: {
         fillStyle: () =>
-          this._activeKey === key.label ? "#4caf50" : "#e8e8e8",
+          this._activeKey === key.label ? this._keyHoverColor : this._keyColor,
         strokeStyle: "#aaa",
         area: { name: key.label, label: key.label },
       },
@@ -232,8 +288,8 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
         c.font = `bold ${KEY_H * 0.39}px sans-serif`;
         c.textAlign = "center";
         c.textBaseline = "middle";
-        c.fillStyle = "#444";
         for (const k of keyList) {
+          c.fillStyle = this._activeKey === k.label ? this._keyLabelHoverColor : this._keyLabelColor;
           c.fillText(
             k.label,
             k.x + pad + KEY_W / 2,

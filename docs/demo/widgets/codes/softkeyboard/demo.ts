@@ -20,7 +20,7 @@ export function softKeyboardDemo(stage: Konva.Stage) {
     // align: "center",
   });
 
-  const keyboard = new SoftKeyboard({ x: 4, y: 28, width: DEFAULT_WIDTH });
+  const keyboard = new SoftKeyboard({ x: 4, y: 68, width: DEFAULT_WIDTH });
   keyboard.on("keychange", (e: any) => {
     statusText.text(e.key ? `当前按键：${e.key}` : "移动鼠标到按键上");
     layer.batchDraw();
@@ -28,16 +28,42 @@ export function softKeyboardDemo(stage: Konva.Stage) {
 
   layer.add(statusText, keyboard);
 
-  // Width number input overlay
   const container = stage.container();
   container.style.position = "relative";
+
+  // 工具函数：创建"标签 + 颜色选择器"组合
+  function makeColorPicker(
+    label: string,
+    defaultValue: string,
+    onChange: (v: string) => void,
+  ) {
+    const wrap = document.createElement("div");
+    wrap.style.cssText = "display:flex;align-items:center;gap:2px;";
+    const lbl = document.createElement("span");
+    lbl.textContent = label;
+    lbl.style.cssText = "font-size:12px;color:#555;white-space:nowrap;";
+    const input = document.createElement("input");
+    input.type = "color";
+    input.value = defaultValue;
+    input.style.cssText =
+      "width:28px;height:20px;padding:1px 2px;cursor:pointer;";
+    input.addEventListener("input", () => onChange(input.value));
+    wrap.append(lbl, input);
+    return wrap;
+  }
+
+  // 控件容器：两行，右对齐
   const ctrlDiv = document.createElement("div");
   ctrlDiv.style.cssText =
-    "position:absolute;top:4px;right:8px;display:flex;align-items:center;gap:4px;";
+    "position:absolute;top:4px;right:8px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;";
 
-  const lbl = document.createElement("span");
-  lbl.textContent = "宽度：";
-  lbl.style.cssText = "font-size:12px;color:#555;";
+  // 第一行：宽度 + 背景色 + 导出配置
+  const row1 = document.createElement("div");
+  row1.style.cssText = "display:flex;align-items:center;gap:4px;";
+
+  const widthLbl = document.createElement("span");
+  widthLbl.textContent = "宽度：";
+  widthLbl.style.cssText = "font-size:12px;color:#555;";
 
   const numInput = document.createElement("input");
   numInput.type = "number";
@@ -47,45 +73,51 @@ export function softKeyboardDemo(stage: Konva.Stage) {
   numInput.value = `${DEFAULT_WIDTH}`;
   numInput.classList.add("raw-style");
   numInput.style.width = "64px";
-
   numInput.addEventListener("input", () => {
     const w = parseInt(numInput.value, 10);
     if (isNaN(w) || w < MIN_WIDTH || w > MAX_WIDTH) return;
     keyboard.resize(w);
   });
 
-  const colorLbl = document.createElement("span");
-  colorLbl.textContent = "背景色：";
-  colorLbl.style.cssText = "font-size:12px;color:#555;margin-left:10px;";
-
-  const colorInput = document.createElement("input");
-  colorInput.type = "color";
-  colorInput.value = "#ddeeff";
-  colorInput.style.cssText =
-    "width:32px;height:22px;padding:1px 2px;cursor:pointer;";
-
-  colorInput.addEventListener("input", () => {
-    keyboard.setBgColor(colorInput.value);
-  });
-
   const exportBtn = document.createElement("button");
   exportBtn.textContent = "导出配置";
   exportBtn.classList.add("raw-style");
-  exportBtn.style.marginLeft = "10px";
 
   const outputPre = document.createElement("pre");
   outputPre.style.cssText =
     "position:absolute;bottom:6px;left:8px;margin:0;font-size:11px;" +
     "color:#333;background:#f5f5f5;border:1px solid #ddd;border-radius:4px;" +
     "padding:4px 8px;display:none;";
-
   exportBtn.addEventListener("click", () => {
-    const data = keyboard.exportConfigData();
-    outputPre.textContent = JSON.stringify(data, null, 2);
+    outputPre.textContent = JSON.stringify(
+      keyboard.exportConfigData(),
+      null,
+      2,
+    );
     outputPre.style.display = "block";
   });
 
-  ctrlDiv.append(lbl, numInput, colorLbl, colorInput, exportBtn);
+  row1.append(
+    widthLbl,
+    numInput,
+    makeColorPicker("背景色：", "#ddeeff", (v) => keyboard.setBgColor(v)),
+    exportBtn,
+  );
+
+  // 第二行：4 个键颜色选择器
+  const row2 = document.createElement("div");
+  row2.style.cssText = "display:flex;align-items:center;gap:6px;";
+
+  row2.append(
+    makeColorPicker("键色：", "#e8e8e8", (v) => keyboard.setKeyColor(v)),
+    makeColorPicker("键悬停：", "#4caf50", (v) => keyboard.setKeyHoverColor(v)),
+    makeColorPicker("标签色：", "#444444", (v) => keyboard.setKeyLabelColor(v)),
+    makeColorPicker("标签悬停：", "#444444", (v) =>
+      keyboard.setKeyLabelHoverColor(v),
+    ),
+  );
+
+  ctrlDiv.append(row1, row2);
   container.append(ctrlDiv, outputPre);
 }
 
