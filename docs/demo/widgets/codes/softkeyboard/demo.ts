@@ -17,16 +17,28 @@ export function softKeyboardDemo(stage: Konva.Stage) {
     text: "移动鼠标到按键上",
     fontSize: 13,
     fill: "#555",
-    // align: "center",
+  });
+
+  const pressText = new Konva.Text({
+    x: 5,
+    y: 26,
+    width: stage.width(),
+    text: "",
+    fontSize: 13,
+    fill: "#c00",
   });
 
   const keyboard = new SoftKeyboard({ x: 4, y: 68, width: DEFAULT_WIDTH });
   keyboard.on("keychange", (e: any) => {
-    statusText.text(e.key ? `当前按键：${e.key}` : "移动鼠标到按键上");
+    statusText.text(e.key ? `悬停：${e.key}` : "移动鼠标到按键上");
+    layer.batchDraw();
+  });
+  keyboard.on("keypresschange", (e: any) => {
+    pressText.text(e.key ? `按下：${e.key}` : "");
     layer.batchDraw();
   });
 
-  layer.add(statusText, keyboard);
+  layer.add(statusText, pressText, keyboard);
 
   const container = stage.container();
   container.style.position = "relative";
@@ -111,10 +123,10 @@ export function softKeyboardDemo(stage: Konva.Stage) {
   row2.append(
     makeColorPicker("键色：", "#e8e8e8", (v) => keyboard.setKeyColor(v)),
     makeColorPicker("键悬停：", "#4caf50", (v) => keyboard.setKeyHoverColor(v)),
+    makeColorPicker("键点击：", "#2e7d32", (v) => keyboard.setKeyClickColor(v)),
     makeColorPicker("标签色：", "#444444", (v) => keyboard.setKeyLabelColor(v)),
-    makeColorPicker("标签悬停：", "#444444", (v) =>
-      keyboard.setKeyLabelHoverColor(v),
-    ),
+    makeColorPicker("标签悬停：", "#444444", (v) => keyboard.setKeyLabelHoverColor(v)),
+    makeColorPicker("标签点击：", "#ffffff", (v) => keyboard.setKeyLabelClickColor(v)),
   );
 
   ctrlDiv.append(row1, row2);

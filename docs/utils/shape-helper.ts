@@ -117,6 +117,8 @@ export class ShapeHelper {
     // 子区域事件监测：用命名空间避免与外部监听器冲突
     shape.on("mousemove.shapeHelper", () => this._onMouseMove());
     shape.on("mouseleave.shapeHelper", () => this._onMouseLeave());
+    shape.on("mousedown.shapeHelper", () => this._onMouseDown());
+    shape.on("mouseup.shapeHelper", () => this._onMouseUp());
     shape.on("click.shapeHelper", () => this._onMouseClick());
   }
 
@@ -248,6 +250,16 @@ export class ShapeHelper {
       this._shape.fire(`${prev.name}/mouseleave`, {}, true);
       this._currentAreaIndex = -1;
     }
+  }
+
+  private _onMouseDown(): void {
+    const area = this._getAreaAtPointer();
+    if (area) this._shape.fire(`${area.name}/mousedown`, {}, true);
+  }
+
+  private _onMouseUp(): void {
+    const area = this._getAreaAtPointer();
+    if (area) this._shape.fire(`${area.name}/mouseup`, {}, true);
   }
 
   private _onMouseClick(): void {

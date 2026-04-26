@@ -44,8 +44,10 @@ type SoftKeyboardConfig = Konva.ShapeConfig & {
   bgColor?: string;
   keyColor?: string;
   keyHoverColor?: string;
+  keyClickColor?: string;
   keyLabelColor?: string;
   keyLabelHoverColor?: string;
+  keyLabelClickColor?: string;
 };
 
 /**
@@ -56,11 +58,14 @@ type SoftKeyboardConfig = Konva.ShapeConfig & {
 @RegisterWidget("fenghuabin/SoftKeyboard")
 export class SoftKeyboard extends Konva.Shape implements ICustomShape {
   private _activeKey: string | null = null;
+  private _clickKey: string | null = null;
   private _bgColor = "#ddeeff";
   private _keyColor = "#e8e8e8";
   private _keyHoverColor = "#4caf50";
+  private _keyClickColor = "#2e7d32";
   private _keyLabelColor = "#444";
   private _keyLabelHoverColor = "#444";
+  private _keyLabelClickColor = "#ffffff";
   private readonly _helper: ShapeHelper;
 
   constructor({
@@ -68,8 +73,10 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
     bgColor,
     keyColor,
     keyHoverColor,
+    keyClickColor,
     keyLabelColor,
     keyLabelHoverColor,
+    keyLabelClickColor,
     ...config
   }: SoftKeyboardConfig = {}) {
     const scale = width / BASE_KB_WIDTH;
@@ -79,8 +86,10 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
     if (bgColor !== undefined) this._bgColor = bgColor;
     if (keyColor !== undefined) this._keyColor = keyColor;
     if (keyHoverColor !== undefined) this._keyHoverColor = keyHoverColor;
+    if (keyClickColor !== undefined) this._keyClickColor = keyClickColor;
     if (keyLabelColor !== undefined) this._keyLabelColor = keyLabelColor;
     if (keyLabelHoverColor !== undefined) this._keyLabelHoverColor = keyLabelHoverColor;
+    if (keyLabelClickColor !== undefined) this._keyLabelClickColor = keyLabelClickColor;
     this._helper = new ShapeHelper(this, { width, height });
     this._buildLayout(width);
 
@@ -92,10 +101,31 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
       });
       this.on(`${label}/mouseleave`, () => {
         this._activeKey = null;
+        if (this._clickKey !== null) {
+          this._clickKey = null;
+          this.fire("keypresschange", { key: "" }, true);
+        }
         this.fire("keychange", { key: "" }, true);
         this.getLayer()?.batchDraw();
       });
+      this.on(`${label}/mousedown`, () => {
+        this._clickKey = label;
+        this.fire("keypresschange", { key: label }, true);
+        this.getLayer()?.batchDraw();
+      });
+      this.on(`${label}/click`, () => {
+        this.fire("keyclick", { key: label }, true);
+      });
     }
+
+    // mouseup 在 shape 级统一清除点击色（涵盖在任意键上抬起的情形）
+    this.on("mouseup", () => {
+      if (this._clickKey !== null) {
+        this._clickKey = null;
+        this.fire("keypresschange", { key: "" }, true);
+        this.getLayer()?.batchDraw();
+      }
+    });
 
     this.on("mouseenter", () => {
       this.getStage()!.container().style.cursor = "pointer";
@@ -112,8 +142,10 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
       bgColor: string;
       keyColor: string;
       keyHoverColor: string;
+      keyClickColor: string;
       keyLabelColor: string;
       keyLabelHoverColor: string;
+      keyLabelClickColor: string;
     };
   } {
     return {
@@ -123,8 +155,10 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
         bgColor: this._bgColor,
         keyColor: this._keyColor,
         keyHoverColor: this._keyHoverColor,
+        keyClickColor: this._keyClickColor,
         keyLabelColor: this._keyLabelColor,
         keyLabelHoverColor: this._keyLabelHoverColor,
+        keyLabelClickColor: this._keyLabelClickColor,
       },
     };
   }
@@ -145,6 +179,11 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
     this.getLayer()?.batchDraw();
   }
 
+  setKeyClickColor(color: string): void {
+    this._keyClickColor = color;
+    this.getLayer()?.batchDraw();
+  }
+
   setKeyLabelColor(color: string): void {
     this._keyLabelColor = color;
     this.getLayer()?.batchDraw();
@@ -152,6 +191,11 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
 
   setKeyLabelHoverColor(color: string): void {
     this._keyLabelHoverColor = color;
+    this.getLayer()?.batchDraw();
+  }
+
+  setKeyLabelClickColor(color: string): void {
+    this._keyLabelClickColor = color;
     this.getLayer()?.batchDraw();
   }
 
@@ -274,8 +318,11 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
         },
       ],
       options: {
-        fillStyle: () =>
-          this._activeKey === key.label ? this._keyHoverColor : this._keyColor,
+        fillStyle: () => {
+          if (this._clickKey === key.label) return this._keyClickColor;
+          if (this._activeKey === key.label) return this._keyHoverColor;
+          return this._keyColor;
+        },
         strokeStyle: "#aaa",
         area: { name: key.label, label: key.label },
       },
@@ -289,7 +336,9 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
         c.textAlign = "center";
         c.textBaseline = "middle";
         for (const k of keyList) {
-          c.fillStyle = this._activeKey === k.label ? this._keyLabelHoverColor : this._keyLabelColor;
+          if (this._clickKey === k.label) c.fillStyle = this._keyLabelClickColor;
+          else if (this._activeKey === k.label) c.fillStyle = this._keyLabelHoverColor;
+          else c.fillStyle = this._keyLabelColor;
           c.fillText(
             k.label,
             k.x + pad + KEY_W / 2,
