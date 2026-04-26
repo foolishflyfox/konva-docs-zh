@@ -40,6 +40,8 @@ const BASE_KB_HEIGHT =
 
 const ALL_KEY_LABELS = KEY_ROWS.flatMap((r) => r.keys);
 
+type SoftKeyboardConfig = Konva.ShapeConfig & { bgColor?: string };
+
 /**
  * 继承 Konva.Shape，通过 ShapeHelper 实现多路径绘制与子区域事件。
  * 悬停键背景色动态切换为绿色，逻辑封装在类内部，对外只暴露 keychange 事件（{ key: string }）。
@@ -51,7 +53,7 @@ export class SoftKeyboard extends Konva.Shape implements ICustomShape {
   private _bgColor = "#ddeeff";
   private readonly _helper: ShapeHelper;
 
-  constructor({ width = BASE_KB_WIDTH, bgColor, ...config }: Konva.ShapeConfig & { bgColor?: string } = {}) {
+  constructor({ width = BASE_KB_WIDTH, bgColor, ...config }: SoftKeyboardConfig = {}) {
     const scale = width / BASE_KB_WIDTH;
     const height = BASE_KB_HEIGHT * scale;
     super({ ...config, width, height });
