@@ -1,4 +1,5 @@
 import { DrawArgs, ShapeHelper } from "@docs/utils/shape-helper";
+import { ICustomShape } from "@docs/types";
 import Konva from "konva";
 
 type KeyInfo = { label: string; x: number; y: number; index: number };
@@ -43,7 +44,7 @@ const ALL_KEY_LABELS = KEY_ROWS.flatMap((r) => r.keys);
  * 悬停键背景色动态切换为绿色，逻辑封装在类内部，对外只暴露 keychange 事件（{ key: string }）。
  * shape 的 (x, y) 对应键盘包围盒左上角在父坐标系中的位置。
  */
-export class SoftKeyboard extends Konva.Shape {
+export class SoftKeyboard extends Konva.Shape implements ICustomShape {
   private _activeKey: string | null = null;
   private _bgColor = "#ddeeff";
   private readonly _helper: ShapeHelper;
@@ -75,6 +76,10 @@ export class SoftKeyboard extends Konva.Shape {
     this.on("mouseleave", () => {
       this.getStage()!.container().style.cursor = "default";
     });
+  }
+
+  exportConfigData(): { width: number; bgColor: string } {
+    return { width: this.width(), bgColor: this._bgColor };
   }
 
   /** 修改键盘背景色，立即重绘。 */
