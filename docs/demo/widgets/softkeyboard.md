@@ -6,7 +6,7 @@
 import { softKeyboardDemo } from "./codes/softkeyboard";
 </script>
 
-<KShape :afterMounted="softKeyboardDemo" :width="600" :height="300" />
+<KShape :afterMounted="softKeyboardDemo" :width="600" :height="500" />
 
 ## 使用方式
 

@@ -66,6 +66,23 @@ export function softKeyboardDemo(stage: Konva.Stage) {
     keyboard.setBgColor(colorInput.value);
   });
 
-  ctrlDiv.append(lbl, numInput, colorLbl, colorInput);
-  container.append(ctrlDiv);
+  const exportBtn = document.createElement("button");
+  exportBtn.textContent = "导出配置";
+  exportBtn.classList.add("raw-style");
+  exportBtn.style.marginLeft = "10px";
+
+  const outputPre = document.createElement("pre");
+  outputPre.style.cssText =
+    "position:absolute;bottom:6px;left:8px;margin:0;font-size:11px;" +
+    "color:#333;background:#f5f5f5;border:1px solid #ddd;border-radius:4px;" +
+    "padding:4px 8px;display:none;";
+
+  exportBtn.addEventListener("click", () => {
+    const data = keyboard.exportConfigData();
+    outputPre.textContent = JSON.stringify(data, null, 2);
+    outputPre.style.display = "block";
+  });
+
+  ctrlDiv.append(lbl, numInput, colorLbl, colorInput, exportBtn);
+  container.append(ctrlDiv, outputPre);
 }
